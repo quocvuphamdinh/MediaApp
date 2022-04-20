@@ -10,24 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MediaApp">
         <activity
-            android:name=".features.Authenticate.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".features.Authenticate.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".features.Onboarding.OnboardingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".features.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".features.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".features.OboardingActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
