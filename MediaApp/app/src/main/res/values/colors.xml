@@ -11,4 +11,8 @@
     <color name="primary_color_grey">#6DCCC8</color>
     <color name="start_color">#298EA3</color>
     <color name="end_color">#A9EAD2</color>
+    <color name="tab1_indicator_color">#FFBFBF</color>
+    <color name="tab2_indicator_color">#5177FE</color>
+    <color name="tab3_indicator_color">#FBCD87</color>
+    <color name="tab4_indicator_color">#31D070</color>
 </resources>
