@@ -5,5 +5,6 @@ import com.example.mediaapp.api.RetrofitInstance
 import com.example.mediaapp.repository.MediaRepository
 
 class MediaApplication : Application() {
-    val repository by lazy { MediaRepository(RetrofitInstance.api) }
+    private val sharedPreferences by lazy { getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE) }
+    val repository by lazy { MediaRepository(RetrofitInstance.api, sharedPreferences) }
 }

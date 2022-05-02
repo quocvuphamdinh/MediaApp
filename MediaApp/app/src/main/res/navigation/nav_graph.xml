@@ -13,6 +13,11 @@
             app:popUpToInclusive="true"
             android:id="@+id/action_splashFragment_to_onboardingFragment"
             app:destination="@id/onboardingFragment" />
+        <action
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true"
+            android:id="@+id/action_splashFragment_to_myPlaceFragment"
+            app:destination="@id/myPlaceFragment" />
     </fragment>
     <fragment
         android:id="@+id/onboardingFragment"

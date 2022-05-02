@@ -20,14 +20,20 @@ class RegisterViewModel(val repository: MediaRepository) : ViewModel() {
     val errorToast : LiveData<String>
     get() = _errorToast
 
+    private var _success : MutableLiveData<Boolean> = MutableLiveData(false)
+    val success : LiveData<Boolean>
+    get() = _success
+
     fun registerAccount(user: User) = viewModelScope.launch {
         val response = repository.registerAccount(user)
         if(response.isSuccessful){
-            val successObj = JSONObject(response.body().toString())
-            _successRegister.postValue(successObj.getString("message"))
+            val result = response.body()
+            _successRegister.postValue(result!!["message"])
+            _success.postValue(true)
         }else{
             val errObj = JSONObject(response.errorBody()!!.charStream().readText())
             _successRegister.postValue(errObj.getString("message"))
+            _success.postValue(false)
             Log.d("api", errObj.toString())
         }
     }

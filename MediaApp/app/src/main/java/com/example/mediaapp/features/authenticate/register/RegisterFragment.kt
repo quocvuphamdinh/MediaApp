@@ -48,6 +48,11 @@ class RegisterFragment : Fragment() {
         viewModel.errorToast.observe(viewLifecycleOwner, Observer {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         })
+        viewModel.success.observe(viewLifecycleOwner, Observer {
+            if(it){
+                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+            }
+        })
     }
 
     private fun registerAccount() {
@@ -60,7 +65,6 @@ class RegisterFragment : Fragment() {
         val user = User(firstName, userName, lastName, email, password, confirmPassword)
         if(viewModel.validateRegister(user)){
             viewModel.registerAccount(user)
-            //findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
     }
 }

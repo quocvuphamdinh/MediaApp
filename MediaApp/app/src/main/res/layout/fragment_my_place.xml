@@ -12,16 +12,16 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.tabs.TabLayout
-            android:elevation="5dp"
-            android:layout_below="@id/appBarMyPlace"
-            app:tabIndicatorColor="@color/tab1_indicator_color"
-            app:tabIconTint="@null"
             android:id="@+id/tabLayoutMyPlace"
-            app:tabMode="fixed"
-            app:tabGravity="fill"
-            app:tabBackground="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"/>
+            android:layout_height="?attr/actionBarSize"
+            android:layout_below="@id/appBarMyPlace"
+            android:elevation="5dp"
+            app:tabBackground="@color/white"
+            app:tabGravity="fill"
+            app:tabIconTint="@null"
+            app:tabIndicatorColor="@color/tab1_indicator_color"
+            app:tabMode="fixed" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPagerMyPlace"
