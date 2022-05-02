@@ -28,7 +28,8 @@ class RegisterViewModel(val repository: MediaRepository) : ViewModel() {
         val response = repository.registerAccount(user)
         if(response.isSuccessful){
             val result = response.body()
-            _successRegister.postValue(result!!["message"])
+            val jsonObj = JSONObject(result!!.charStream().readText())
+            _successRegister.postValue(jsonObj.getString("message"))
             _success.postValue(true)
         }else{
             val errObj = JSONObject(response.errorBody()!!.charStream().readText())
