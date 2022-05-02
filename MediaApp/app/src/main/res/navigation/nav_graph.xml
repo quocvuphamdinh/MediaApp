@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.mediaapp.features.authenticate.LoginFragment"
+        android:name="com.example.mediaapp.features.authenticate.login.LoginFragment"
         android:label="LoginFragment" >
         <action
             app:popUpTo="@id/loginFragment"
@@ -41,7 +41,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.mediaapp.features.authenticate.RegisterFragment"
+        android:name="com.example.mediaapp.features.authenticate.register.RegisterFragment"
         android:label="RegisterFragment" >
         <action
             app:popUpTo="@id/registerFragment"

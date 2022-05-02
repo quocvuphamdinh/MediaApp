@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.authenticate
+package com.example.mediaapp.features.authenticate.login
 
 import android.os.Bundle
 import android.view.LayoutInflater
