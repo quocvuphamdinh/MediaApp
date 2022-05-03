@@ -36,9 +36,9 @@ class RegisterFragment : Fragment() {
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
         binding.buttonSignUp.setOnClickListener {
-            registerAccount()
+            //registerAccount()
         }
-        subcribeObservers()
+        //subcribeObservers()
     }
 
     private fun subcribeObservers() {

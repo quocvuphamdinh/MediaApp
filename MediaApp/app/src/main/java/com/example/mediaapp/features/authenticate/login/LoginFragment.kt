@@ -37,10 +37,10 @@ class LoginFragment : Fragment() {
         }
 
         binding.buttonLogin.setOnClickListener {
-            login()
+           // login()
         }
 
-        subcribeToObservers()
+        //subcribeToObservers()
     }
 
     private fun subcribeToObservers() {
