@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mediaapp.databinding.FragmentVideoMyPlaceBinding
+import com.example.mediaapp.databinding.FragmentVideoMySpaceBinding
 import com.example.mediaapp.features.myspace.adapters.MySpaceMusicAdapter
+import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.DataStore
 
-class VideoFragment : Fragment() {
-    private lateinit var binding : FragmentVideoMyPlaceBinding
+class MySpaceVideoFragment : Fragment() {
+    private lateinit var binding : FragmentVideoMySpaceBinding
     private lateinit var folderAdapter : MySpaceMusicAdapter
     private lateinit var fileAdapter : MySpaceMusicAdapter
 
@@ -20,7 +21,7 @@ class VideoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentVideoMyPlaceBinding.inflate(inflater, container, false)
+        binding = FragmentVideoMySpaceBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -32,7 +33,11 @@ class VideoFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        folderAdapter = MySpaceMusicAdapter()
+        folderAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory) {
+
+            }
+        })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFolderVideo.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFolderVideo.adapter = folderAdapter
@@ -40,7 +45,11 @@ class VideoFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFolder() {
-        fileAdapter = MySpaceMusicAdapter()
+        fileAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory) {
+
+            }
+        })
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFileVideo.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileVideo.adapter = fileAdapter

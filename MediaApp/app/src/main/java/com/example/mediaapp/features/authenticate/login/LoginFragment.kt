@@ -38,7 +38,7 @@ class LoginFragment : Fragment() {
 
         binding.buttonLogin.setOnClickListener {
            // login()
-            findNavController().navigate(R.id.action_loginFragment_to_myPlaceFragment)
+            findNavController().navigate(R.id.action_loginFragment_to_mySpaceFragment2)
         }
 
         //subcribeToObservers()
@@ -51,7 +51,7 @@ class LoginFragment : Fragment() {
 
         viewModel.isSuccess.observe(viewLifecycleOwner, Observer {
             if(it){
-                findNavController().navigate(R.id.action_loginFragment_to_myPlaceFragment)
+                findNavController().navigate(R.id.action_loginFragment_to_mySpaceFragment2)
             }
         })
     }

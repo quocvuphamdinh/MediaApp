@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.mediaapp.MainActivity
 import com.example.mediaapp.R
-import com.example.mediaapp.databinding.FragmentMyPlaceBinding
+import com.example.mediaapp.databinding.FragmentMySpaceBinding
 import com.example.mediaapp.features.myspace.adapters.ViewPagerMyPlaceAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MyPlaceFragment : Fragment() {
-    private lateinit var binding : FragmentMyPlaceBinding
+class MySpaceFragment : Fragment() {
+    private lateinit var binding : FragmentMySpaceBinding
     private lateinit var viewPagerMyPlaceAdapter: ViewPagerMyPlaceAdapter
 
     override fun onCreateView(
@@ -21,7 +21,7 @@ class MyPlaceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMyPlaceBinding.inflate(inflater, container, false)
+        binding = FragmentMySpaceBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_share_with_me"/>
     <item android:id="@+id/favoriteFragment"
         android:title=""
-        android:icon="@drawable/ic_favorite"/>
+        android:icon="@drawable/ic_heart"/>
     <item android:id="@+id/deleteFragment"
         android:title=""
         android:icon="@drawable/ic_deleted"/>

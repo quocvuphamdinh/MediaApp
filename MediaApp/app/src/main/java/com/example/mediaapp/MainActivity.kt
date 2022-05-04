@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id){
-                R.id.splashFragment, R.id.onboardingFragment, R.id.loginFragment, R.id.registerFragment
+                R.id.splashFragment, R.id.onboardingFragment, R.id.loginFragment, R.id.registerFragment, R.id.fileDetailFragment
                 -> {
                     binding.bottomNav.visibility = View.GONE
                     binding.appbarMain.visibility = View.GONE

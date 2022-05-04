@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mediaapp.databinding.FragmentFileMyPlaceBinding
+import com.example.mediaapp.R
+import com.example.mediaapp.databinding.FragmentFileMySpaceBinding
 import com.example.mediaapp.features.myspace.adapters.MySpaceMusicAdapter
+import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.DataStore
 
-class FileFragment : Fragment() {
-    private lateinit var binding : FragmentFileMyPlaceBinding
+class MySpaceFileFragment : Fragment() {
+    private lateinit var binding : FragmentFileMySpaceBinding
     private lateinit var folderAdapter : MySpaceMusicAdapter
     private lateinit var fileAdapter : MySpaceMusicAdapter
 
@@ -20,7 +23,7 @@ class FileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFileMyPlaceBinding.inflate(inflater, container, false)
+        binding = FragmentFileMySpaceBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -32,7 +35,11 @@ class FileFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        folderAdapter = MySpaceMusicAdapter()
+        folderAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory) {
+                findNavController().navigate(R.id.action_mySpaceFragment_to_fileDetailFragment)
+            }
+        })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFolderFile.adapter = folderAdapter
@@ -40,7 +47,11 @@ class FileFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFolder() {
-        fileAdapter = MySpaceMusicAdapter()
+        fileAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory) {
+
+            }
+        })
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileFile.adapter = fileAdapter

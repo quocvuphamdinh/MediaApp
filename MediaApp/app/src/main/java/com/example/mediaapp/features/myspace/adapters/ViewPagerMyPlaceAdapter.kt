@@ -3,10 +3,10 @@ package com.example.mediaapp.features.myspace.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.mediaapp.features.myspace.file.FileFragment
-import com.example.mediaapp.features.myspace.image.ImageFragment
-import com.example.mediaapp.features.myspace.music.MusicFragment
-import com.example.mediaapp.features.myspace.video.VideoFragment
+import com.example.mediaapp.features.myspace.file.MySpaceFileFragment
+import com.example.mediaapp.features.myspace.image.MySpaceImageFragment
+import com.example.mediaapp.features.myspace.music.MySpaceMusicFragment
+import com.example.mediaapp.features.myspace.video.MySpaceVideoFragment
 
 class ViewPagerMyPlaceAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
     override fun getItemCount(): Int {
@@ -15,11 +15,11 @@ class ViewPagerMyPlaceAdapter(fragmentActivity: FragmentActivity) : FragmentStat
 
     override fun createFragment(position: Int): Fragment {
         when(position){
-            0-> return MusicFragment()
-            1-> return VideoFragment()
-            2-> return ImageFragment()
-            3-> return FileFragment()
+            0-> return MySpaceMusicFragment()
+            1-> return MySpaceVideoFragment()
+            2-> return MySpaceImageFragment()
+            3-> return MySpaceFileFragment()
         }
-        return MusicFragment()
+        return MySpaceMusicFragment()
     }
 }

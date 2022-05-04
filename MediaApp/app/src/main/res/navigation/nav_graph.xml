@@ -16,8 +16,8 @@
         <action
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true"
-            android:id="@+id/action_splashFragment_to_myPlaceFragment"
-            app:destination="@id/myPlaceFragment" />
+            android:id="@+id/action_splashFragment_to_mySpaceFragment2"
+            app:destination="@id/mySpaceFragment" />
     </fragment>
     <fragment
         android:id="@+id/onboardingFragment"
@@ -39,10 +39,10 @@
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
         <action
-            app:popUpToInclusive="true"
             app:popUpTo="@id/loginFragment"
-            android:id="@+id/action_loginFragment_to_myPlaceFragment"
-            app:destination="@id/myPlaceFragment" />
+            app:popUpToInclusive="true"
+            android:id="@+id/action_loginFragment_to_mySpaceFragment2"
+            app:destination="@id/mySpaceFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -55,10 +55,6 @@
             app:destination="@id/loginFragment" />
     </fragment>
     <fragment
-        android:id="@+id/myPlaceFragment"
-        android:name="com.example.mediaapp.features.myspace.MyPlaceFragment"
-        android:label="MyPlaceFragment" />
-    <fragment
         android:id="@+id/shareWithMeFragment"
         android:name="com.example.mediaapp.features.sharewithme.ShareWithMeFragment"
         android:label="ShareWithMeFragment" />
@@ -70,4 +66,32 @@
         android:id="@+id/deleteFragment"
         android:name="com.example.mediaapp.features.deleted.DeleteFragment"
         android:label="DeleteFragment" />
+    <fragment
+        android:id="@+id/fileDetailFragment"
+        android:name="com.example.mediaapp.features.detail.file.FileDetailFragment"
+        android:label="FileDetailFragment" />
+    <fragment
+        android:id="@+id/mySpaceFileFragment"
+        android:name="com.example.mediaapp.features.myspace.file.MySpaceFileFragment"
+        android:label="MySpaceFileFragment" />
+    <fragment
+        android:id="@+id/mySpaceMusicFragment"
+        android:name="com.example.mediaapp.features.myspace.music.MySpaceMusicFragment"
+        android:label="MySpaceMusicFragment" />
+    <fragment
+        android:id="@+id/mySpaceImageFragment"
+        android:name="com.example.mediaapp.features.myspace.image.MySpaceImageFragment"
+        android:label="MySpaceImageFragment" />
+    <fragment
+        android:id="@+id/mySpaceVideoFragment"
+        android:name="com.example.mediaapp.features.myspace.video.MySpaceVideoFragment"
+        android:label="MySpaceVideoFragment" />
+    <fragment
+        android:id="@+id/mySpaceFragment"
+        android:name="com.example.mediaapp.features.myspace.MySpaceFragment"
+        android:label="MySpaceFragment" >
+        <action
+            android:id="@+id/action_mySpaceFragment_to_fileDetailFragment"
+            app:destination="@id/fileDetailFragment" />
+    </fragment>
 </navigation>

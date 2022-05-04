@@ -10,8 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mediaapp.R
 import com.example.mediaapp.models.Directory
 
-class MySpaceMusicAdapter : RecyclerView.Adapter<MySpaceMusicAdapter.MySpaceMusicHolder>(){
+class MySpaceMusicAdapter(private val cLickItemDirectory: CLickItemDirectory) : RecyclerView.Adapter<MySpaceMusicAdapter.MySpaceMusicHolder>(){
 
+    interface CLickItemDirectory{
+        fun clickItem(directory: Directory)
+    }
     inner class MySpaceMusicHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var imgFolder:ImageView = itemView.findViewById(R.id.image_item)
     }
@@ -38,6 +41,9 @@ class MySpaceMusicAdapter : RecyclerView.Adapter<MySpaceMusicAdapter.MySpaceMusi
             holder.imgFolder.setImageResource(R.drawable.ic_add_directory)
         }else{
             val directory = differ.currentList[position]
+            holder.imgFolder.setOnClickListener {
+                cLickItemDirectory.clickItem(directory)
+            }
         }
     }
 

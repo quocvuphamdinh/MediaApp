@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarFileDetail"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/imageViewBackFileDetail"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_arrow_back"
+                    android:layout_width="35dp"
+                    android:layout_height="match_parent"/>
+                <ImageView
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/imageViewHeartFileDetail"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_heart"
+                    android:layout_width="35dp"
+                    android:layout_height="match_parent"/>
+            </RelativeLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+        <TextView
+            android:paddingStart="20dp"
+            android:background="@color/grey_80"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:id="@+id/textViewTitleFileDetail"
+            android:layout_below="@id/appBarFileDetail"
+            android:text="Title of file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="RtlSymmetry" />
+        <ScrollView
+            android:layout_marginBottom="30dp"
+            android:layout_below="@id/textViewTitleFileDetail"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+            <LinearLayout
+                android:paddingHorizontal="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewFileDetail"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:text="@string/content_file_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+</layout>

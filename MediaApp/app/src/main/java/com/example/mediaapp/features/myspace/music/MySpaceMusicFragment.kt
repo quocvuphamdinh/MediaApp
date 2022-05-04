@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mediaapp.databinding.FragmentMusicMyPlaceBinding
+import com.example.mediaapp.databinding.FragmentMusicMySpaceBinding
 import com.example.mediaapp.features.myspace.adapters.MySpaceMusicAdapter
+import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.DataStore
 
-class MusicFragment : Fragment() {
-    private lateinit var binding : FragmentMusicMyPlaceBinding
+class MySpaceMusicFragment : Fragment() {
+    private lateinit var binding : FragmentMusicMySpaceBinding
     private lateinit var folderAdapter : MySpaceMusicAdapter
     private lateinit var fileAdapter : MySpaceMusicAdapter
 
@@ -20,7 +21,7 @@ class MusicFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMusicMyPlaceBinding.inflate(inflater, container, false)
+        binding = FragmentMusicMySpaceBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -32,7 +33,11 @@ class MusicFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        folderAdapter = MySpaceMusicAdapter()
+        folderAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory) {
+
+            }
+        })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFolderMusic.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFolderMusic.adapter = folderAdapter
@@ -40,7 +45,11 @@ class MusicFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFolder() {
-        fileAdapter = MySpaceMusicAdapter()
+        fileAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory) {
+
+            }
+        })
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFileMusic.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileMusic.adapter = fileAdapter
