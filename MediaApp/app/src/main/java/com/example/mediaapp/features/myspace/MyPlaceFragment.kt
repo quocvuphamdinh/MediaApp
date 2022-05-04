@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.myplace
+package com.example.mediaapp.features.myspace
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.mediaapp.MainActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentMyPlaceBinding
-import com.example.mediaapp.features.myplace.adapters.ViewPagerMyPlaceAdapter
+import com.example.mediaapp.features.myspace.adapters.ViewPagerMyPlaceAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -28,7 +28,7 @@ class MyPlaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).binding.toolbarMain.title = "My Place"
+        (activity as MainActivity).binding.toolbarMain.title = "My Space"
 
         setUpViewPagerWithTabLayout()
 

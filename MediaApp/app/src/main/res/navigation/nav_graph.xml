@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/myPlaceFragment"
-        android:name="com.example.mediaapp.features.myplace.MyPlaceFragment"
+        android:name="com.example.mediaapp.features.myspace.MyPlaceFragment"
         android:label="MyPlaceFragment" />
     <fragment
         android:id="@+id/shareWithMeFragment"
