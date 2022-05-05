@@ -93,5 +93,19 @@
         <action
             android:id="@+id/action_mySpaceFragment_to_fileDetailFragment"
             app:destination="@id/fileDetailFragment" />
+        <action
+            android:id="@+id/action_mySpaceFragment_to_imageDetailFragment"
+            app:destination="@id/imageDetailFragment" />
+        <action
+            android:id="@+id/action_mySpaceFragment_to_musicDetailFragment"
+            app:destination="@id/musicDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/imageDetailFragment"
+        android:name="com.example.mediaapp.features.detail.image.ImageDetailFragment"
+        android:label="ImageDetailFragment" />
+    <fragment
+        android:id="@+id/musicDetailFragment"
+        android:name="com.example.mediaapp.features.detail.music.MusicDetailFragment"
+        android:label="MusicDetailFragment" />
 </navigation>

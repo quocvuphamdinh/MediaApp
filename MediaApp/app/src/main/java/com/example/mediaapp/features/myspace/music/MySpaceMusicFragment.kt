@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentMusicMySpaceBinding
 import com.example.mediaapp.features.myspace.adapters.MySpaceMusicAdapter
 import com.example.mediaapp.models.Directory
@@ -32,7 +34,7 @@ class MySpaceMusicFragment : Fragment() {
         setUpRecyclerViewFile()
     }
 
-    private fun setUpRecyclerViewFile() {
+    private fun setUpRecyclerViewFolder() {
         folderAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
 
@@ -44,10 +46,10 @@ class MySpaceMusicFragment : Fragment() {
         binding.rcvMySpaceFolderMusic.setHasFixedSize(true)
     }
 
-    private fun setUpRecyclerViewFolder() {
+    private fun setUpRecyclerViewFile() {
         fileAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
-
+                findNavController().navigate(R.id.action_mySpaceFragment_to_musicDetailFragment)
             }
         })
         fileAdapter.submitList(DataStore.getListDirectory())

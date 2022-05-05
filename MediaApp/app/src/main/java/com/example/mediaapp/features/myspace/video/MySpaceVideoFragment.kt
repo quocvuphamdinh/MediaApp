@@ -32,7 +32,7 @@ class MySpaceVideoFragment : Fragment() {
         setUpRecyclerViewFolder()
     }
 
-    private fun setUpRecyclerViewFile() {
+    private fun setUpRecyclerViewFolder() {
         folderAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
 
@@ -44,7 +44,7 @@ class MySpaceVideoFragment : Fragment() {
         binding.rcvMySpaceFolderVideo.setHasFixedSize(true)
     }
 
-    private fun setUpRecyclerViewFolder() {
+    private fun setUpRecyclerViewFile() {
         fileAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
 
