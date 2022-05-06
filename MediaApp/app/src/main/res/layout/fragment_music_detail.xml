@@ -99,6 +99,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
             <ImageView
+                android:id="@+id/imagePlayButton"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_button_play"
                 android:layout_weight="5"
