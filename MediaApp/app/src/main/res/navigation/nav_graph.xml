@@ -99,6 +99,9 @@
         <action
             android:id="@+id/action_mySpaceFragment_to_musicDetailFragment"
             app:destination="@id/musicDetailFragment" />
+        <action
+            android:id="@+id/action_mySpaceFragment_to_videoDetailFragment"
+            app:destination="@id/videoDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageDetailFragment"
@@ -108,4 +111,8 @@
         android:id="@+id/musicDetailFragment"
         android:name="com.example.mediaapp.features.detail.music.MusicDetailFragment"
         android:label="MusicDetailFragment" />
+    <fragment
+        android:id="@+id/videoDetailFragment"
+        android:name="com.example.mediaapp.features.detail.video.VideoDetailFragment"
+        android:label="VideoDetailFragment" />
 </navigation>

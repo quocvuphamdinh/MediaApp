@@ -44,19 +44,20 @@
             android:layout_below="@id/imageViewDiskMusicDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
         <ProgressBar
             android:id="@+id/progressBarMusicDetail"
-            android:progressTint="@color/grey_90"
-            android:progressBackgroundTint="@color/black"
-            android:progress="50"
-            android:max="100"
-            android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="40dp"
-            android:scaleY="2"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_below="@id/textViewNameMusicDetail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewNameMusicDetail"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="10dp"
+            android:max="100"
+            android:progress="50"
+            android:progressBackgroundTint="@color/black"
+            android:progressTint="@color/grey_90"
+            android:scaleY="2" />
         <TextView
             android:id="@+id/textViewStartTimeMusicDetail"
             android:textSize="16sp"

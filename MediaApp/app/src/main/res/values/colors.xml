@@ -15,6 +15,7 @@
     <color name="tab2_indicator_color">#5177FE</color>
     <color name="tab3_indicator_color">#FBCD87</color>
     <color name="tab4_indicator_color">#31D070</color>
+    <color name="background_video_view">#A55555</color>
     <color name="grey">#868686</color>
     <color name="grey_80">#E2E2E2</color>
     <color name="grey_90">#C4C4C4</color>
