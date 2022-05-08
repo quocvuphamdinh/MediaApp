@@ -17,4 +17,5 @@
     <color name="tab4_indicator_color">#31D070</color>
     <color name="grey">#868686</color>
     <color name="grey_80">#E2E2E2</color>
+    <color name="grey_90">#C4C4C4</color>
 </resources>
