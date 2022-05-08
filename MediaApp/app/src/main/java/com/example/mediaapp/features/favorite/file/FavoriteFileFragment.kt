@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.deleted
+package com.example.mediaapp.features.favorite.file
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,15 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mediaapp.MainActivity
 import com.example.mediaapp.R
-import com.example.mediaapp.databinding.FragmentDeletedBinding
+import com.example.mediaapp.databinding.FragmentFileFavoriteBinding
 import com.example.mediaapp.features.adapters.DirectotyAdapter
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.DataStore
 
-class DeleteFragment : Fragment() {
-    private lateinit var binding : FragmentDeletedBinding
+class FavoriteFileFragment : Fragment() {
+    private lateinit var binding : FragmentFileFavoriteBinding
     private lateinit var folderAdapter : DirectotyAdapter
     private lateinit var fileAdapter : DirectotyAdapter
 
@@ -24,39 +23,38 @@ class DeleteFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentDeletedBinding.inflate(inflater, container, false)
+        binding = FragmentFileFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).binding.toolbarMain.title = "Deleted"
-
         setUpRecyclerViewFolder()
         setUpRecyclerViewFile()
     }
-    private fun setUpRecyclerViewFolder() {
+
+    private fun setUpRecyclerViewFile() {
         folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
-                findNavController().navigate(R.id.action_deleteFragment_to_fileDetailFragment)
+                findNavController().navigate(R.id.action_favoriteFragment_to_fileDetailFragment)
             }
         })
         folderAdapter.submitList(DataStore.getListDirectory())
-        binding.rcvDeletedFolderFile.layoutManager=GridLayoutManager(requireContext(), 2)
-        binding.rcvDeletedFolderFile.adapter = folderAdapter
-        binding.rcvDeletedFolderFile.setHasFixedSize(true)
+        binding.rcvFavoriteFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcvFavoriteFolderFile.adapter = folderAdapter
+        binding.rcvFavoriteFolderFile.setHasFixedSize(true)
     }
 
-    private fun setUpRecyclerViewFile() {
+    private fun setUpRecyclerViewFolder() {
         fileAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
-                findNavController().navigate(R.id.action_deleteFragment_to_imageDetailFragment)
+
             }
         })
         fileAdapter.submitList(DataStore.getListDirectory())
-        binding.rcvDeletedFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvDeletedFileFile.adapter = fileAdapter
-        binding.rcvDeletedFileFile.setHasFixedSize(true)
+        binding.rcvFavoriteFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcvFavoriteFileFile.adapter = fileAdapter
+        binding.rcvFavoriteFileFile.setHasFixedSize(true)
     }
 }
