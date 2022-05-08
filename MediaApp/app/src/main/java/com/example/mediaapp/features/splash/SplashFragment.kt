@@ -15,9 +15,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashFragment : Fragment() {
-    private lateinit var binding : FragmentSplashBinding
+    private lateinit var binding: FragmentSplashBinding
     private var i = 0
-    private val viewModel : SplashViewModel by viewModels {
+    private val viewModel: SplashViewModel by viewModels {
         SplashViewModelFactory((activity?.application as MediaApplication).repository)
     }
 
@@ -39,8 +39,8 @@ class SplashFragment : Fragment() {
 //        }
 
         lifecycleScope.launch {
-            while (i<100){
-                i+=1
+            while (i < 100) {
+                i += 1
                 delay(50)
             }
             findNavController().navigate(R.id.action_splashFragment_to_onboardingFragment)

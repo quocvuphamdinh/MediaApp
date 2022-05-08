@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/myPlaceFragment"
-        android:title=""
-        android:icon="@drawable/ic_my_place"/>
-    <item android:id="@+id/shareWithMeFragment"
-        android:title=""
-        android:icon="@drawable/ic_share_with_me"/>
-    <item android:id="@+id/favoriteFragment"
-        android:title=""
-        android:icon="@drawable/ic_heart"/>
-    <item android:id="@+id/deleteFragment"
-        android:title=""
-        android:icon="@drawable/ic_deleted"/>
+        android:id="@+id/mySpaceFragment"
+        android:icon="@drawable/ic_my_place"
+        android:title="" />
+    <item
+        android:id="@+id/shareWithMeFragment"
+        android:icon="@drawable/ic_share_with_me"
+        android:title="" />
+    <item
+        android:id="@+id/favoriteFragment"
+        android:icon="@drawable/ic_heart"
+        android:title="" />
+    <item
+        android:id="@+id/deleteFragment"
+        android:icon="@drawable/ic_deleted"
+        android:title="" />
 </menu>

@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mediaapp.databinding.FragmentMusicMySpaceBinding
-import com.example.mediaapp.features.myspace.adapters.MySpaceMusicAdapter
+import com.example.mediaapp.features.adapters.DirectotyAdapter
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.DataStore
 
 class MySpaceMusicFragment : Fragment() {
-    private lateinit var binding : FragmentMusicMySpaceBinding
-    private lateinit var folderAdapter : MySpaceMusicAdapter
-    private lateinit var fileAdapter : MySpaceMusicAdapter
+    private lateinit var binding: FragmentMusicMySpaceBinding
+    private lateinit var folderAdapter: DirectotyAdapter
+    private lateinit var fileAdapter: DirectotyAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +33,7 @@ class MySpaceMusicFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        folderAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
+        folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory {
             override fun clickItem(directory: Directory) {
 
             }
@@ -45,7 +45,7 @@ class MySpaceMusicFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFolder() {
-        fileAdapter = MySpaceMusicAdapter(object : MySpaceMusicAdapter.CLickItemDirectory{
+        fileAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory {
             override fun clickItem(directory: Directory) {
 
             }

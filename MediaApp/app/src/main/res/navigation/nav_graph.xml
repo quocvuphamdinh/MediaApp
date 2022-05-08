@@ -76,11 +76,11 @@
         android:label="MySpaceFileFragment" />
     <fragment
         android:id="@+id/mySpaceMusicFragment"
-        android:name="com.example.mediaapp.features.myspace.music.MySpaceMusicFragment"
+        android:name="com.example.mediaapp.features.myspace.music.ShareWithMeMusicFragment"
         android:label="MySpaceMusicFragment" />
     <fragment
         android:id="@+id/mySpaceImageFragment"
-        android:name="com.example.mediaapp.features.myspace.image.MySpaceImageFragment"
+        android:name="com.example.mediaapp.features.myspace.image.ShareWithMeImageFragment"
         android:label="MySpaceImageFragment" />
     <fragment
         android:id="@+id/mySpaceVideoFragment"

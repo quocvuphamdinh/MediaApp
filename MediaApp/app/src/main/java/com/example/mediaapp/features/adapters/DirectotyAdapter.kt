@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.myspace.adapters
+package com.example.mediaapp.features.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +10,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mediaapp.R
 import com.example.mediaapp.models.Directory
 
-class MySpaceMusicAdapter(private val cLickItemDirectory: CLickItemDirectory) : RecyclerView.Adapter<MySpaceMusicAdapter.MySpaceMusicHolder>(){
+class DirectotyAdapter(private val cLickItemDirectory: CLickItemDirectory) :
+    RecyclerView.Adapter<DirectotyAdapter.DirectoryHolder>() {
 
-    interface CLickItemDirectory{
+    interface CLickItemDirectory {
         fun clickItem(directory: Directory)
     }
-    inner class MySpaceMusicHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        var imgFolder:ImageView = itemView.findViewById(R.id.image_item)
+
+    inner class DirectoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var imgFolder: ImageView = itemView.findViewById(R.id.image_item)
     }
 
-    val differCallback = object : DiffUtil.ItemCallback<Directory>(){
+    val differCallback = object : DiffUtil.ItemCallback<Directory>() {
         override fun areItemsTheSame(oldItem: Directory, newItem: Directory): Boolean {
             return oldItem.id == newItem.id
         }
@@ -30,16 +32,19 @@ class MySpaceMusicAdapter(private val cLickItemDirectory: CLickItemDirectory) : 
     }
     private val differ = AsyncListDiffer(this, differCallback)
 
-    fun submitList(list:List<Directory>) = differ.submitList(list)
+    fun submitList(list: List<Directory>) = differ.submitList(list)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MySpaceMusicHolder {
-        return MySpaceMusicHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_space_music_item_row, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DirectoryHolder {
+        return DirectoryHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.my_space_music_item_row, parent, false)
+        )
     }
 
-    override fun onBindViewHolder(holder: MySpaceMusicHolder, position: Int) {
-        if(position==differ.currentList.size){
+    override fun onBindViewHolder(holder: DirectoryHolder, position: Int) {
+        if (position == differ.currentList.size) {
             holder.imgFolder.setImageResource(R.drawable.ic_add_directory)
-        }else{
+        } else {
             val directory = differ.currentList[position]
             holder.imgFolder.setOnClickListener {
                 cLickItemDirectory.clickItem(directory)
@@ -48,6 +53,6 @@ class MySpaceMusicAdapter(private val cLickItemDirectory: CLickItemDirectory) : 
     }
 
     override fun getItemCount(): Int {
-        return differ.currentList.size+1
+        return differ.currentList.size + 1
     }
 }
