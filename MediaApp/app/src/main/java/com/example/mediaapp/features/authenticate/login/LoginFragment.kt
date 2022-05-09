@@ -37,11 +37,11 @@ class LoginFragment : Fragment() {
         }
 
         binding.buttonLogin.setOnClickListener {
-           // login()
-            findNavController().navigate(R.id.action_loginFragment_to_mySpaceFragment2)
+           login()
+            //findNavController().navigate(R.id.action_loginFragment_to_mySpaceFragment2)
         }
 
-        //subcribeToObservers()
+        subcribeToObservers()
     }
 
     private fun subcribeToObservers() {

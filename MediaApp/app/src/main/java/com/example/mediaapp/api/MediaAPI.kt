@@ -7,9 +7,9 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface MediaAPI {
-    @POST("/api/auth/register")
+    @POST("auth/register")
     suspend fun registerAccount(@Body user: User) : Response<ResponseBody>
 
-    @POST("/api/auth/login")
+    @POST("auth/login")
     suspend fun login(@Body user: User) : Response<ResponseBody>
 }
