@@ -21,15 +21,20 @@ class LoginViewModel(val repository: MediaRepository) : ViewModel() {
     get() = _isSuccess
 
     fun login(user: User) = viewModelScope.launch {
-        val response = repository.login(user)
-        if(response.isSuccessful){
-            val result = response.body()
-            val jsonObj = JSONObject(result!!.charStream().readText())
-            repository.writeAccountDataToSharedPref(jsonObj.getString("token"))
-            _loginNotify.postValue("Đăng nhập thành công !")
-            _isSuccess.postValue(true)
-        }else{
-            _loginNotify.postValue("Đăng nhập thất bại !")
+        try{
+            val response = repository.login(user)
+            if(response.isSuccessful){
+                val result = response.body()
+                val jsonObj = JSONObject(result!!.charStream().readText())
+                repository.writeAccountDataToSharedPref(jsonObj.getString("token"))
+                _loginNotify.postValue("Đăng nhập thành công !")
+                _isSuccess.postValue(true)
+            }else{
+                _loginNotify.postValue("Đăng nhập thất bại !")
+                _isSuccess.postValue(false)
+            }
+        }catch (e : Exception){
+            _loginNotify.postValue(e.message.toString())
             _isSuccess.postValue(false)
         }
     }

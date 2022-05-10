@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.google.android.material.appbar.AppBarLayout
+            app:elevation="0dp"
+            android:id="@+id/appBarSearch"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_color"
+                    android:paddingStart="10dp"
+                    android:gravity="center_vertical"
+                    android:textSize="30sp"
+                    android:text="Searching"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </RelativeLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+        <EditText
+            android:drawableStart="@drawable/ic_search"
+            android:layout_marginHorizontal="34dp"
+            android:id="@+id/editTextSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:width="350dp"
+            android:autoText="false"
+            android:background="@drawable/custom_input_text"
+            android:backgroundTint="#D7E5E5E5"
+            android:elegantTextHeight="false"
+            android:ems="10"
+            android:textColorHint="@color/primary_color"
+            android:hint="Search..."
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:padding="10dp"
+            android:id="@+id/rcvSearch"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"/>
+    </LinearLayout>
+</layout>

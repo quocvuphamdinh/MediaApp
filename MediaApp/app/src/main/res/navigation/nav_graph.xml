@@ -5,6 +5,10 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/splashFragment">
 
+    <action android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment"
+        app:launchSingleTop="true"/>
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.example.mediaapp.features.splash.SplashFragment"
@@ -201,4 +205,8 @@
         android:id="@+id/shareWithMeFileFragment"
         android:name="com.example.mediaapp.features.sharewithme.file.ShareWithMeFileFragment"
         android:label="ShareWithMeFileFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.mediaapp.features.profile.ProfileFragment"
+        android:label="ProfileFragment" />
 </navigation>

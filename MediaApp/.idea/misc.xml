@@ -43,17 +43,23 @@
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/activity_onboarding.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/activity_register.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_deleted.xml" value="0.20416666666666666" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_dialog_search.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_favorite.xml" value="0.20416666666666666" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_file_detail.xml" value="0.18703703703703703" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_file_my_place.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_image_my_place.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_login.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_music_my_place.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_my_place.xml" value="0.20416666666666666" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_my_space.xml" value="0.18703703703703703" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_onboarding.xml" value="0.22" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_profile.xml" value="0.22" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_register.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_share_with_me.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_splash.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_video_my_place.xml" value="0.20416666666666666" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/my_space_music_item_row.xml" value="0.10052083333333334" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/search_item_row.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/menu/menu_appbar.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/menu/menu_bottom_nav.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/menu/menu_nav_view.xml" value="0.20416666666666666" />

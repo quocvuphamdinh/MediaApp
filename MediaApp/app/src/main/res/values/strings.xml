@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Media App</string>
+    <string name="dang_xuat"><u>Đăng xuất</u></string>
 </resources>

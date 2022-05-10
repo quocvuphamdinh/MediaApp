@@ -25,17 +25,21 @@ class RegisterViewModel(val repository: MediaRepository) : ViewModel() {
     get() = _success
 
     fun registerAccount(user: User) = viewModelScope.launch {
-        val response = repository.registerAccount(user)
-        if(response.isSuccessful){
-            val result = response.body()
-            val jsonObj = JSONObject(result!!.charStream().readText())
-            _successRegister.postValue(jsonObj.getString("message"))
-            _success.postValue(true)
-        }else{
-            val errObj = JSONObject(response.errorBody()!!.charStream().readText())
-            _successRegister.postValue(errObj.getString("message"))
+        try {
+            val response = repository.registerAccount(user)
+            if(response.isSuccessful){
+                val result = response.body()
+                val jsonObj = JSONObject(result!!.charStream().readText())
+                _successRegister.postValue(jsonObj.getString("message"))
+                _success.postValue(true)
+            }else{
+                val errObj = JSONObject(response.errorBody()!!.charStream().readText())
+                _successRegister.postValue(errObj.getString("message"))
+                _success.postValue(false)
+            }
+        }catch (e : Exception){
+            _successRegister.postValue(e.message.toString())
             _success.postValue(false)
-            Log.d("api", errObj.toString())
         }
     }
     fun validateRegister(user: User):Boolean{
