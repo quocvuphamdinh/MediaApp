@@ -43,7 +43,6 @@ class MySpaceImageFragment : Fragment() {
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFolderImage.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFolderImage.adapter = folderAdapter
-        binding.rcvMySpaceFolderImage.setHasFixedSize(true)
     }
 
     private fun setUpRecyclerViewFolder() {
@@ -55,6 +54,5 @@ class MySpaceImageFragment : Fragment() {
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFileImage.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileImage.adapter = fileAdapter
-        binding.rcvMySpaceFileImage.setHasFixedSize(true)
     }
 }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.mediaapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".util.MediaApplication"
@@ -12,11 +12,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:theme="@style/splashScreenTheme"
         android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.MediaApp"
         tools:targetApi="m">
         <activity
-            android:name=".MainActivity"
+            android:name=".features.base.home.HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".features.base.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

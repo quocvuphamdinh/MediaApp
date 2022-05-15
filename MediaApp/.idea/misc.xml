@@ -36,13 +36,17 @@
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/drawable/custom_button.xml" value="0.1235" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/drawable/custom_button_gradient.xml" value="0.1235" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/drawable/gradient_background.xml" value="0.1235" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/drawable/ic_logo.xml" value="0.124" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/drawable/ic_profile.xml" value="0.1235" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/drawable/ic_search.xml" value="0.1235" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/drawable/splash_image.xml" value="0.124" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/activity_home.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/activity_login.xml" value="0.18611111111111112" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/activity_onboarding.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/activity_register.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_deleted.xml" value="0.20416666666666666" />
+        <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_dialog_loading.xml" value="0.25" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_dialog_search.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_favorite.xml" value="0.20416666666666666" />
         <entry key="..\:/monlaptrinhapp/doan/AndroidAppMedia/MediaApp/app/src/main/res/layout/fragment_file_detail.xml" value="0.18703703703703703" />

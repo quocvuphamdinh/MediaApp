@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_share_with_me"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/shareWithMeFragment">
+
+    <action android:id="@+id/action_global_profileFragment"
+        app:destination="@+id/profileFragment"
+        app:launchSingleTop="true"/>
+
+    <fragment
+        android:id="@+id/shareWithMeFragment"
+        android:name="com.example.mediaapp.features.sharewithme.ShareWithMeFragment"
+        android:label="ShareWithMeFragment"
+        tools:layout="@layout/fragment_share_with_me">
+        <action
+            android:id="@+id/action_shareWithMeFragment_to_musicDetailFragment"
+            app:destination="@id/musicDetailFragment" />
+        <action
+            android:id="@+id/action_shareWithMeFragment_to_videoDetailFragment"
+            app:destination="@id/videoDetailFragment" />
+        <action
+            android:id="@+id/action_shareWithMeFragment_to_imageDetailFragment"
+            app:destination="@id/imageDetailFragment" />
+        <action
+            android:id="@+id/action_shareWithMeFragment_to_fileDetailFragment"
+            app:destination="@id/fileDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fileDetailFragment"
+        android:name="com.example.mediaapp.features.detail.file.FileDetailFragment"
+        android:label="FileDetailFragment"
+        tools:layout="@layout/fragment_file_detail"/>
+
+    <fragment
+        android:id="@+id/imageDetailFragment"
+        android:name="com.example.mediaapp.features.detail.image.ImageDetailFragment"
+        android:label="ImageDetailFragment"
+        tools:layout="@layout/fragment_image_detail"/>
+
+    <fragment
+        android:id="@+id/musicDetailFragment"
+        android:name="com.example.mediaapp.features.detail.music.MusicDetailFragment"
+        android:label="MusicDetailFragment" />
+
+    <fragment
+        android:id="@+id/videoDetailFragment"
+        android:name="com.example.mediaapp.features.detail.video.VideoDetailFragment"
+        android:label="VideoDetailFragment" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.mediaapp.features.profile.ProfileFragment"
+        android:label="ProfileFragment" />
+
+</navigation>

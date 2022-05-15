@@ -37,24 +37,22 @@ class MySpaceMusicFragment : Fragment() {
     private fun setUpRecyclerViewFile() {
         folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory {
             override fun clickItem(directory: Directory) {
-
+                findNavController().navigate(R.id.action_mySpaceFragment_to_musicDetailFragment)
             }
         })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFolderMusic.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFolderMusic.adapter = folderAdapter
-        binding.rcvMySpaceFolderMusic.setHasFixedSize(true)
     }
 
     private fun setUpRecyclerViewFolder() {
         fileAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory {
             override fun clickItem(directory: Directory) {
-                findNavController().navigate(R.id.action_mySpaceFragment_to_musicDetailFragment)
+
             }
         })
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFileMusic.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileMusic.adapter = fileAdapter
-        binding.rcvMySpaceFileMusic.setHasFixedSize(true)
     }
 }

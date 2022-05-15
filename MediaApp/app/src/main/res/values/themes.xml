@@ -14,10 +14,19 @@
         <!-- Customize your theme here. -->
         <item name="drawerArrowStyle">@style/DrawerStyle</item>
     </style>
+
     <style name="DrawerStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@color/primary_color</item>
     </style>
+
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">25sp</item>
+    </style>
+
+    <style name="splashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_image</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:statusBarColor">@color/primary_color_grey</item>
     </style>
 </resources>

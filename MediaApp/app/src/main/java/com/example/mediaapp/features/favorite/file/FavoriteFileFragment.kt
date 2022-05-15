@@ -43,7 +43,6 @@ class FavoriteFileFragment : Fragment() {
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvFavoriteFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvFavoriteFolderFile.adapter = folderAdapter
-        binding.rcvFavoriteFolderFile.setHasFixedSize(true)
     }
 
     private fun setUpRecyclerViewFolder() {
@@ -55,6 +54,5 @@ class FavoriteFileFragment : Fragment() {
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvFavoriteFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvFavoriteFileFile.adapter = fileAdapter
-        binding.rcvFavoriteFileFile.setHasFixedSize(true)
     }
 }

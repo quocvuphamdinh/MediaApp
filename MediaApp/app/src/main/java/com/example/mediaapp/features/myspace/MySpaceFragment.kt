@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.mediaapp.MainActivity
+import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentMySpaceBinding
 import com.example.mediaapp.features.adapters.ViewPagerAdapter
@@ -32,7 +32,7 @@ class MySpaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).binding.toolbarMain.title = "My Space"
+        (activity as HomeActivity).binding.toolbarMain.title = "My Space"
 
         setUpViewPagerWithTabLayout()
 

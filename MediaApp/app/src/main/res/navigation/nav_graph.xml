@@ -3,28 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashFragment">
-
-    <action android:id="@+id/action_global_profileFragment"
-        app:destination="@id/profileFragment"
-        app:launchSingleTop="true"/>
-
-    <fragment
-        android:id="@+id/splashFragment"
-        android:name="com.example.mediaapp.features.splash.SplashFragment"
-        android:label="SplashFragment"
-        tools:layout="@layout/fragment_splash">
-        <action
-            app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true"
-            android:id="@+id/action_splashFragment_to_onboardingFragment"
-            app:destination="@id/onboardingFragment" />
-        <action
-            app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true"
-            android:id="@+id/action_splashFragment_to_mySpaceFragment2"
-            app:destination="@id/mySpaceFragment" />
-    </fragment>
+    app:startDestination="@id/onboardingFragment">
     <fragment
         android:id="@+id/onboardingFragment"
         android:name="com.example.mediaapp.features.onboarding.OnboardingFragment"
@@ -46,11 +25,6 @@
             app:popUpToInclusive="true"
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_mySpaceFragment2"
-            app:destination="@id/mySpaceFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -63,150 +37,4 @@
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/shareWithMeFragment"
-        android:name="com.example.mediaapp.features.sharewithme.ShareWithMeFragment"
-        android:label="ShareWithMeFragment"
-        tools:layout="@layout/fragment_share_with_me">
-        <action
-            android:id="@+id/action_shareWithMeFragment_to_musicDetailFragment"
-            app:destination="@id/musicDetailFragment" />
-        <action
-            android:id="@+id/action_shareWithMeFragment_to_videoDetailFragment"
-            app:destination="@id/videoDetailFragment" />
-        <action
-            android:id="@+id/action_shareWithMeFragment_to_imageDetailFragment"
-            app:destination="@id/imageDetailFragment" />
-        <action
-            android:id="@+id/action_shareWithMeFragment_to_imageDetailFragment2"
-            app:destination="@id/imageDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/favoriteFragment"
-        android:name="com.example.mediaapp.features.favorite.FavoriteFragment"
-        android:label="FavoriteFragment"
-        tools:layout="@layout/fragment_favorite">
-        <action
-            android:id="@+id/action_favoriteFragment_to_imageDetailFragment"
-            app:destination="@id/imageDetailFragment" />
-        <action
-            android:id="@+id/action_favoriteFragment_to_videoDetailFragment"
-            app:destination="@id/videoDetailFragment" />
-        <action
-            android:id="@+id/action_favoriteFragment_to_musicDetailFragment"
-            app:destination="@id/musicDetailFragment" />
-        <action
-            android:id="@+id/action_favoriteFragment_to_fileDetailFragment"
-            app:destination="@id/fileDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/deleteFragment"
-        android:name="com.example.mediaapp.features.deleted.DeleteFragment"
-        android:label="DeleteFragment"
-        tools:layout="@layout/fragment_deleted">
-        <action
-            android:id="@+id/action_deleteFragment_to_imageDetailFragment"
-            app:destination="@id/imageDetailFragment" />
-        <action
-            android:id="@+id/action_deleteFragment_to_fileDetailFragment"
-            app:destination="@id/fileDetailFragment" />
-        <action
-            android:id="@+id/action_deleteFragment_to_videoDetailFragment"
-            app:destination="@id/videoDetailFragment" />
-        <action
-            android:id="@+id/action_deleteFragment_to_musicDetailFragment"
-            app:destination="@id/musicDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/fileDetailFragment"
-        android:name="com.example.mediaapp.features.detail.file.FileDetailFragment"
-        android:label="FileDetailFragment"
-        tools:layout="@layout/fragment_file_detail"/>
-    <fragment
-        android:id="@+id/mySpaceFileFragment"
-        android:name="com.example.mediaapp.features.myspace.file.MySpaceFileFragment"
-        android:label="MySpaceFileFragment"
-        tools:layout="@layout/fragment_file_my_space"/>
-    <fragment
-        android:id="@+id/mySpaceMusicFragment"
-        android:name="com.example.mediaapp.features.myspace.music.MySpaceMusicFragment"
-        android:label="MySpaceMusicFragment"
-        tools:layout="@layout/fragment_music_my_space"/>
-    <fragment
-        android:id="@+id/mySpaceImageFragment"
-        android:name="com.example.mediaapp.features.myspace.image.MySpaceImageFragment"
-        android:label="MySpaceImageFragment"
-        tools:layout="@layout/fragment_image_my_space"/>
-    <fragment
-        android:id="@+id/mySpaceVideoFragment"
-        android:name="com.example.mediaapp.features.myspace.video.MySpaceVideoFragment"
-        android:label="MySpaceVideoFragment"
-        tools:layout="@layout/fragment_video_my_space"/>
-    <fragment
-        android:id="@+id/mySpaceFragment"
-        android:name="com.example.mediaapp.features.myspace.MySpaceFragment"
-        android:label="MySpaceFragment"
-        tools:layout="@layout/fragment_my_space">
-        <action
-            android:id="@+id/action_mySpaceFragment_to_fileDetailFragment"
-            app:destination="@id/fileDetailFragment" />
-        <action
-            android:id="@+id/action_mySpaceFragment_to_imageDetailFragment"
-            app:destination="@id/imageDetailFragment" />
-        <action
-            android:id="@+id/action_mySpaceFragment_to_musicDetailFragment"
-            app:destination="@id/musicDetailFragment" />
-        <action
-            android:id="@+id/action_mySpaceFragment_to_videoDetailFragment"
-            app:destination="@id/videoDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/imageDetailFragment"
-        android:name="com.example.mediaapp.features.detail.image.ImageDetailFragment"
-        android:label="ImageDetailFragment"
-        tools:layout="@layout/fragment_image_detail"/>
-    <fragment
-        android:id="@+id/musicDetailFragment"
-        android:name="com.example.mediaapp.features.detail.music.MusicDetailFragment"
-        android:label="MusicDetailFragment" />
-    <fragment
-        android:id="@+id/videoDetailFragment"
-        android:name="com.example.mediaapp.features.detail.video.VideoDetailFragment"
-        android:label="VideoDetailFragment" />
-    <fragment
-        android:id="@+id/favoriteFileFragment"
-        android:name="com.example.mediaapp.features.favorite.file.FavoriteFileFragment"
-        android:label="FavoriteFileFragment" />
-    <fragment
-        android:id="@+id/favoriteMusicFragment"
-        android:name="com.example.mediaapp.features.favorite.music.FavoriteMusicFragment"
-        android:label="FavoriteMusicFragment" />
-    <fragment
-        android:id="@+id/favoriteImageFragment"
-        android:name="com.example.mediaapp.features.favorite.image.FavoriteImageFragment"
-        android:label="FavoriteImageFragment" />
-    <fragment
-        android:id="@+id/favoriteVideoFragment"
-        android:name="com.example.mediaapp.features.favorite.video.FavoriteVideoFragment"
-        android:label="FavoriteVideoFragment" />
-    <fragment
-        android:id="@+id/shareWithMeMusicFragment"
-        android:name="com.example.mediaapp.features.sharewithme.music.ShareWithMeMusicFragment"
-        android:label="ShareWithMeMusicFragment" />
-    <fragment
-        android:id="@+id/shareWithMeVideoFragment"
-        android:name="com.example.mediaapp.features.sharewithme.video.ShareWithMeVideoFragment"
-        android:label="ShareWithMeVideoFragment" />
-    <fragment
-        android:id="@+id/shareWithMeImageFragment"
-        android:name="com.example.mediaapp.features.sharewithme.image.ShareWithMeImageFragment"
-        android:label="ShareWithMeImageFragment" />
-    <fragment
-        android:id="@+id/shareWithMeFileFragment"
-        android:name="com.example.mediaapp.features.sharewithme.file.ShareWithMeFileFragment"
-        android:label="ShareWithMeFileFragment" />
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.mediaapp.features.profile.ProfileFragment"
-        android:label="ProfileFragment" />
 </navigation>

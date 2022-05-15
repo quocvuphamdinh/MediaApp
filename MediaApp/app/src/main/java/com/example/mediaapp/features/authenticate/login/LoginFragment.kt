@@ -1,5 +1,6 @@
 package com.example.mediaapp.features.authenticate.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +10,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentLoginBinding
 import com.example.mediaapp.models.User
+import com.example.mediaapp.util.Constants
+import com.example.mediaapp.util.LoadingDialogFragment
 import com.example.mediaapp.util.MediaApplication
 
 class LoginFragment : Fragment() {
     private lateinit var binding:FragmentLoginBinding
+    private lateinit var loadingDialogFragment: LoadingDialogFragment
     private val viewModel :  LoginViewModel by viewModels{
         LoginViewModelFactory((activity?.application as MediaApplication).repository)
     }
@@ -32,13 +37,15 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadingDialogFragment = LoadingDialogFragment()
+
         binding.textViewRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
         binding.buttonLogin.setOnClickListener {
-           login()
-            //findNavController().navigate(R.id.action_loginFragment_to_mySpaceFragment2)
+            loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+            login()
         }
 
         subcribeToObservers()
@@ -50,8 +57,11 @@ class LoginFragment : Fragment() {
         })
 
         viewModel.isSuccess.observe(viewLifecycleOwner, Observer {
+            loadingDialogFragment.cancelDialog()
             if(it){
-                findNavController().navigate(R.id.action_loginFragment_to_mySpaceFragment2)
+                startActivity(Intent(context, HomeActivity::class.java))
+                activity?.finish()
+                activity?.overridePendingTransition(0, 0)
             }
         })
     }

@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentImageFavoriteBinding
 import com.example.mediaapp.features.adapters.DirectotyAdapter
 import com.example.mediaapp.models.Directory
@@ -35,13 +37,12 @@ class FavoriteImageFragment : Fragment() {
     private fun setUpRecyclerViewFile() {
         folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
-
+                findNavController().navigate(R.id.action_favoriteFragment_to_imageDetailFragment)
             }
         })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvFavoriteFolderImage.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvFavoriteFolderImage.adapter = folderAdapter
-        binding.rcvFavoriteFolderImage.setHasFixedSize(true)
     }
 
     private fun setUpRecyclerViewFolder() {
@@ -53,6 +54,5 @@ class FavoriteImageFragment : Fragment() {
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvFavoriteFileImage.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvFavoriteFileImage.adapter = fileAdapter
-        binding.rcvFavoriteFileImage.setHasFixedSize(true)
     }
 }

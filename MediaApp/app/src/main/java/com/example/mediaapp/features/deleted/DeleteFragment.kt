@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mediaapp.MainActivity
+import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentDeletedBinding
 import com.example.mediaapp.features.adapters.DirectotyAdapter
@@ -31,7 +31,7 @@ class DeleteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).binding.toolbarMain.title = "Deleted"
+        (activity as HomeActivity).binding.toolbarMain.title = "Deleted"
 
         setUpRecyclerViewFolder()
         setUpRecyclerViewFile()
@@ -45,7 +45,6 @@ class DeleteFragment : Fragment() {
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvDeletedFolderFile.layoutManager=GridLayoutManager(requireContext(), 2)
         binding.rcvDeletedFolderFile.adapter = folderAdapter
-        binding.rcvDeletedFolderFile.setHasFixedSize(true)
     }
 
     private fun setUpRecyclerViewFile() {
@@ -57,6 +56,5 @@ class DeleteFragment : Fragment() {
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvDeletedFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvDeletedFileFile.adapter = fileAdapter
-        binding.rcvDeletedFileFile.setHasFixedSize(true)
     }
 }

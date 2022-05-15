@@ -37,24 +37,22 @@ class MySpaceVideoFragment : Fragment() {
     private fun setUpRecyclerViewFile() {
         folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
-
+                findNavController().navigate(R.id.action_mySpaceFragment_to_videoDetailFragment)
             }
         })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFolderVideo.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFolderVideo.adapter = folderAdapter
-        binding.rcvMySpaceFolderVideo.setHasFixedSize(true)
     }
 
     private fun setUpRecyclerViewFolder() {
         fileAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
-                findNavController().navigate(R.id.action_mySpaceFragment_to_videoDetailFragment)
+
             }
         })
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMySpaceFileVideo.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileVideo.adapter = fileAdapter
-        binding.rcvMySpaceFileVideo.setHasFixedSize(true)
     }
 }

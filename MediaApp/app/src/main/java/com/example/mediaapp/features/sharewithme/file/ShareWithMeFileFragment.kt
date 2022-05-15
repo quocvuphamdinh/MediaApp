@@ -37,13 +37,12 @@ class ShareWithMeFileFragment : Fragment() {
     private fun setUpRecyclerViewFile() {
         folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory {
             override fun clickItem(directory: Directory) {
-                findNavController().navigate(R.id.action_mySpaceFragment_to_fileDetailFragment)
+                findNavController().navigate(R.id.action_shareWithMeFragment_to_fileDetailFragment)
             }
         })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvShareWithMeFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvShareWithMeFolderFile.adapter = folderAdapter
-        binding.rcvShareWithMeFolderFile.setHasFixedSize(true)
     }
 
     private fun setUpRecyclerViewFolder() {
@@ -55,6 +54,5 @@ class ShareWithMeFileFragment : Fragment() {
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvShareWithMeFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvShareWithMeFileFile.adapter = fileAdapter
-        binding.rcvShareWithMeFileFile.setHasFixedSize(true)
     }
 }

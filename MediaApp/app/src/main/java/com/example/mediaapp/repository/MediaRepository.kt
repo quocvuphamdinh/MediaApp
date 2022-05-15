@@ -14,20 +14,28 @@ class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferenc
 
 
     //local
+    fun saveFirstTimeUseAppToSharedPref(){
+        sharedPreferences.edit().putBoolean(Constants.FIRST_TIME_USE_APP, false).apply()
+    }
+
     fun writeAccountDataToSharedPref(token:String){
         sharedPreferences.edit()
             .putString(Constants.USER_TOKEN, token)
-            //.putBoolean(Constants.FIRST_TIME_LOGIN, false)
+            .putBoolean(Constants.FIRST_TIME_LOGIN, false)
             .apply()
     }
     fun getFirstTimeLogin():Boolean{
         return sharedPreferences.getBoolean(Constants.FIRST_TIME_LOGIN, true)
     }
 
+    fun getFirstTimeUseApp():Boolean{
+        return sharedPreferences.getBoolean(Constants.FIRST_TIME_USE_APP, true)
+    }
+
     fun removePersonalDataFromSharedPref(){
         sharedPreferences.edit()
             .remove(Constants.USER_TOKEN)
-            //.remove(Constants.FIRST_TIME_LOGIN)
+            .remove(Constants.FIRST_TIME_LOGIN)
             .apply()
     }
 }

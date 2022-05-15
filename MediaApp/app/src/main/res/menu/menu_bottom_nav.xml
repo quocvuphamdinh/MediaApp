@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/mySpaceFragment"
+        android:id="@+id/nav_my_space"
         android:icon="@drawable/ic_my_place"
         android:title="" />
     <item
-        android:id="@+id/shareWithMeFragment"
+        android:id="@+id/nav_share_with_me"
         android:icon="@drawable/ic_share_with_me"
         android:title="" />
     <item
-        android:id="@+id/favoriteFragment"
+        android:id="@+id/nav_favorite"
         android:icon="@drawable/ic_heart"
         android:title="" />
     <item
-        android:id="@+id/deleteFragment"
+        android:id="@+id/nav_deleted"
         android:icon="@drawable/ic_deleted"
         android:title="" />
 </menu>

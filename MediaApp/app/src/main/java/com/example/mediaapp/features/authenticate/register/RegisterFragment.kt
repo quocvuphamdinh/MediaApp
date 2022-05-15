@@ -12,10 +12,13 @@ import androidx.navigation.fragment.findNavController
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentRegisterBinding
 import com.example.mediaapp.models.User
+import com.example.mediaapp.util.Constants
+import com.example.mediaapp.util.LoadingDialogFragment
 import com.example.mediaapp.util.MediaApplication
 
 class RegisterFragment : Fragment() {
     private lateinit var binding:FragmentRegisterBinding
+    private lateinit var loadingDialogFragment: LoadingDialogFragment
     private val viewModel : RegisterViewModel by viewModels{
         RegisterViewModelFactory((activity?.application as MediaApplication).repository)
     }
@@ -32,10 +35,12 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadingDialogFragment = LoadingDialogFragment()
         binding.textViewLogin.setOnClickListener {
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
         binding.buttonSignUp.setOnClickListener {
+            loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
             registerAccount()
         }
         subcribeObservers()
@@ -49,6 +54,7 @@ class RegisterFragment : Fragment() {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         })
         viewModel.success.observe(viewLifecycleOwner, Observer {
+            loadingDialogFragment.cancelDialog()
             if(it){
                 findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
             }
