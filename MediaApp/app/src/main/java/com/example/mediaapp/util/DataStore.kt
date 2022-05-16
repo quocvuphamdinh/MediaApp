@@ -7,13 +7,13 @@ import java.util.*
 object DataStore {
     fun getListDirectory() : List<Directory>{
         return listOf(
-            Directory(UUID.randomUUID(), "File 1"),
-            Directory(UUID.randomUUID(), "File 2"),
-            Directory(UUID.randomUUID(), "File 3"),
-            Directory(UUID.randomUUID(), "File 4"),
-            Directory(UUID.randomUUID(), "File 5"),
-            Directory(UUID.randomUUID(), "File 6"),
-            Directory(UUID.randomUUID(), "File 7"),
+            Directory("File 1", 1, UUID.randomUUID()),
+            Directory("File 2", 1, UUID.randomUUID()),
+            Directory("File 3", 1, UUID.randomUUID()),
+            Directory("File 4", 1, UUID.randomUUID()),
+            Directory("File 5", 1, UUID.randomUUID()),
+            Directory("File 6", 1, UUID.randomUUID()),
+            Directory("File 7", 1, UUID.randomUUID()),
         )
     }
     fun getListImage() : List<File>{

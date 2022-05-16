@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.detail.music
+package com.example.mediaapp.features.detail.file.music
 
 import android.animation.ObjectAnimator
 import android.os.Bundle

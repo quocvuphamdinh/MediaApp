@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.detail.music
+package com.example.mediaapp.features.detail.file.music
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

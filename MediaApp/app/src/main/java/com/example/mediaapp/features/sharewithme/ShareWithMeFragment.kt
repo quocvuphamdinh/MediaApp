@@ -9,7 +9,7 @@ import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentShareWithMeBinding
 import com.example.mediaapp.features.adapters.ViewPagerAdapter
-import com.example.mediaapp.features.sharewithme.file.ShareWithMeFileFragment
+import com.example.mediaapp.features.sharewithme.document.ShareWithMeFileFragment
 import com.example.mediaapp.features.sharewithme.image.ShareWithMeImageFragment
 import com.example.mediaapp.features.sharewithme.music.ShareWithMeMusicFragment
 import com.example.mediaapp.features.sharewithme.video.ShareWithMeVideoFragment

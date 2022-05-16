@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.favorite.file
+package com.example.mediaapp.features.favorite.document
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,14 +9,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentFileFavoriteBinding
-import com.example.mediaapp.features.adapters.DirectotyAdapter
+import com.example.mediaapp.features.adapters.DirectoryAdapter
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.DataStore
 
 class FavoriteFileFragment : Fragment() {
     private lateinit var binding : FragmentFileFavoriteBinding
-    private lateinit var folderAdapter : DirectotyAdapter
-    private lateinit var fileAdapter : DirectotyAdapter
+    private lateinit var folderAdapter : DirectoryAdapter
+    private lateinit var fileAdapter : DirectoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,24 +35,24 @@ class FavoriteFileFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory) {
+        folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory?) {
                 findNavController().navigate(R.id.action_favoriteFragment_to_fileDetailFragment)
             }
-        })
+        }, R.layout.my_space_music_item_row, false)
         folderAdapter.submitList(DataStore.getListDirectory())
-        binding.rcvFavoriteFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvFavoriteFolderFile.adapter = folderAdapter
+        binding.rcvFavoriteFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcvFavoriteFileFile.adapter = folderAdapter
     }
 
     private fun setUpRecyclerViewFolder() {
-        fileAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory) {
+        fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory?) {
 
             }
-        })
+        }, R.layout.my_space_music_item_row, false)
         fileAdapter.submitList(DataStore.getListDirectory())
-        binding.rcvFavoriteFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvFavoriteFileFile.adapter = fileAdapter
+        binding.rcvFavoriteFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcvFavoriteFolderFile.adapter = fileAdapter
     }
 }

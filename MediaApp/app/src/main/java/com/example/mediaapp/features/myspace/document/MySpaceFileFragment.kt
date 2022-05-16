@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.myspace.image
+package com.example.mediaapp.features.myspace.document
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,20 +11,19 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mediaapp.R
-import com.example.mediaapp.databinding.FragmentImageMySpaceBinding
+import com.example.mediaapp.databinding.FragmentFileMySpaceBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
 import com.example.mediaapp.features.create_directory.CreateDirectoryDialogFragment
 import com.example.mediaapp.features.myspace.MySpaceViewModel
 import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.DataStore
 import com.example.mediaapp.util.LoadingDialogFragment
 import com.example.mediaapp.util.MediaApplication
 import java.util.*
 
-class MySpaceImageFragment : Fragment() {
-    private lateinit var binding: FragmentImageMySpaceBinding
+class MySpaceFileFragment : Fragment() {
+    private lateinit var binding: FragmentFileMySpaceBinding
     private lateinit var loadingDialogFragment: LoadingDialogFragment
     private lateinit var folderAdapter: DirectoryAdapter
     private lateinit var fileAdapter: DirectoryAdapter
@@ -38,7 +37,7 @@ class MySpaceImageFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentImageMySpaceBinding.inflate(inflater, container, false)
+        binding = FragmentFileMySpaceBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -50,7 +49,7 @@ class MySpaceImageFragment : Fragment() {
         if(savedInstanceState!=null){
             val dialogCreateDirectory = parentFragmentManager.findFragmentByTag(Constants.CREATE_DIRECTORY_DIALOG_TAG) as CreateDirectoryDialogFragment?
             dialogCreateDirectory?.setClickCreate { value ->
-                viewModel.createDirectory(Directory(value, 3, UUID.fromString(parentId)))
+                viewModel.createDirectory(Directory(value, 1, UUID.fromString(parentId)))
                 dialogCreateDirectory.cancelDialog()
                 loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
             }
@@ -65,22 +64,22 @@ class MySpaceImageFragment : Fragment() {
         viewModel.success.observe(viewLifecycleOwner, Observer {
             loadingDialogFragment.cancelDialog()
         })
-        viewModel.folderPhotos.observe(viewLifecycleOwner, Observer {
-            folderAdapter.submitList(it)
-        })
         viewModel.folderRoots.observe(viewLifecycleOwner, Observer {
-            parentId = it[2].id.toString()
+            parentId = it[0].id.toString()
+        })
+        viewModel.folderDocuments.observe(viewLifecycleOwner, Observer {
+            folderAdapter.submitList(it)
         })
     }
 
     private fun setUpRecyclerViewFile() {
         fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
             override fun clickItem(directory: Directory?) {
-                findNavController().navigate(R.id.action_mySpaceFragment_to_imageDetailFragment)
+                findNavController().navigate(R.id.action_mySpaceFragment_to_fileDetailFragment)
             }
         }, R.layout.my_space_music_item_row, false)
-        binding.rcvMySpaceFileImage.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvMySpaceFileImage.adapter = fileAdapter
+        binding.rcvMySpaceFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcvMySpaceFileFile.adapter = fileAdapter
     }
 
     private fun setUpRecyclerViewFolder() {
@@ -93,14 +92,13 @@ class MySpaceImageFragment : Fragment() {
                 }
             }
         }, R.layout.my_space_music_item_row, false)
-        binding.rcvMySpaceFolderImage.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvMySpaceFolderImage.adapter = folderAdapter
+        binding.rcvMySpaceFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcvMySpaceFolderFile.adapter = folderAdapter
     }
-
     private fun showDialogCreateDirectory(){
         CreateDirectoryDialogFragment().apply {
             setClickCreate { value ->
-                viewModel.createDirectory(Directory(value, 3, UUID.fromString(parentId)))
+                viewModel.createDirectory(Directory(value, 1, UUID.fromString(parentId)))
                 cancelDialog()
                 loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
             }

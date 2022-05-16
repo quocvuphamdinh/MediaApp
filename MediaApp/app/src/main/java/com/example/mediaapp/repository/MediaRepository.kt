@@ -2,18 +2,27 @@ package com.example.mediaapp.repository
 
 import android.content.SharedPreferences
 import com.example.mediaapp.api.MediaAPI
+import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.User
 import com.example.mediaapp.util.Constants
 
 class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferences: SharedPreferences) {
 
     //remote
+    suspend fun createDirectory(directory: Directory) = mediaAPI.createDirectory(directory, "Bearer ${getUserToken()}")
+
+    suspend fun getFolderByParentId(parentId: String, page: Int, pageSize: Int) = mediaAPI.getFolderByParentId(parentId, page, pageSize,"Bearer ${getUserToken()}")
+
     suspend fun registerAccount(user: User) = mediaAPI.registerAccount(user)
 
     suspend fun login(user: User) = mediaAPI.login(user)
 
 
     //local
+    private fun getUserToken():String{
+        return sharedPreferences.getString(Constants.USER_TOKEN, "")!!
+    }
+
     fun saveFirstTimeUseAppToSharedPref(){
         sharedPreferences.edit().putBoolean(Constants.FIRST_TIME_USE_APP, false).apply()
     }

@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.detail.file
+package com.example.mediaapp.features.detail.file.document
 
 import android.view.LayoutInflater
 import android.view.View

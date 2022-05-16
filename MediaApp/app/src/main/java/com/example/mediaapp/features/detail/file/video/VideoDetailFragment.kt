@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.detail.video
+package com.example.mediaapp.features.detail.file.video
 
 import android.net.Uri
 import android.os.Bundle

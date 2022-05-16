@@ -26,32 +26,51 @@
         <action
             android:id="@+id/action_mySpaceFragment_to_videoDetailFragment"
             app:destination="@id/videoDetailFragment" />
+        <action
+            android:id="@+id/action_mySpaceFragment_to_directoryDetailFragment"
+            app:destination="@id/directoryDetailFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
 
     <fragment
         android:id="@+id/fileDetailFragment"
-        android:name="com.example.mediaapp.features.detail.file.FileDetailFragment"
+        android:name="com.example.mediaapp.features.detail.file.document.FileDetailFragment"
         android:label="FileDetailFragment"
         tools:layout="@layout/fragment_file_detail"/>
 
     <fragment
         android:id="@+id/imageDetailFragment"
-        android:name="com.example.mediaapp.features.detail.image.ImageDetailFragment"
+        android:name="com.example.mediaapp.features.detail.file.image.ImageDetailFragment"
         android:label="ImageDetailFragment"
         tools:layout="@layout/fragment_image_detail"/>
 
     <fragment
         android:id="@+id/musicDetailFragment"
-        android:name="com.example.mediaapp.features.detail.music.MusicDetailFragment"
+        android:name="com.example.mediaapp.features.detail.file.music.MusicDetailFragment"
         android:label="MusicDetailFragment" />
 
     <fragment
         android:id="@+id/videoDetailFragment"
-        android:name="com.example.mediaapp.features.detail.video.VideoDetailFragment"
+        android:name="com.example.mediaapp.features.detail.file.video.VideoDetailFragment"
         android:label="VideoDetailFragment" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.mediaapp.features.profile.ProfileFragment"
         android:label="ProfileFragment" />
+    <fragment
+        android:id="@+id/directoryDetailFragment"
+        android:name="com.example.mediaapp.features.detail.directory.DirectoryDetailFragment"
+        android:label="DirectoryDetailFragment" >
+        <action
+            android:id="@+id/action_directoryDetailFragment_self"
+            app:destination="@id/directoryDetailFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim" />
+    </fragment>
 
 </navigation>

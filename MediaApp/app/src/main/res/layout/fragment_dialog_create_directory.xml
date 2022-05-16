@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:padding="5dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:text="New folder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/editTextCreateDirectory"
+            android:layout_marginTop="10dp"
+            android:paddingHorizontal="10dp"
+            android:hint="Name folder..."
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/custom_input_text_2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+        <RelativeLayout
+            android:paddingBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_marginRight="10dp"
+                android:elevation="10dp"
+                android:id="@+id/buttonCancelDirectory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/buttonCreateDirectory"
+                android:text="Cancel"
+                android:textColor="@color/primary_color" />
+            <Button
+                android:layout_marginRight="20dp"
+                android:elevation="10dp"
+                android:id="@+id/buttonCreateDirectory"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/primary_color"
+                android:text="Create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

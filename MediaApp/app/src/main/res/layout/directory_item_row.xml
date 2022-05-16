@@ -2,19 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:id="@+id/layoutItemDirectory">
     <ImageView
-      android:paddingVertical="10dp"
-        android:id="@+id/image_item"
+        android:id="@+id/imageViewItemDirectory"
         android:src="@drawable/ic_folder"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/textViewItemDirectory"
-        android:padding="5dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="20dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
         android:text="@string/app_name"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </LinearLayout>

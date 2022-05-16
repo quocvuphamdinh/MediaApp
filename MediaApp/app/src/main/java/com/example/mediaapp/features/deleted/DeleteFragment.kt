@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentDeletedBinding
-import com.example.mediaapp.features.adapters.DirectotyAdapter
+import com.example.mediaapp.features.adapters.DirectoryAdapter
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.DataStore
 
 class DeleteFragment : Fragment() {
     private lateinit var binding : FragmentDeletedBinding
-    private lateinit var folderAdapter : DirectotyAdapter
-    private lateinit var fileAdapter : DirectotyAdapter
+    private lateinit var folderAdapter : DirectoryAdapter
+    private lateinit var fileAdapter : DirectoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,22 +37,22 @@ class DeleteFragment : Fragment() {
         setUpRecyclerViewFile()
     }
     private fun setUpRecyclerViewFolder() {
-        folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory) {
+        folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory?) {
                 findNavController().navigate(R.id.action_deleteFragment_to_fileDetailFragment)
             }
-        })
+        }, R.layout.my_space_music_item_row, false)
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvDeletedFolderFile.layoutManager=GridLayoutManager(requireContext(), 2)
         binding.rcvDeletedFolderFile.adapter = folderAdapter
     }
 
     private fun setUpRecyclerViewFile() {
-        fileAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory) {
+        fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory?) {
                 findNavController().navigate(R.id.action_deleteFragment_to_imageDetailFragment)
             }
-        })
+        }, R.layout.my_space_music_item_row, false)
         fileAdapter.submitList(DataStore.getListDirectory())
         binding.rcvDeletedFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvDeletedFileFile.adapter = fileAdapter

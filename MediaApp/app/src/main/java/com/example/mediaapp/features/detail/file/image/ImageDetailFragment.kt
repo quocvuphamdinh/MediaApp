@@ -1,4 +1,4 @@
-package com.example.mediaapp.features.detail.image
+package com.example.mediaapp.features.detail.file.image
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediaapp.databinding.FragmentImageDetailBinding
-import com.example.mediaapp.features.detail.file.ImageDetailAdapter
+import com.example.mediaapp.features.detail.file.document.ImageDetailAdapter
 import com.example.mediaapp.util.DataStore
 
 class ImageDetailFragment : Fragment() {

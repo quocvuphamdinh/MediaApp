@@ -1,24 +1,32 @@
 package com.example.mediaapp.features.myspace
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentMySpaceBinding
 import com.example.mediaapp.features.adapters.ViewPagerAdapter
-import com.example.mediaapp.features.myspace.file.MySpaceFileFragment
+import com.example.mediaapp.features.myspace.document.MySpaceFileFragment
 import com.example.mediaapp.features.myspace.image.MySpaceImageFragment
 import com.example.mediaapp.features.myspace.music.MySpaceMusicFragment
 import com.example.mediaapp.features.myspace.video.MySpaceVideoFragment
+import com.example.mediaapp.util.MediaApplication
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MySpaceFragment : Fragment() {
     private lateinit var binding: FragmentMySpaceBinding
     private lateinit var viewPagerAdapter: ViewPagerAdapter
+    private val viewModel: MySpaceViewModel by activityViewModels {
+        MySpaceViewModelFactory((activity?.application as MediaApplication).repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +43,8 @@ class MySpaceFragment : Fragment() {
         (activity as HomeActivity).binding.toolbarMain.title = "My Space"
 
         setUpViewPagerWithTabLayout()
+        viewModel.getFolderRoots()
+        subcribeToObservers()
 
         binding.tabLayoutMyPlace.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -51,6 +61,18 @@ class MySpaceFragment : Fragment() {
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
+        })
+    }
+
+    private fun subcribeToObservers() {
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.folderRoots.observe(viewLifecycleOwner, Observer {
+            Log.d("api", it[0].id.toString()+""+it[0].name+""+it[0].level)
         })
     }
 

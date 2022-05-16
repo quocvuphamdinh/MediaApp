@@ -9,14 +9,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentVideoShareWithMeBinding
-import com.example.mediaapp.features.adapters.DirectotyAdapter
+import com.example.mediaapp.features.adapters.DirectoryAdapter
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.DataStore
 
 class ShareWithMeVideoFragment : Fragment() {
     private lateinit var binding : FragmentVideoShareWithMeBinding
-    private lateinit var folderAdapter : DirectotyAdapter
-    private lateinit var fileAdapter : DirectotyAdapter
+    private lateinit var folderAdapter : DirectoryAdapter
+    private lateinit var fileAdapter : DirectoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,24 +35,24 @@ class ShareWithMeVideoFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        folderAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory) {
+        folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory?) {
                 findNavController().navigate(R.id.action_shareWithMeFragment_to_videoDetailFragment)
             }
-        })
+        }, R.layout.my_space_music_item_row, false)
         folderAdapter.submitList(DataStore.getListDirectory())
-        binding.rcvShareWithMeFolderVideo.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvShareWithMeFolderVideo.adapter = folderAdapter
+        binding.rcvShareWithMeFileVideo.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcvShareWithMeFileVideo.adapter = folderAdapter
     }
 
     private fun setUpRecyclerViewFolder() {
-        fileAdapter = DirectotyAdapter(object : DirectotyAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory) {
+        fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory?) {
 
             }
-        })
+        }, R.layout.my_space_music_item_row, false)
         fileAdapter.submitList(DataStore.getListDirectory())
-        binding.rcvShareWithMeFileVideo.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvShareWithMeFileVideo.adapter = fileAdapter
+        binding.rcvShareWithMeFolderVideo.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rcvShareWithMeFolderVideo.adapter = fileAdapter
     }
 }

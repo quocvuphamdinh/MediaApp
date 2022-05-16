@@ -9,7 +9,7 @@ import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentFavoriteBinding
 import com.example.mediaapp.features.adapters.ViewPagerAdapter
-import com.example.mediaapp.features.favorite.file.FavoriteFileFragment
+import com.example.mediaapp.features.favorite.document.FavoriteFileFragment
 import com.example.mediaapp.features.favorite.image.FavoriteImageFragment
 import com.example.mediaapp.features.favorite.music.FavoriteMusicFragment
 import com.example.mediaapp.features.favorite.video.FavoriteVideoFragment
