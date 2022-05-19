@@ -1,4 +1,4 @@
-package com.example.mediaapp.util
+package com.example.mediaapp.features.util
 
 import android.app.Dialog
 import android.os.Bundle

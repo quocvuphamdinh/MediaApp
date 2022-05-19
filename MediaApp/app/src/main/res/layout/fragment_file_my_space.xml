@@ -17,11 +17,10 @@
             android:text="My Folder"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginBottom="5dp"
+            android:paddingBottom="100dp"
             android:id="@+id/rcvMySpaceFolderFile"
             android:layout_width="match_parent"
             android:layout_height="250dp" />
-
         <LinearLayout
             android:background="@android:color/darker_gray"
             android:layout_width="match_parent"

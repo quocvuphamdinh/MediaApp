@@ -36,7 +36,7 @@ class FavoriteImageFragment : Fragment() {
 
     private fun setUpRecyclerViewFile() {
         folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory?) {
+            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
                 findNavController().navigate(R.id.action_favoriteFragment_to_imageDetailFragment)
             }
         }, R.layout.my_space_music_item_row, false)
@@ -47,7 +47,7 @@ class FavoriteImageFragment : Fragment() {
 
     private fun setUpRecyclerViewFolder() {
         fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory?) {
+            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
 
             }
         }, R.layout.my_space_music_item_row, false)

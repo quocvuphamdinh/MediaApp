@@ -29,19 +29,46 @@
             android:layout_below="@id/tabLayoutMyPlace" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAdd"
+            android:visibility="gone"
+            android:id="@+id/fabAddFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/fabAddDirectory"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            app:backgroundTint="@color/tab4_indicator_color"
             app:borderWidth="0dp"
-            app:elevation="10dp"
-            app:backgroundTint="@color/grey_80"
+            app:elevation="20dp"
+            app:srcCompat="@drawable/ic_file" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:visibility="gone"
+            android:id="@+id/fabAddDirectory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/fabAdd"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            app:backgroundTint="@color/tab3_indicator_color"
+            app:borderWidth="0dp"
+            app:elevation="20dp"
+            app:srcCompat="@drawable/ic_folder" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="20dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            app:srcCompat="@drawable/ic_add"/>
+            app:backgroundTint="@color/primary_color_grey"
+            app:borderWidth="0dp"
+            app:elevation="20dp"
+            app:srcCompat="@drawable/ic_add" />
     </RelativeLayout>
 </layout>

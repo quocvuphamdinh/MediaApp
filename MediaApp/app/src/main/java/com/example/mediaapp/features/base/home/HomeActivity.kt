@@ -17,7 +17,7 @@ import com.example.mediaapp.R
 import com.example.mediaapp.databinding.ActivityHomeBinding
 import com.example.mediaapp.features.search.SearchDialogFragment
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.setupWithNavController
+import com.example.mediaapp.features.util.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

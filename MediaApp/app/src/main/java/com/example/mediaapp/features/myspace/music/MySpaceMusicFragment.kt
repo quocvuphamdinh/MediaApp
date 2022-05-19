@@ -1,20 +1,24 @@
 package com.example.mediaapp.features.myspace.music
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentMusicMySpaceBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
 import com.example.mediaapp.features.myspace.MySpaceViewModel
 import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
 import com.example.mediaapp.models.Directory
+import com.example.mediaapp.util.Constants
 import com.example.mediaapp.util.DataStore
 import com.example.mediaapp.util.MediaApplication
 
@@ -35,15 +39,36 @@ class MySpaceMusicFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setUpRecyclerViewFolder()
         setUpRecyclerViewFile()
         subcribeToObservers()
+        setUpLoadMoreInRecyclerView()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setUpLoadMoreInRecyclerView() {
+        binding.rcvMySpaceFolderMusic.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!recyclerView.canScrollVertically(1)) {
+                    viewModel.loadMoreFolders(viewModel.pageMusic+1, 2)
+                }
+            }
+        })
     }
 
     private fun subcribeToObservers() {
+        viewModel.isHaveMoreMusics.observe(viewLifecycleOwner, Observer {
+            if(it){
+                viewModel.pageMusic++
+            }else{
+                binding.rcvMySpaceFolderMusic.setPadding(0,0,0,0)
+            }
+        })
         viewModel.folderMusics.observe(viewLifecycleOwner, Observer {
             folderAdapter.submitList(it)
         })
@@ -51,7 +76,7 @@ class MySpaceMusicFragment : Fragment() {
 
     private fun setUpRecyclerViewFile() {
         fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
-            override fun clickItem(directory: Directory?) {
+            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
                 findNavController().navigate(R.id.action_mySpaceFragment_to_musicDetailFragment)
             }
         }, R.layout.my_space_music_item_row, false)
@@ -61,8 +86,12 @@ class MySpaceMusicFragment : Fragment() {
 
     private fun setUpRecyclerViewFolder() {
         folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
-            override fun clickItem(directory: Directory?) {
-
+            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+                val bundle = Bundle()
+                bundle.putString(Constants.DIRECTORY_ID, directory!!.id.toString())
+                bundle.putString(Constants.DIRECTORY_NAME, directory.name)
+                bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
+                findNavController().navigate(R.id.action_mySpaceFragment_to_directoryDetailFragment, bundle)
             }
         }, R.layout.my_space_music_item_row, false)
         binding.rcvMySpaceFolderMusic.layoutManager = GridLayoutManager(requireContext(), 2)

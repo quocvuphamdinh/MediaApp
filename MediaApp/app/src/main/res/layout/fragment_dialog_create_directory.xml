@@ -21,19 +21,52 @@
             android:background="@drawable/custom_input_text_2"
             android:layout_width="match_parent"
             android:layout_height="50dp"/>
+        <RadioGroup
+            android:id="@+id/radioGroupCreateDirectory"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="5dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioBtnDocument"
+                android:buttonTint="@color/tab4_indicator_color"
+                android:text="Document"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioBtnMusic"
+                android:buttonTint="@color/tab1_indicator_color"
+                android:text="Music"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioBtnPhoto"
+                android:buttonTint="@color/tab3_indicator_color"
+                android:text="Photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioBtnMovie"
+                android:buttonTint="@color/tab2_indicator_color"
+                android:text="Movie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </RadioGroup>
         <RelativeLayout
             android:paddingBottom="10dp"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <Button
-                android:layout_marginRight="10dp"
-                android:elevation="10dp"
                 android:id="@+id/buttonCancelDirectory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/buttonCreateDirectory"
+                android:elevation="10dp"
                 android:text="Cancel"
                 android:textColor="@color/primary_color" />
             <Button

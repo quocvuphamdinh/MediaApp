@@ -1,17 +1,15 @@
-package com.example.mediaapp.util
+package com.example.mediaapp.features.util
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import android.content.Intent
 import android.util.SparseArray
 import androidx.core.util.forEach
-import androidx.core.util.set
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.mediaapp.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**

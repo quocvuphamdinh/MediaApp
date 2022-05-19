@@ -1,10 +1,11 @@
 package com.example.mediaapp.features.myspace
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -13,19 +14,35 @@ import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentMySpaceBinding
 import com.example.mediaapp.features.adapters.ViewPagerAdapter
+import com.example.mediaapp.features.util.CreateDirectoryDialogFragment
 import com.example.mediaapp.features.myspace.document.MySpaceFileFragment
 import com.example.mediaapp.features.myspace.image.MySpaceImageFragment
 import com.example.mediaapp.features.myspace.music.MySpaceMusicFragment
 import com.example.mediaapp.features.myspace.video.MySpaceVideoFragment
+import com.example.mediaapp.models.Directory
+import com.example.mediaapp.util.Constants
+import com.example.mediaapp.features.util.LoadingDialogFragment
 import com.example.mediaapp.util.MediaApplication
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import java.util.*
 
 class MySpaceFragment : Fragment() {
     private lateinit var binding: FragmentMySpaceBinding
     private lateinit var viewPagerAdapter: ViewPagerAdapter
+    private var parentId: String? = null
+    private val loadingDialogFragment: LoadingDialogFragment by lazy { LoadingDialogFragment() }
+    private val rotateOpen: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_open_anim) }
+    private val rotateClose: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_close_anim) }
+    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.from_bottom_anim) }
+    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.to_bottom_anim) }
     private val viewModel: MySpaceViewModel by activityViewModels {
         MySpaceViewModelFactory((activity?.application as MediaApplication).repository)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.getFolderRoots()
     }
 
     override fun onCreateView(
@@ -39,13 +56,32 @@ class MySpaceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         (activity as HomeActivity).binding.toolbarMain.title = "My Space"
 
-        setUpViewPagerWithTabLayout()
-        viewModel.getFolderRoots()
-        subcribeToObservers()
+        if(savedInstanceState!=null){
+            val dialogCreateDirectory = parentFragmentManager.findFragmentByTag(Constants.CREATE_DIRECTORY_DIALOG_TAG) as CreateDirectoryDialogFragment?
+            dialogCreateDirectory?.setClickCreate { value, radioValue ->
+                if(value.isNotEmpty()){
+                    clickCreateDirectory(value, radioValue)
+                    dialogCreateDirectory.cancelDialog()
+                    loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                }else{
+                    Toast.makeText(requireContext(), "Please enter your folder name !", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
+        setUpViewPagerWithTabLayout()
+        subcribeToObservers()
+        binding.fabAdd.setOnClickListener {
+            viewModel.setVisibleFab(!viewModel.isShowFab.value!!)
+        }
+        binding.fabAddDirectory.setOnClickListener {
+            showDialogCreateDirectory()
+        }
+        binding.fabAddFile.setOnClickListener {
+
+        }
         binding.tabLayoutMyPlace.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
@@ -65,15 +101,58 @@ class MySpaceFragment : Fragment() {
     }
 
     private fun subcribeToObservers() {
+        viewModel.success.observe(viewLifecycleOwner, Observer {
+            loadingDialogFragment.cancelDialog()
+        })
+        viewModel.isShowFab.observe(viewLifecycleOwner, Observer {
+            if(it){
+                binding.fabAddDirectory.startAnimation(fromBottom)
+                binding.fabAddFile.startAnimation(fromBottom)
+                binding.fabAdd.startAnimation(rotateOpen)
+                binding.fabAddDirectory.visibility = View.VISIBLE
+                binding.fabAddFile.visibility = View.VISIBLE
+            }else{
+                binding.fabAddDirectory.startAnimation(toBottom)
+                binding.fabAddFile.startAnimation(toBottom)
+                binding.fabAdd.startAnimation(rotateClose)
+                binding.fabAddDirectory.visibility = View.GONE
+                binding.fabAddFile.visibility = View.GONE
+            }
+        })
         viewModel.toast.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()){
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })
+    }
 
-        viewModel.folderRoots.observe(viewLifecycleOwner, Observer {
-            Log.d("api", it[0].id.toString()+""+it[0].name+""+it[0].level)
-        })
+    private fun showDialogCreateDirectory(){
+        CreateDirectoryDialogFragment(true, "Create").apply {
+            setClickCreate { value, radioValue ->
+                if(value.isNotEmpty()){
+                    clickCreateDirectory(value, radioValue)
+                    cancelDialog()
+                    loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                }else{
+                    Toast.makeText(requireContext(), "Please enter your folder name !", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.show(parentFragmentManager, Constants.CREATE_DIRECTORY_DIALOG_TAG)
+    }
+    private fun clickCreateDirectory(value:String, radioValue: String){
+        var level = 0
+        when(radioValue){
+            "Document" -> level = 1
+            "Music" -> level = 2
+            "Photo" -> level = 3
+            "Movie" -> level = 4
+        }
+        parentId = viewModel.getParentId(level)
+        if(parentId!!.isNotEmpty()){
+            viewModel.createDirectory(Directory(value, level, UUID.fromString(parentId)))
+        }else{
+            Toast.makeText(requireContext(), "Error happend, please try again !", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setUpViewPagerWithTabLayout() {
@@ -94,5 +173,10 @@ class MySpaceFragment : Fragment() {
                 3 -> tab.setIcon(R.drawable.tab4)
             }
         }.attach()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.resetToast()
     }
 }

@@ -15,7 +15,7 @@ import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentLoginBinding
 import com.example.mediaapp.models.User
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.LoadingDialogFragment
+import com.example.mediaapp.features.util.LoadingDialogFragment
 import com.example.mediaapp.util.MediaApplication
 
 class LoginFragment : Fragment() {

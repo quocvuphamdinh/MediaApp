@@ -28,13 +28,39 @@
                     android:layout_toRightOf="@id/imageViewBackDirectoryDetail"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"/>
+                <ImageView
+                    android:id="@+id/imageViewMoreOptions"
+                    android:paddingHorizontal="15dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
             </RelativeLayout>
         </com.google.android.material.appbar.AppBarLayout>
+<!--        <ScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
+<!--            <LinearLayout-->
+<!--                android:orientation="vertical"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content">-->
+<!--                -->
+<!--            </LinearLayout>-->
+<!--        </ScrollView>-->
         <androidx.recyclerview.widget.RecyclerView
+            android:paddingBottom="20dp"
             android:id="@+id/rcvDirectoryDetail"
-            android:layout_marginTop="10dp"
-            android:layout_below="@id/appBarDirectoryDetail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_above="@id/prbLoad"
+            android:layout_below="@id/appBarDirectoryDetail" />
+
+        <ProgressBar
+            android:id="@+id/prbLoad"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
     </RelativeLayout>
 </layout>

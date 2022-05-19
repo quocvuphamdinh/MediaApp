@@ -9,6 +9,8 @@ import com.example.mediaapp.util.Constants
 class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferences: SharedPreferences) {
 
     //remote
+    suspend fun editDirectory(body: HashMap<String, String>) = mediaAPI.editDirectory(body, "Bearer ${getUserToken()}")
+
     suspend fun createDirectory(directory: Directory) = mediaAPI.createDirectory(directory, "Bearer ${getUserToken()}")
 
     suspend fun getFolderByParentId(parentId: String, page: Int, pageSize: Int) = mediaAPI.getFolderByParentId(parentId, page, pageSize,"Bearer ${getUserToken()}")

@@ -22,4 +22,8 @@ interface MediaAPI {
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @POST("directories")
     suspend fun createDirectory(@Body directory: Directory, @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @PUT("directories/update")
+    suspend fun editDirectory(@Body body: HashMap<String, String>, @Header("Authorization") token:String): Response<ResponseBody>
 }
