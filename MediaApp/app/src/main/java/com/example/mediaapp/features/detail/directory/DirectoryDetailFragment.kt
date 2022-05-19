@@ -52,9 +52,9 @@ class DirectoryDetailFragment : Fragment() {
 
         setUpRecyclerView()
         if(viewModel.isPause){
-            viewModel.getFoldersByParentFolder(parentId!!, false)
+            getDirectoryData(false)
         }else{
-            getDirectoryData()
+            getDirectoryData(true)
         }
         sucribeToObservers()
         setUpLoadMoreInRecyclerView()
@@ -106,11 +106,15 @@ class DirectoryDetailFragment : Fragment() {
         })
     }
 
-    private fun getDirectoryData() {
+    private fun getDirectoryData(isFirstTimeLoad: Boolean) {
         val bundle = arguments
         bundle?.let {
             parentId = it.getString(Constants.DIRECTORY_ID)
-            viewModel.getFoldersByParentFolder(parentId!!, true)
+            if(isFirstTimeLoad){
+                viewModel.getFoldersByParentFolder(parentId!!, true)
+            }else{
+                viewModel.getFoldersByParentFolder(parentId!!, false)
+            }
             val name = it.getString(Constants.DIRECTORY_NAME)
             binding.textViewTitleDirectoryDetail.text = name
             level = it.getInt(Constants.DIRECTORY_LEVEL)
