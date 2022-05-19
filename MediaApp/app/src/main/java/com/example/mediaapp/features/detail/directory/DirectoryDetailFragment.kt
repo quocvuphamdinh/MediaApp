@@ -189,6 +189,7 @@ class DirectoryDetailFragment : Fragment() {
                     val bundle = Bundle()
                     bundle.putString(Constants.DIRECTORY_ID, directory!!.id.toString())
                     bundle.putString(Constants.DIRECTORY_NAME, directory.name)
+                    bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
                     findNavController().navigate(R.id.action_directoryDetailFragment_self, bundle)
                 }else{
                     showBottomSheetOption(directory)
