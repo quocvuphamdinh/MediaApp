@@ -9,9 +9,13 @@ import com.example.mediaapp.util.Constants
 class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferences: SharedPreferences) {
 
     //remote
+    suspend fun addDirectoryToFavorite(body: HashMap<String, String>) = mediaAPI.addDirectoryToFavorite(body, "Bearer ${getUserToken()}")
+
     suspend fun editDirectory(body: HashMap<String, String>) = mediaAPI.editDirectory(body, "Bearer ${getUserToken()}")
 
     suspend fun createDirectory(directory: Directory) = mediaAPI.createDirectory(directory, "Bearer ${getUserToken()}")
+
+    suspend fun getListFileByDirectory(directoryId: String, page: Int, pageSize: Int) = mediaAPI.getListFileByDirectory(directoryId, page, pageSize, "Bearer ${getUserToken()}")
 
     suspend fun getFolderByParentId(parentId: String, page: Int, pageSize: Int) = mediaAPI.getFolderByParentId(parentId, page, pageSize,"Bearer ${getUserToken()}")
 

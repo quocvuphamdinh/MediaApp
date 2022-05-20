@@ -139,6 +139,7 @@ class DirectoryDetailFragment : Fragment() {
                 closeBottomSheet()
             }
             setClickAddToFavorite {
+                addDirectoryToFavorite(directory)
                 closeBottomSheet()
             }
             setClickEdit {
@@ -149,6 +150,14 @@ class DirectoryDetailFragment : Fragment() {
                 closeBottomSheet()
             }
         }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
+    }
+    private fun addDirectoryToFavorite(directory: Directory?){
+        loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+        if(directory==null){
+            viewModel.addDirectoryToFavorite(parentId!!)
+        }else{
+            viewModel.addDirectoryToFavorite(directory.id.toString())
+        }
     }
 
     private fun showDialogCreateDirectory(childDirectory: Directory?, nameYesButton: String){

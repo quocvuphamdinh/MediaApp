@@ -119,8 +119,8 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
                     4 -> updateDirectoriesAfterCreate(_folderMovies, directory.level, pageMovie)
                 }
             }else{
-                val jObjError = JSONObject(response.errorBody()?.toString()!!)
-                _toast.postValue(jObjError.getJSONObject("error").getString("message"))
+                val jObjError = JSONObject(response.errorBody()?.string()!!)
+                _toast.postValue(jObjError.getString("message"))
                 _success.postValue(false)
             }
         }catch (e: Exception){
@@ -182,8 +182,8 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
             _toast.postValue("")
             convertToListDirectory(response.body())
         }else{
-            val jObjError = JSONObject(response.errorBody()?.toString()!!)
-            _toast.postValue(jObjError.getJSONObject("error").getString("message"))
+            val jObjError = JSONObject(response.errorBody()?.string()!!)
+            _toast.postValue(jObjError.getString("message"))
             ArrayList()
         }
     }

@@ -37,16 +37,6 @@
                     android:layout_height="match_parent"/>
             </RelativeLayout>
         </com.google.android.material.appbar.AppBarLayout>
-<!--        <ScrollView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content">-->
-<!--            <LinearLayout-->
-<!--                android:orientation="vertical"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content">-->
-<!--                -->
-<!--            </LinearLayout>-->
-<!--        </ScrollView>-->
         <androidx.recyclerview.widget.RecyclerView
             android:paddingBottom="20dp"
             android:id="@+id/rcvDirectoryDetail"

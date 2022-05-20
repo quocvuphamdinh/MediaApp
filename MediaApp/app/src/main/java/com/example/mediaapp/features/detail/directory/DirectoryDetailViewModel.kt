@@ -37,6 +37,24 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
     var isPause = false
     var currentPage = 0
 
+    fun addDirectoryToFavorite(directoryId: String) = viewModelScope.launch {
+        try {
+            val body = HashMap<String, String>()
+            body["directoryId"] = directoryId
+            val response = mediaRepository.addDirectoryToFavorite(body)
+            if(response.isSuccessful){
+                _toast.postValue("Add to favorite successfully !")
+                _success.postValue(true)
+            }else{
+                val jObjError = JSONObject(response.errorBody()?.string()!!)
+                _toast.postValue(jObjError.getString("message"))
+                _success.postValue(false)
+            }
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
     fun loadMore(currentPage: Int, parentId: String) = viewModelScope.launch{
         val list = getFolders(mediaRepository.getFolderByParentId(parentId, currentPage, 10))
         if(list.isNotEmpty()&& _folders.value?.containsAll(list) == false){
@@ -58,8 +76,8 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                 _toast.postValue("Edit directory successfully !")
                 _success.postValue(true)
             }else{
-                val jObjError = JSONObject(response.errorBody()?.toString()!!)
-                _toast.postValue(jObjError.getJSONObject("error").getString("message"))
+                val jObjError = JSONObject(response.errorBody()?.string()!!)
+                _toast.postValue(jObjError.getString("message"))
                 _success.postValue(false)
             }
         }catch (e: Exception){
@@ -74,8 +92,8 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                 _toast.postValue("Create directory successfully !")
                 _success.postValue(true)
             }else{
-                val jObjError = JSONObject(response.errorBody()?.toString()!!)
-                _toast.postValue(jObjError.getJSONObject("error").getString("message"))
+                val jObjError = JSONObject(response.errorBody()?.string()!!)
+                _toast.postValue(jObjError.getString("message"))
                 _success.postValue(false)
             }
         }catch (e: Exception){
@@ -113,8 +131,8 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
             _toast.postValue("")
             convertToListDirectory(response.body())
         }else{
-            val jObjError = JSONObject(response.errorBody()?.toString()!!)
-            _toast.postValue(jObjError.getJSONObject("error").getString("message"))
+            val jObjError = JSONObject(response.errorBody()?.string()!!)
+            _toast.postValue(jObjError.getString("message"))
             ArrayList()
         }
     }
