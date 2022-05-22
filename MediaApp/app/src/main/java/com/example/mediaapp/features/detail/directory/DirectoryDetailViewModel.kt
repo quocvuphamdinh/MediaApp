@@ -174,7 +174,7 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
         }else{
             val jObjError = JSONObject(response.errorBody()?.string()!!)
             _toast.postValue(jObjError.getString("message"))
-            return null
+            null
         }
     }
     private fun convertToListDirectory(response: ResponseBody?): List<Directory> {

@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentDialogSearchBinding
+import com.example.mediaapp.features.adapters.DirectoryAndFileAdapter
 import com.example.mediaapp.features.adapters.FileAdapter
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
@@ -17,7 +18,7 @@ import com.example.mediaapp.util.DataStore
 
 class SearchDialogFragment : DialogFragment() {
     private lateinit var binding : FragmentDialogSearchBinding
-    private lateinit var fileAdapter: FileAdapter
+    private lateinit var fileAdapter: DirectoryAndFileAdapter
 
     @SuppressLint("UseGetLayoutInflater")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -31,8 +32,8 @@ class SearchDialogFragment : DialogFragment() {
     }
 
     private fun setUpRecyclerViewSearch(){
-        fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory{
-            override fun clickItem(file: File) {
+        fileAdapter = DirectoryAndFileAdapter(object : DirectoryAndFileAdapter.ClickItemDirectoryAndFile{
+            override fun clickItem(item: Any?, isHaveOptions: Boolean) {
 
             }
         })
