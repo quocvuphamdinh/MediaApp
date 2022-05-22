@@ -34,7 +34,7 @@ class ImageDetailAdapter : RecyclerView.Adapter<ImageDetailAdapter.ImageDetailHo
 
     override fun onBindViewHolder(holder: ImageDetailHolder, position: Int) {
         val file = differ.currentList[position]
-        Picasso.get().load(file.content).into(holder.img)
+        //Picasso.get().load(file.content).into(holder.img)
     }
 
     override fun getItemCount(): Int {

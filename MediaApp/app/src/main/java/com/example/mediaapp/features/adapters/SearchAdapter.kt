@@ -19,11 +19,11 @@ class SearchAdapter(private val cLickItemDirectory: CLickItemDirectory) :
     }
 
     inner class DirectoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imgFolder: ImageView = itemView.findViewById(R.id.imageViewItemSearch)
-        var txtName: TextView = itemView.findViewById(R.id.textViewItemSearch)
+        var imgFolder: ImageView = itemView.findViewById(R.id.imageViewItemFile)
+        var txtName: TextView = itemView.findViewById(R.id.textViewItemFile)
     }
 
-    val differCallback = object : DiffUtil.ItemCallback<Directory>() {
+    private val differCallback = object : DiffUtil.ItemCallback<Directory>() {
         override fun areItemsTheSame(oldItem: Directory, newItem: Directory): Boolean {
             return oldItem.id == newItem.id
         }

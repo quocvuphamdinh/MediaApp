@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,22 +18,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentDirectoryDetailBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
+import com.example.mediaapp.features.adapters.DirectoryAndFileAdapter
 import com.example.mediaapp.features.myspace.MySpaceViewModel
 import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
 import com.example.mediaapp.features.util.CreateDirectoryDialogFragment
 import com.example.mediaapp.features.util.BottomSheetOptionFragment
 import com.example.mediaapp.features.util.LoadingDialogFragment
+import com.example.mediaapp.features.util.SearchAccountDialogFragment
 import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.util.MediaApplication
 import java.util.*
 
 class DirectoryDetailFragment : Fragment() {
     private lateinit var binding: FragmentDirectoryDetailBinding
-    private lateinit var directoryDetailAdapter: DirectoryAdapter
+    private lateinit var directoryDetailAdapter: DirectoryAndFileAdapter
     private val loadingDialogFragment: LoadingDialogFragment by lazy { LoadingDialogFragment() }
     private var parentId: String? =null
+    private var name: String? = null
     private var level = 0
+    private var isScrolling = false
     private val viewModel: DirectoryDetailViewModel by viewModels {
         DirectoryDetailViewModelFactory((activity?.application as MediaApplication).repository)
     }
@@ -51,11 +58,7 @@ class DirectoryDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpRecyclerView()
-        if(viewModel.isPause){
-            getDirectoryData(false)
-        }else{
-            getDirectoryData(true)
-        }
+        setUpSpinner()
         sucribeToObservers()
         setUpLoadMoreInRecyclerView()
 
@@ -67,16 +70,53 @@ class DirectoryDetailFragment : Fragment() {
         }
     }
 
+    private fun setUpSpinner() {
+        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, resources.getStringArray(R.array.spinner_data))
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerOption.adapter = spinnerAdapter
+        binding.spinnerOption.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when(position){
+                    0 -> {
+                        if(viewModel.currentPageFolder>0){
+                            getDirectoryData(false)
+                        }else{
+                            getDirectoryData(true)
+                        }
+                    }
+                    1 -> {
+                        if(viewModel.currentPageFile>0){
+                            viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, false)
+                        }else{
+                            viewModel.getFoldersAndFilesByParentFolder(parentId!!, true, false)
+                        }
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
+    }
+
     private fun setUpLoadMoreInRecyclerView() {
         binding.rcvDirectoryDetail.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if(!recyclerView.canScrollVertically(1)) {
-                    if(viewModel.isHaveMore.value==true || viewModel.isHaveMore.value==null){
+                    if((viewModel.isHaveMore.value==true || viewModel.isHaveMore.value==null) && isScrolling){
                         binding.prbLoad.visibility = View.VISIBLE
-                        recyclerView.scrollToPosition(viewModel.folders.value!!.size - 1)
                     }
-                    viewModel.loadMore(viewModel.currentPage+1, parentId!!)
+                    viewModel.loadMore(viewModel.currentPageFolder+1, parentId!!)
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if(newState== RecyclerView.SCROLL_STATE_DRAGGING){
+                    isScrolling = true
+                }else if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    isScrolling = false
                 }
             }
         })
@@ -86,7 +126,7 @@ class DirectoryDetailFragment : Fragment() {
         viewModel.isHaveMore.observe(viewLifecycleOwner, Observer {
             if(it){
                 binding.prbLoad.visibility = View.GONE
-                viewModel.currentPage++
+                viewModel.currentPageFolder++
             }else{
                 binding.prbLoad.visibility = View.GONE
                 binding.rcvDirectoryDetail.setPadding(0,0,0,0)
@@ -94,14 +134,14 @@ class DirectoryDetailFragment : Fragment() {
         })
         viewModel.success.observe(viewLifecycleOwner, Observer {
             loadingDialogFragment.cancelDialog()
-            viewModel.getFoldersByParentFolder(parentId!!, false)
+            viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, true)
         })
         viewModel.toast.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()){
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })
-        viewModel.folders.observe(viewLifecycleOwner, Observer {
+        viewModel.foldersAndFiles.observe(viewLifecycleOwner, Observer {
             directoryDetailAdapter.submitList(it)
         })
     }
@@ -111,11 +151,13 @@ class DirectoryDetailFragment : Fragment() {
         bundle?.let {
             parentId = it.getString(Constants.DIRECTORY_ID)
             if(isFirstTimeLoad){
-                viewModel.getFoldersByParentFolder(parentId!!, true)
+                viewModel.getFoldersAndFilesByParentFolder(parentId!!, true, true)
             }else{
-                viewModel.getFoldersByParentFolder(parentId!!, false)
+                viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, true)
             }
-            val name = it.getString(Constants.DIRECTORY_NAME)
+            if(!viewModel.isPause){
+                name = it.getString(Constants.DIRECTORY_NAME)
+            }
             binding.textViewTitleDirectoryDetail.text = name
             level = it.getInt(Constants.DIRECTORY_LEVEL)
         }
@@ -136,6 +178,7 @@ class DirectoryDetailFragment : Fragment() {
                 closeBottomSheet()
             }
             setClickShare {
+                showDialogSearchAccount(directory)
                 closeBottomSheet()
             }
             setClickAddToFavorite {
@@ -151,6 +194,21 @@ class DirectoryDetailFragment : Fragment() {
             }
         }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
     }
+    private fun showDialogSearchAccount(directory: Directory?){
+        SearchAccountDialogFragment()
+            .apply {
+                setTextChangeListener { keyword ->
+                    viewModel.getAccountsByKeyword(keyword, accounts)
+                }
+                setClickAccountItem { user ->
+                    loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                    viewModel.addDirectoryToShare(directory?.id?.toString() ?: parentId!!,
+                        user.id.toString(), "${user.firstName} ${user.lastName}")
+                }
+            }
+            .show(parentFragmentManager, Constants.SEARCH_DIALOG_ACCOUNT_TAG)
+    }
+
     private fun addDirectoryToFavorite(directory: Directory?){
         loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
         if(directory==null){
@@ -172,7 +230,10 @@ class DirectoryDetailFragment : Fragment() {
                     }else{
                         viewModel.editDirectory(childDirectory?.id?.toString() ?: parentId!!, value)
                         mySpaceViewModel.updateDirectoriesAfterEdit(childDirectory?.id?.toString() ?: parentId!!, value, level)
-                        if(childDirectory==null) binding.textViewTitleDirectoryDetail.text = value
+                        if(childDirectory==null) {
+                            name = value
+                            binding.textViewTitleDirectoryDetail.text = name
+                        }
                     }
                     cancelDialog()
                     loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
@@ -192,19 +253,28 @@ class DirectoryDetailFragment : Fragment() {
     }
 
     private fun setUpRecyclerView() {
-        directoryDetailAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+        directoryDetailAdapter = DirectoryAndFileAdapter(object : DirectoryAndFileAdapter.ClickItemDirectoryAndFile{
+            override fun clickItem(item: Any?, isHaveOptions: Boolean) {
                 if(!isHaveOptions){
-                    val bundle = Bundle()
-                    bundle.putString(Constants.DIRECTORY_ID, directory!!.id.toString())
-                    bundle.putString(Constants.DIRECTORY_NAME, directory.name)
-                    bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
-                    findNavController().navigate(R.id.action_directoryDetailFragment_self, bundle)
+                    when(item){
+                        is Directory -> {
+                            val bundle = Bundle()
+                            bundle.putString(Constants.DIRECTORY_ID, item.id.toString())
+                            bundle.putString(Constants.DIRECTORY_NAME, item.name)
+                            bundle.putInt(Constants.DIRECTORY_LEVEL, item.level)
+                            findNavController().navigate(R.id.action_directoryDetailFragment_self, bundle)
+                        }
+                        is File -> {
+
+                        }
+                    }
                 }else{
-                    showBottomSheetOption(directory)
+                    when(item){
+                        is Directory ->showBottomSheetOption(item)
+                    }
                 }
             }
-        }, R.layout.directory_item_row, true)
+        })
         binding.rcvDirectoryDetail.layoutManager = LinearLayoutManager(requireContext())
         binding.rcvDirectoryDetail.adapter = directoryDetailAdapter
     }

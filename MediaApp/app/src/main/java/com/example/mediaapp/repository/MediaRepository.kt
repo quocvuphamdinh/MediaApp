@@ -5,13 +5,33 @@ import com.example.mediaapp.api.MediaAPI
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.User
 import com.example.mediaapp.util.Constants
+import okhttp3.ResponseBody
+import retrofit2.Response
 
 class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferences: SharedPreferences) {
 
     //remote
-    suspend fun addDirectoryToFavorite(body: HashMap<String, String>) = mediaAPI.addDirectoryToFavorite(body, "Bearer ${getUserToken()}")
+    suspend fun addDirectoryToShare(directoryId: String, userId: String): Response<ResponseBody> {
+        val body = HashMap<String, String>()
+        body["directoryId"] = directoryId
+        body["userId"] = userId
+        return mediaAPI.addDirectoryToShare(body, "Bearer ${getUserToken()}")
+    }
 
-    suspend fun editDirectory(body: HashMap<String, String>) = mediaAPI.editDirectory(body, "Bearer ${getUserToken()}")
+    suspend fun getAccountsByKeyword(keyword: String) = mediaAPI.getAccountsByKeyword(keyword, "Bearer ${getUserToken()}")
+
+    suspend fun addDirectoryToFavorite(directoryId: String): Response<ResponseBody> {
+        val body = HashMap<String, String>()
+        body["directoryId"] = directoryId
+        return mediaAPI.addDirectoryToFavorite(body, "Bearer ${getUserToken()}")
+    }
+
+    suspend fun editDirectory(directoryId: String, newName: String): Response<ResponseBody> {
+        val body = HashMap<String, String>()
+        body["directoryId"] = directoryId
+        body["name"] = newName
+        return mediaAPI.editDirectory(body, "Bearer ${getUserToken()}")
+    }
 
     suspend fun createDirectory(directory: Directory) = mediaAPI.createDirectory(directory, "Bearer ${getUserToken()}")
 
@@ -22,7 +42,6 @@ class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferenc
     suspend fun registerAccount(user: User) = mediaAPI.registerAccount(user)
 
     suspend fun login(user: User) = mediaAPI.login(user)
-
 
     //local
     private fun getUserToken():String{
