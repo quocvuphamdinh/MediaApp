@@ -11,13 +11,15 @@ import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentDeletedBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
+import com.example.mediaapp.features.adapters.FileAdapter
 import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
 import com.example.mediaapp.util.DataStore
 
 class DeleteFragment : Fragment() {
     private lateinit var binding : FragmentDeletedBinding
     private lateinit var folderAdapter : DirectoryAdapter
-    private lateinit var fileAdapter : DirectoryAdapter
+    private lateinit var fileAdapter : FileAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,22 +40,22 @@ class DeleteFragment : Fragment() {
     }
     private fun setUpRecyclerViewFolder() {
         folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+            override fun clickItem(directory: Directory) {
                 findNavController().navigate(R.id.action_deleteFragment_to_fileDetailFragment)
             }
-        }, R.layout.my_space_music_item_row, false)
+        })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvDeletedFolderFile.layoutManager=GridLayoutManager(requireContext(), 2)
         binding.rcvDeletedFolderFile.adapter = folderAdapter
     }
 
     private fun setUpRecyclerViewFile() {
-        fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+        fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory{
+            override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_deleteFragment_to_imageDetailFragment)
             }
-        }, R.layout.my_space_music_item_row, false)
-        fileAdapter.submitList(DataStore.getListDirectory())
+        })
+        fileAdapter.submitList(DataStore.getListFile())
         binding.rcvDeletedFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvDeletedFileFile.adapter = fileAdapter
     }

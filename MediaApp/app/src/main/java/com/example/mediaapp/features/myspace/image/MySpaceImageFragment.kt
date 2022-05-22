@@ -15,16 +15,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentImageMySpaceBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
+import com.example.mediaapp.features.adapters.FileAdapter
 import com.example.mediaapp.features.myspace.MySpaceViewModel
 import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
 import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
+import com.example.mediaapp.util.DataStore
 import com.example.mediaapp.util.MediaApplication
 
 class MySpaceImageFragment : Fragment() {
     private lateinit var binding: FragmentImageMySpaceBinding
     private lateinit var folderAdapter: DirectoryAdapter
-    private lateinit var fileAdapter: DirectoryAdapter
+    private lateinit var fileAdapter: FileAdapter
     private val viewModel: MySpaceViewModel by activityViewModels  {
         MySpaceViewModelFactory((activity?.application as MediaApplication).repository)
     }
@@ -74,25 +77,29 @@ class MySpaceImageFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+        fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory {
+            override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_mySpaceFragment_to_imageDetailFragment)
             }
-        }, R.layout.my_space_music_item_row, false)
+        })
+        fileAdapter.submitList(DataStore.getListFile())
         binding.rcvMySpaceFileImage.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileImage.adapter = fileAdapter
     }
 
     private fun setUpRecyclerViewFolder() {
         folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+            override fun clickItem(directory: Directory) {
                 val bundle = Bundle()
-                bundle.putString(Constants.DIRECTORY_ID, directory!!.id.toString())
+                bundle.putString(Constants.DIRECTORY_ID, directory.id.toString())
                 bundle.putString(Constants.DIRECTORY_NAME, directory.name)
                 bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
-                findNavController().navigate(R.id.action_mySpaceFragment_to_directoryDetailFragment, bundle)
+                findNavController().navigate(
+                    R.id.action_mySpaceFragment_to_directoryDetailFragment,
+                    bundle
+                )
             }
-        }, R.layout.my_space_music_item_row, false)
+        })
         binding.rcvMySpaceFolderImage.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFolderImage.adapter = folderAdapter
     }

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -27,7 +26,7 @@ class DirectoryAndFileAdapter(private val clickItemDirectoryAndFile: ClickItemDi
         val imgOptions: ImageView = itemView.findViewById(R.id.imageViewOptionItemDirectory)
     }
     inner class FileHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val txtNameFile: TextView = itemView.findViewById(R.id.textViewItemFile)
+        val txtNameFile: TextView = itemView.findViewById(R.id.textViewItemFileDetail)
         val layoutFile: RelativeLayout = itemView.findViewById(R.id.layoutFileItem)
         val imgOptions: ImageView = itemView.findViewById(R.id.imageViewOptionItemFile)
     }
@@ -57,9 +56,9 @@ class DirectoryAndFileAdapter(private val clickItemDirectoryAndFile: ClickItemDi
         return when(viewType){
             Constants.DIRECTORY_TYPE -> DirectoryHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.directory_item_row, parent, false))
+                    .inflate(R.layout.directory_detail_item_row, parent, false))
             Constants.FILE_TYPE -> FileHolder( LayoutInflater.from(parent.context)
-                .inflate(R.layout.search_item_row, parent, false))
+                .inflate(R.layout.file_detail_item_row, parent, false))
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

@@ -9,45 +9,45 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mediaapp.R
-import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
 
-class SearchAdapter(private val cLickItemDirectory: CLickItemDirectory) :
-    RecyclerView.Adapter<SearchAdapter.DirectoryHolder>() {
+class FileAdapter(private val cLickItemDirectory: CLickItemDirectory) :
+    RecyclerView.Adapter<FileAdapter.DirectoryHolder>() {
 
     interface CLickItemDirectory {
-        fun clickItem(directory: Directory)
+        fun clickItem(file: File)
     }
 
     inner class DirectoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imgFolder: ImageView = itemView.findViewById(R.id.imageViewItemFile)
+        var imgFolder: ImageView = itemView.findViewById(R.id.image_item_file)
         var txtName: TextView = itemView.findViewById(R.id.textViewItemFile)
     }
 
-    private val differCallback = object : DiffUtil.ItemCallback<Directory>() {
-        override fun areItemsTheSame(oldItem: Directory, newItem: Directory): Boolean {
+    private val differCallback = object : DiffUtil.ItemCallback<File>() {
+        override fun areItemsTheSame(oldItem: File, newItem: File): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Directory, newItem: Directory): Boolean {
+        override fun areContentsTheSame(oldItem: File, newItem: File): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
     private val differ = AsyncListDiffer(this, differCallback)
 
-    fun submitList(list: List<Directory>) = differ.submitList(list)
+    fun submitList(list: List<File>) = differ.submitList(list)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DirectoryHolder {
         return DirectoryHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.search_item_row, parent, false)
+                .inflate(R.layout.file_item_row, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: DirectoryHolder, position: Int) {
-        val directory = differ.currentList[position]
-        holder.txtName.text = directory.name
+        val file = differ.currentList[position]
+        holder.txtName.text = file.name
         holder.imgFolder.setOnClickListener {
-            cLickItemDirectory.clickItem(directory)
+            cLickItemDirectory.clickItem(file)
         }
     }
 

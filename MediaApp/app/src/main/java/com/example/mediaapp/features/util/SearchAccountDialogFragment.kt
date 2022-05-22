@@ -7,20 +7,15 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.Window
-import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentDialogSearchBinding
 import com.example.mediaapp.features.adapters.AccountAdapter
-import com.example.mediaapp.features.adapters.SearchAdapter
-import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.User
-import com.example.mediaapp.util.DataStore
 
 class SearchAccountDialogFragment : DialogFragment() {
     private lateinit var binding : FragmentDialogSearchBinding

@@ -6,12 +6,12 @@
 
     <ImageView
       android:paddingVertical="10dp"
-        android:id="@+id/image_item"
-        android:src="@drawable/ic_folder"
+        android:id="@+id/image_item_file"
+        android:src="@drawable/ic_file"
         android:layout_width="match_parent"
         android:layout_height="70dp"/>
     <TextView
-        android:id="@+id/textViewItemDirectory"
+        android:id="@+id/textViewItemFile"
         android:padding="5dp"
         android:text="@string/app_name"
         android:layout_gravity="center"

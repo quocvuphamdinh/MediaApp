@@ -16,6 +16,14 @@ object DataStore {
             Directory("File 7", 1, UUID.randomUUID()),
         )
     }
+    fun getListFile(): List<File>{
+        return listOf(
+            File(UUID.randomUUID(), "File 1", "", 0, UUID.randomUUID(), ""),
+            File(UUID.randomUUID(), "File 2", "", 0, UUID.randomUUID(), ""),
+            File(UUID.randomUUID(), "File 3", "", 0, UUID.randomUUID(), ""),
+            File(UUID.randomUUID(), "File 4", "", 0, UUID.randomUUID(), "")
+        )
+    }
     fun getListImage() : List<File>{
         return listOf(
 //            File(UUID.randomUUID(), "Image 1", "3", "https://c4.wallpaperflare.com/wallpaper/511/504/893/makoto-shinkai-kimi-no-na-wa-wallpaper-preview.jpg"),

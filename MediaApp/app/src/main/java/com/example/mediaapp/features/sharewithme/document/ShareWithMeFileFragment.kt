@@ -10,13 +10,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentFileShareWithMeBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
+import com.example.mediaapp.features.adapters.FileAdapter
 import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
 import com.example.mediaapp.util.DataStore
 
 class ShareWithMeFileFragment : Fragment() {
     private lateinit var binding: FragmentFileShareWithMeBinding
     private lateinit var folderAdapter: DirectoryAdapter
-    private lateinit var fileAdapter: DirectoryAdapter
+    private lateinit var fileAdapter: FileAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,24 +37,24 @@ class ShareWithMeFileFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+        fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory {
+            override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_shareWithMeFragment_to_fileDetailFragment)
             }
-        }, R.layout.my_space_music_item_row, false)
-        folderAdapter.submitList(DataStore.getListDirectory())
+        })
+        fileAdapter.submitList(DataStore.getListFile())
         binding.rcvShareWithMeFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvShareWithMeFileFile.adapter = folderAdapter
+        binding.rcvShareWithMeFileFile.adapter = fileAdapter
     }
 
     private fun setUpRecyclerViewFolder() {
-        fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+        folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
+            override fun clickItem(directory: Directory) {
 
             }
-        }, R.layout.my_space_music_item_row, false)
-        fileAdapter.submitList(DataStore.getListDirectory())
+        })
+        folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvShareWithMeFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvShareWithMeFolderFile.adapter = fileAdapter
+        binding.rcvShareWithMeFolderFile.adapter = folderAdapter
     }
 }

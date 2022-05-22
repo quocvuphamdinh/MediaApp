@@ -27,10 +27,10 @@ class LoginViewModel(val repository: MediaRepository) : ViewModel() {
                 val result = response.body()
                 val jsonObj = JSONObject(result!!.charStream().readText())
                 repository.writeAccountDataToSharedPref(jsonObj.getString("token"))
-                _loginNotify.postValue("Đăng nhập thành công !")
+                _loginNotify.postValue("Login successfully !")
                 _isSuccess.postValue(true)
             }else{
-                _loginNotify.postValue("Đăng nhập thất bại !")
+                _loginNotify.postValue("Login failed !")
                 _isSuccess.postValue(false)
             }
         }catch (e : Exception){

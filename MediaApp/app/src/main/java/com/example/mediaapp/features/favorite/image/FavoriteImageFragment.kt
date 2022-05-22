@@ -10,13 +10,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentImageFavoriteBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
+import com.example.mediaapp.features.adapters.FileAdapter
 import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
 import com.example.mediaapp.util.DataStore
 
 class FavoriteImageFragment : Fragment() {
     private lateinit var binding : FragmentImageFavoriteBinding
     private lateinit var folderAdapter : DirectoryAdapter
-    private lateinit var fileAdapter : DirectoryAdapter
+    private lateinit var fileAdapter : FileAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,24 +37,24 @@ class FavoriteImageFragment : Fragment() {
     }
 
     private fun setUpRecyclerViewFile() {
-        folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+        fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory{
+            override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_favoriteFragment_to_imageDetailFragment)
             }
-        }, R.layout.my_space_music_item_row, false)
-        folderAdapter.submitList(DataStore.getListDirectory())
+        })
+        fileAdapter.submitList(DataStore.getListFile())
         binding.rcvFavoriteFileImage.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvFavoriteFileImage.adapter = folderAdapter
+        binding.rcvFavoriteFileImage.adapter = fileAdapter
     }
 
     private fun setUpRecyclerViewFolder() {
-        fileAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
-            override fun clickItem(directory: Directory?, isHaveOptions: Boolean) {
+        folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
+            override fun clickItem(directory: Directory) {
 
             }
-        }, R.layout.my_space_music_item_row, false)
-        fileAdapter.submitList(DataStore.getListDirectory())
+        })
+        folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvFavoriteFolderImage.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rcvFavoriteFolderImage.adapter = fileAdapter
+        binding.rcvFavoriteFolderImage.adapter = folderAdapter
     }
 }

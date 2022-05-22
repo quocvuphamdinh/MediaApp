@@ -133,6 +133,7 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
             _success.postValue(false)
         }
     }
+    fun resetList() = _foldersAndFiles.postValue(ArrayList())
 
     fun getFoldersAndFilesByParentFolder(parentId: String, isFirstTimeLoad: Boolean, isDirectoryType: Boolean) = viewModelScope.launch {
         try {
@@ -190,6 +191,5 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
         }
         return ArrayList()
     }
-
     fun clearToast() = _toast.postValue("")
 }

@@ -78,6 +78,7 @@ class DirectoryDetailFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when(position){
                     0 -> {
+                        viewModel.resetList()
                         if(viewModel.currentPageFolder>0){
                             getDirectoryData(false)
                         }else{
@@ -85,6 +86,7 @@ class DirectoryDetailFragment : Fragment() {
                         }
                     }
                     1 -> {
+                        viewModel.resetList()
                         if(viewModel.currentPageFile>0){
                             viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, false)
                         }else{
@@ -103,7 +105,7 @@ class DirectoryDetailFragment : Fragment() {
         binding.rcvDirectoryDetail.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if(!recyclerView.canScrollVertically(1)) {
+                if(!recyclerView.canScrollVertically(1)&& isScrolling) {
                     if((viewModel.isHaveMore.value==true || viewModel.isHaveMore.value==null) && isScrolling){
                         binding.prbLoad.visibility = View.VISIBLE
                     }
