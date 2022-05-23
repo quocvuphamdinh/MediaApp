@@ -18,10 +18,10 @@ object DataStore {
     }
     fun getListFile(): List<File>{
         return listOf(
-            File(UUID.randomUUID(), "File 1", "", 0, UUID.randomUUID(), ""),
-            File(UUID.randomUUID(), "File 2", "", 0, UUID.randomUUID(), ""),
-            File(UUID.randomUUID(), "File 3", "", 0, UUID.randomUUID(), ""),
-            File(UUID.randomUUID(), "File 4", "", 0, UUID.randomUUID(), "")
+            File("File 1", "", 0, UUID.randomUUID(), ""),
+            File("File 2", "", 0, UUID.randomUUID(), ""),
+            File("File 3", "", 0, UUID.randomUUID(), ""),
+            File("File 4", "", 0, UUID.randomUUID(), "")
         )
     }
     fun getListImage() : List<File>{

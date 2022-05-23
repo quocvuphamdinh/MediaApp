@@ -78,24 +78,30 @@ class DirectoryDetailFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when(position){
                     0 -> {
-                        viewModel.resetList()
+                        Log.d("hi", viewModel.isShowLoading.toString())
+                        if(viewModel.isShowLoading){
+                            binding.prbLoad2.visibility = View.VISIBLE
+                        }
                         if(viewModel.currentPageFolder>0){
                             getDirectoryData(false)
                         }else{
                             getDirectoryData(true)
                         }
+                        viewModel.isShowLoading = true
                     }
                     1 -> {
-                        viewModel.resetList()
+                        if(viewModel.isShowLoading){
+                            binding.prbLoad2.visibility = View.VISIBLE
+                        }
                         if(viewModel.currentPageFile>0){
                             viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, false)
                         }else{
                             viewModel.getFoldersAndFilesByParentFolder(parentId!!, true, false)
                         }
+                        viewModel.isShowLoading = true
                     }
                 }
             }
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }
@@ -106,10 +112,20 @@ class DirectoryDetailFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if(!recyclerView.canScrollVertically(1)&& isScrolling) {
-                    if((viewModel.isHaveMore.value==true || viewModel.isHaveMore.value==null) && isScrolling){
-                        binding.prbLoad.visibility = View.VISIBLE
+                    when(binding.spinnerOption.selectedItemPosition){
+                        0 ->{
+                            if((viewModel.isHaveMoreFolders.value==true || viewModel.isHaveMoreFolders.value==null) && isScrolling){
+                                binding.prbLoad.visibility = View.VISIBLE
+                            }
+                            viewModel.loadMore(parentId!!, viewModel.currentPageFolder+1, Constants.DIRECTORY_TYPE)
+                        }
+                        1->{
+                            if((viewModel.isHaveMoreFiles.value==true || viewModel.isHaveMoreFiles.value==null) && isScrolling){
+                                binding.prbLoad.visibility = View.VISIBLE
+                            }
+                            viewModel.loadMore(parentId!!, viewModel.currentPageFile+1, Constants.FILE_TYPE)
+                        }
                     }
-                    viewModel.loadMore(viewModel.currentPageFolder+1, parentId!!)
                 }
             }
 
@@ -125,7 +141,16 @@ class DirectoryDetailFragment : Fragment() {
     }
 
     private fun sucribeToObservers() {
-        viewModel.isHaveMore.observe(viewLifecycleOwner, Observer {
+        viewModel.isHaveMoreFiles.observe(viewLifecycleOwner, Observer {
+            if(it){
+                binding.prbLoad.visibility = View.GONE
+                viewModel.currentPageFile++
+            }else{
+                binding.prbLoad.visibility = View.GONE
+                binding.rcvDirectoryDetail.setPadding(0,0,0,0)
+            }
+        })
+        viewModel.isHaveMoreFolders.observe(viewLifecycleOwner, Observer {
             if(it){
                 binding.prbLoad.visibility = View.GONE
                 viewModel.currentPageFolder++
@@ -144,6 +169,7 @@ class DirectoryDetailFragment : Fragment() {
             }
         })
         viewModel.foldersAndFiles.observe(viewLifecycleOwner, Observer {
+            binding.prbLoad2.visibility = View.GONE
             directoryDetailAdapter.submitList(it)
         })
     }
@@ -267,7 +293,7 @@ class DirectoryDetailFragment : Fragment() {
                             findNavController().navigate(R.id.action_directoryDetailFragment_self, bundle)
                         }
                         is File -> {
-
+                            Toast.makeText(requireContext(), item.accountId.toString(), Toast.LENGTH_SHORT).show()
                         }
                     }
                 }else{
@@ -285,5 +311,6 @@ class DirectoryDetailFragment : Fragment() {
         super.onPause()
         viewModel.clearToast()
         viewModel.isPause = true
+        viewModel.isShowLoading = false
     }
 }

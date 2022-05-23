@@ -38,14 +38,15 @@
                     android:layout_height="match_parent"/>
             </RelativeLayout>
         </com.google.android.material.appbar.AppBarLayout>
+
         <Spinner
-            android:popupBackground="@color/grey_80"
-            android:backgroundTint="@color/black"
             android:layout_alignParentEnd="true"
-            android:id="@+id/spinnerOption"
             android:layout_below="@id/appBarDirectoryDetail"
+            android:id="@+id/spinnerOption"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"
+            android:popupBackground="@color/grey_80" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvDirectoryDetail"
@@ -62,5 +63,11 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:visibility="gone" />
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/prbLoad2"
+            android:layout_centerInParent="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
     </RelativeLayout>
 </layout>

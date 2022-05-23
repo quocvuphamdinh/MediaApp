@@ -9,6 +9,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.models.User
 import com.example.mediaapp.repository.MediaRepository
+import com.example.mediaapp.util.Constants
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -31,13 +32,18 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
     val success: LiveData<Boolean>
     get() = _success
 
-    private var _isHaveMore: MutableLiveData<Boolean> = MutableLiveData()
-    val isHaveMore: LiveData<Boolean>
-    get() = _isHaveMore
+    private var _isHaveMoreFolders: MutableLiveData<Boolean> = MutableLiveData()
+    val isHaveMoreFolders: LiveData<Boolean>
+    get() = _isHaveMoreFolders
 
-    var isPause = false
+    private var _isHaveMoreFiles: MutableLiveData<Boolean> = MutableLiveData()
+    val isHaveMoreFiles: LiveData<Boolean>
+    get() = _isHaveMoreFiles
+
     var currentPageFolder = 0
     var currentPageFile = 0
+    var isPause = false
+    var isShowLoading = true
 
     fun addDirectoryToShare(directoryId: String, userId: String, name: String) = viewModelScope.launch {
         try {
@@ -84,14 +90,28 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
             _success.postValue(false)
         }
     }
-    fun loadMore(currentPage: Int, parentId: String) = viewModelScope.launch{
-        val list = convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(parentId, currentPage, 10)))
-        if(list.isNotEmpty()&& _foldersAndFiles.value?.containsAll(list) == false){
-            _isHaveMore.postValue(true)
-        }else{
-            _isHaveMore.postValue(false)
+    fun loadMore(parentId: String, page:Int, type: Int) = viewModelScope.launch{
+        var list: List<Any> = ArrayList()
+        when(type){
+            Constants.DIRECTORY_TYPE ->{
+                list = convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(parentId, page, 10)))
+                if(list.isNotEmpty()&& _foldersAndFiles.value?.containsAll(list) == false){
+                    _isHaveMoreFolders.postValue(true)
+                }else{
+                    _isHaveMoreFolders.postValue(false)
+                }
+                Log.d("pageDetailFolders", page.toString())
+            }
+            Constants.FILE_TYPE ->{
+                list = convertToListDirectory(handlingResponse(mediaRepository.getListFileByDirectory(parentId, page, 10)))
+                if(list.isNotEmpty()&& _foldersAndFiles.value?.containsAll(list) == false){
+                    _isHaveMoreFiles.postValue(true)
+                }else{
+                    _isHaveMoreFiles.postValue(false)
+                }
+                Log.d("pageDetailFiles", page.toString())
+            }
         }
-        Log.d("pageDetailloadmore", currentPage.toString())
         _foldersAndFiles.postValue(_foldersAndFiles.value?.plus(list)?.distinctBy {
             when(it){
                 is Directory ->  it.id
