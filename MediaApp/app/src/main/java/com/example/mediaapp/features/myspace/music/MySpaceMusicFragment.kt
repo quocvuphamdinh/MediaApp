@@ -57,13 +57,28 @@ class MySpaceMusicFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if(!recyclerView.canScrollVertically(1)) {
-                    viewModel.loadMoreFolders(viewModel.pageMusic+1, 2)
+                    viewModel.loadMore(viewModel.pageMusic+1, 2, true)
+                }
+            }
+        })
+        binding.rcvMySpaceFileMusic.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!recyclerView.canScrollVertically(1)) {
+                    viewModel.loadMore(viewModel.pageMusicFile+1, 2, false)
                 }
             }
         })
     }
 
     private fun subcribeToObservers() {
+        viewModel.isHaveMoreMusicsFile.observe(viewLifecycleOwner, Observer {
+            if(it){
+                viewModel.pageMusicFile++
+            }else{
+                binding.rcvMySpaceFileMusic.setPadding(0,0,0,0)
+            }
+        })
         viewModel.isHaveMoreMusics.observe(viewLifecycleOwner, Observer {
             if(it){
                 viewModel.pageMusic++
@@ -74,6 +89,9 @@ class MySpaceMusicFragment : Fragment() {
         viewModel.folderMusics.observe(viewLifecycleOwner, Observer {
             folderAdapter.submitList(it)
         })
+        viewModel.fileMusics.observe(viewLifecycleOwner, Observer {
+            fileAdapter.submitList(it)
+        })
     }
 
     private fun setUpRecyclerViewFile() {
@@ -82,7 +100,6 @@ class MySpaceMusicFragment : Fragment() {
                 findNavController().navigate(R.id.action_mySpaceFragment_to_musicDetailFragment)
             }
         })
-        fileAdapter.submitList(DataStore.getListFile())
         binding.rcvMySpaceFileMusic.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileMusic.adapter = fileAdapter
     }
@@ -94,6 +111,7 @@ class MySpaceMusicFragment : Fragment() {
                 bundle.putString(Constants.DIRECTORY_ID, directory.id.toString())
                 bundle.putString(Constants.DIRECTORY_NAME, directory.name)
                 bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
+                bundle.putInt(Constants.ROOT_TYPE, Constants.MY_SPACE)
                 findNavController().navigate(R.id.action_mySpaceFragment_to_directoryDetailFragment, bundle)
             }
         })

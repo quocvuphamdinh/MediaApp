@@ -21,14 +21,17 @@
                     android:layout_width="35dp"
                     android:layout_height="match_parent"/>
                 <TextView
+                    android:ellipsize="end"
                     android:id="@+id/textViewTitleDirectoryDetail"
-                    android:layout_marginStart="20dp"
-                    android:gravity="center"
-                    android:textSize="20sp"
-                    android:text="@string/app_name"
-                    android:layout_toEndOf="@id/imageViewBackDirectoryDetail"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_toStartOf="@id/imageViewMoreOptions"
+                    android:layout_toEndOf="@id/imageViewBackDirectoryDetail"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="@string/app_name"
+                    android:textSize="20sp" />
                 <ImageView
                     android:id="@+id/imageViewMoreOptions"
                     android:paddingHorizontal="15dp"

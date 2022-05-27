@@ -1,12 +1,20 @@
 package com.example.mediaapp.features.myspace
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -23,6 +31,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.util.LoadingDialogFragment
 import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.util.RealPathFileUtil
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import java.util.*
@@ -30,6 +39,7 @@ import java.util.*
 class MySpaceFragment : Fragment() {
     private lateinit var binding: FragmentMySpaceBinding
     private lateinit var viewPagerAdapter: ViewPagerAdapter
+    private lateinit var mActivityResult:ActivityResultLauncher<Intent>
     private var parentId: String? = null
     private val loadingDialogFragment: LoadingDialogFragment by lazy { LoadingDialogFragment() }
     private val rotateOpen: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_open_anim) }
@@ -57,7 +67,6 @@ class MySpaceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as HomeActivity).binding.toolbarMain.title = "My Space"
-
         if(savedInstanceState!=null){
             val dialogCreateDirectory = parentFragmentManager.findFragmentByTag(Constants.CREATE_DIRECTORY_DIALOG_TAG) as CreateDirectoryDialogFragment?
             dialogCreateDirectory?.setClickCreate { value, radioValue ->
@@ -80,7 +89,7 @@ class MySpaceFragment : Fragment() {
             showDialogCreateDirectory()
         }
         binding.fabAddFile.setOnClickListener {
-
+            Constants.clickRequestPermissionToAccessFile(requireActivity()) { openFile() }
         }
         binding.tabLayoutMyPlace.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -98,6 +107,29 @@ class MySpaceFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+        mActivityResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            ActivityResultCallback<ActivityResult>{ result ->
+                val intentData = result.data
+                if (intentData!=null){
+                    val uri = intentData.data
+                    Log.d("uri", uri.toString())
+                    uri?.let {
+                        val path = RealPathFileUtil.getRealPathFromURI(requireContext(), it)
+                        path?.let { p->
+                            viewModel.uploadFile(p)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    private fun openFile() {
+        val intent = Intent()
+        intent.type = "*/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        mActivityResult.launch(Intent.createChooser(intent, "Choose your file"))
     }
 
     private fun subcribeToObservers() {

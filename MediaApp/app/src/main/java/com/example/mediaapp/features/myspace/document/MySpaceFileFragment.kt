@@ -59,13 +59,28 @@ class MySpaceFileFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if(!recyclerView.canScrollVertically(1)) {
-                    viewModel.loadMoreFolders(viewModel.pageDocument+1, 1)
+                    viewModel.loadMore(viewModel.pageDocument+1, 1, true)
+                }
+            }
+        })
+        binding.rcvMySpaceFileFile.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!recyclerView.canScrollVertically(1)){
+                    viewModel.loadMore(viewModel.pageDocumentFile+1, 1, false)
                 }
             }
         })
     }
 
     private fun subcribeToObservers() {
+        viewModel.isHaveMoreDocumentsFile.observe(viewLifecycleOwner, Observer {
+            if(it){
+                viewModel.pageDocumentFile++
+            }else{
+                binding.rcvMySpaceFileFile.setPadding(0,0,0,0)
+            }
+        })
         viewModel.isHaveMoreDocuments.observe(viewLifecycleOwner, Observer {
             if(it){
                 viewModel.pageDocument++
@@ -76,6 +91,9 @@ class MySpaceFileFragment : Fragment() {
         viewModel.folderDocuments.observe(viewLifecycleOwner, Observer {
             folderAdapter.submitList(it)
         })
+        viewModel.fileDocuments.observe(viewLifecycleOwner, Observer {
+            fileAdapter.submitList(it)
+        })
     }
 
     private fun setUpRecyclerViewFile() {
@@ -84,7 +102,6 @@ class MySpaceFileFragment : Fragment() {
                 findNavController().navigate(R.id.action_mySpaceFragment_to_fileDetailFragment)
             }
         })
-        fileAdapter.submitList(DataStore.getListFile())
         binding.rcvMySpaceFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileFile.adapter = fileAdapter
     }
@@ -96,6 +113,7 @@ class MySpaceFileFragment : Fragment() {
                 bundle.putString(Constants.DIRECTORY_ID, directory.id.toString())
                 bundle.putString(Constants.DIRECTORY_NAME, directory.name)
                 bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
+                bundle.putInt(Constants.ROOT_TYPE, Constants.MY_SPACE)
                 findNavController().navigate(R.id.action_mySpaceFragment_to_directoryDetailFragment, bundle)
             }
         })

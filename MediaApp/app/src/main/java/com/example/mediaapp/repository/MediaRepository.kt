@@ -1,16 +1,41 @@
 package com.example.mediaapp.repository
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.mediaapp.api.MediaAPI
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.User
 import com.example.mediaapp.util.Constants
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.io.File
 
 class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferences: SharedPreferences) {
 
     //remote
+    suspend fun deleteFile(fileId: String) = mediaAPI.deleteFile(fileId, "Bearer ${getUserToken()}")
+
+    suspend fun uploadFile(directoryId: String, path: String, level: Int): Response<ResponseBody>{
+        val file = File(path)
+        var type =""
+        when(level){
+            1 -> type = Constants.DOCUMENT
+            2 -> type = Constants.MUSIC
+            3 -> type = Constants.PHOTO
+            4 -> type = Constants.MOVIE
+        }
+        val requestBodyFile = RequestBody.create(MediaType.parse(type), file)
+        val multipartFile = MultipartBody.Part.createFormData("multipartFile", file.name, requestBodyFile)
+        val requestBodyDisplayName = RequestBody.create(MediaType.parse("multipart/form-data"), file.name)
+        val requestBodyLevel = RequestBody.create(MediaType.parse("multipart/form-data"), level.toString())
+        return mediaAPI.uploadFile(directoryId, multipartFile, requestBodyDisplayName, requestBodyLevel, "Bearer ${getUserToken()}")
+    }
+
+    suspend fun deleteDirectory(directoryId: String) = mediaAPI.deleteDirectory(directoryId, "Bearer ${getUserToken()}")
+
     suspend fun addDirectoryToShare(directoryId: String, userId: String): Response<ResponseBody> {
         val body = HashMap<String, String>()
         body["directoryId"] = directoryId

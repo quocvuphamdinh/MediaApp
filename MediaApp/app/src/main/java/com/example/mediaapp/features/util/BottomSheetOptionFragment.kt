@@ -3,14 +3,16 @@ package com.example.mediaapp.features.util
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.Window
 import androidx.databinding.DataBindingUtil
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentBottomSheetOptionBinding
+import com.example.mediaapp.util.Constants
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class BottomSheetOptionFragment: BottomSheetDialogFragment() {
+class BottomSheetOptionFragment(private val isDirectory: Boolean, private val rootType: Int): BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetOptionBinding
     private var clickCreateNewFolder: (() -> Unit)? = null
     private var clickCreateNewFile: (() -> Unit)? = null
@@ -52,30 +54,52 @@ class BottomSheetOptionFragment: BottomSheetDialogFragment() {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
             setContentView(binding.root)
             binding.textViewTitleBottomSheet.text = titleName
-            binding.linearCreateFolderOption.setOnClickListener {
-                clickCreateNewFolder?.let { createNewFolder ->
-                    createNewFolder()
+            if(isDirectory && rootType==Constants.MY_SPACE){
+                binding.linearCreateFolderOption.visibility = View.VISIBLE
+                binding.linearCreateFolderOption.setOnClickListener {
+                    clickCreateNewFolder?.let { createNewFolder ->
+                        createNewFolder()
+                    }
                 }
+                binding.linearCreateFileOption.visibility = View.VISIBLE
+                binding.linearCreateFileOption.setOnClickListener {
+                    clickCreateNewFile?.let { createNewFile ->
+                        createNewFile()
+                    }
+                }
+            }else{
+                binding.linearCreateFolderOption.visibility = View.GONE
+                binding.linearCreateFileOption.visibility = View.GONE
             }
-            binding.linearCreateFileOption.setOnClickListener {
-                clickCreateNewFile?.let { createNewFile ->
-                    createNewFile()
+            if(rootType != Constants.SHARE_WITH_ME){
+                binding.linearShareOption.visibility = View.VISIBLE
+                binding.linearShareOption.setOnClickListener {
+                    clickShare?.let { share ->
+                        share()
+                    }
                 }
+            }else{
+                binding.linearShareOption.visibility = View.GONE
             }
-            binding.linearShareOption.setOnClickListener {
-                clickShare?.let { share ->
-                    share()
+            if(rootType!= Constants.FAVORITE){
+                binding.linearFavoriteOption.visibility = View.VISIBLE
+                binding.linearFavoriteOption.setOnClickListener {
+                    clickAddToFavorite?.let { addToFavorite ->
+                        addToFavorite()
+                    }
                 }
+            }else{
+                binding.linearFavoriteOption.visibility = View.GONE
             }
-            binding.linearFavoriteOption.setOnClickListener {
-                clickAddToFavorite?.let { addToFavorite ->
-                    addToFavorite()
+            if (rootType==Constants.MY_SPACE){
+                binding.linearEditOption.visibility = View.VISIBLE
+                binding.linearEditOption.setOnClickListener {
+                    clickEdit?.let { edit ->
+                        edit()
+                    }
                 }
-            }
-            binding.linearEditOption.setOnClickListener {
-                clickEdit?.let { edit ->
-                    edit()
-                }
+            }else{
+                binding.linearEditOption.visibility = View.GONE
             }
             binding.linearDeleteOption.setOnClickListener {
                 clickDelete?.let { delete ->

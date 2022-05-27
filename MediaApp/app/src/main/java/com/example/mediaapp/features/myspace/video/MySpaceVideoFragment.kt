@@ -56,13 +56,28 @@ class MySpaceVideoFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if(!recyclerView.canScrollVertically(1)) {
-                    viewModel.loadMoreFolders(viewModel.pageMovie+1, 4)
+                    viewModel.loadMore(viewModel.pageMovie+1, 4, true)
+                }
+            }
+        })
+        binding.rcvMySpaceFileVideo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!recyclerView.canScrollVertically(1)) {
+                    viewModel.loadMore(viewModel.pageMovieFile+1, 4, false)
                 }
             }
         })
     }
 
     private fun subcribeToObservers() {
+        viewModel.isHaveMoreMoviesFile.observe(viewLifecycleOwner, Observer {
+            if(it){
+                viewModel.pageMovieFile++
+            }else{
+                binding.rcvMySpaceFileVideo.setPadding(0,0,0,0)
+            }
+        })
         viewModel.isHaveMoreMovies.observe(viewLifecycleOwner, Observer {
             if(it){
                 viewModel.pageMovie++
@@ -73,6 +88,9 @@ class MySpaceVideoFragment : Fragment() {
         viewModel.folderMovies.observe(viewLifecycleOwner, Observer {
             folderAdapter.submitList(it)
         })
+        viewModel.fileMovies.observe(viewLifecycleOwner, Observer {
+            fileAdapter.submitList(it)
+        })
     }
 
     private fun setUpRecyclerViewFile() {
@@ -81,7 +99,6 @@ class MySpaceVideoFragment : Fragment() {
                 findNavController().navigate(R.id.action_mySpaceFragment_to_videoDetailFragment)
             }
         })
-        fileAdapter.submitList(DataStore.getListFile())
         binding.rcvMySpaceFileVideo.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMySpaceFileVideo.adapter = fileAdapter
     }
@@ -93,6 +110,7 @@ class MySpaceVideoFragment : Fragment() {
                 bundle.putString(Constants.DIRECTORY_ID, directory.id.toString())
                 bundle.putString(Constants.DIRECTORY_NAME, directory.name)
                 bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
+                bundle.putInt(Constants.ROOT_TYPE, Constants.MY_SPACE)
                 findNavController().navigate(R.id.action_mySpaceFragment_to_directoryDetailFragment, bundle)
             }
         })

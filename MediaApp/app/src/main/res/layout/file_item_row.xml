@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="10dp">
 
     <ImageView
-      android:paddingVertical="10dp"
+      android:paddingVertical="5dp"
         android:id="@+id/image_item_file"
         android:src="@drawable/ic_file"
         android:layout_width="match_parent"

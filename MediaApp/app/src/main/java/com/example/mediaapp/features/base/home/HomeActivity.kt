@@ -47,6 +47,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.navigation.nav_deleted
         )
 
+        binding.navigationView.inflateHeaderView(R.layout.header_nav_view)
         val controller = binding.bottomNav.setupWithNavController(
             navGraphIds,
             supportFragmentManager,

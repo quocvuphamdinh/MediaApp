@@ -45,17 +45,40 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
     var isPause = false
     var isShowLoading = true
 
+    fun deleteFile(fileId: String) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.deleteFile(fileId)
+            handlingResponse2(response, "Delete file successfully !")
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
+
+    fun uploadFile(directoryId: String, level: Int, path: String) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.uploadFile(directoryId, path, level)
+            handlingResponse2(response, "Upload file successfully !")
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
+
+    fun deleteDirectory(directoryId: String) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.deleteDirectory(directoryId)
+            handlingResponse2(response, "Delete directory successfully !")
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
+
     fun addDirectoryToShare(directoryId: String, userId: String, name: String) = viewModelScope.launch {
         try {
             val response = mediaRepository.addDirectoryToShare(directoryId, userId)
-            if(response.isSuccessful){
-                _toast.postValue("Share to $name successfully !")
-                _success.postValue(true)
-            }else{
-                val jObjError = JSONObject(response.errorBody()?.string()!!)
-                _toast.postValue(jObjError.getString("message"))
-                _success.postValue(false)
-            }
+            handlingResponse2(response, "Share to $name successfully !")
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)
@@ -77,19 +100,32 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
     fun addDirectoryToFavorite(directoryId: String) = viewModelScope.launch {
         try {
             val response = mediaRepository.addDirectoryToFavorite(directoryId)
-            if(response.isSuccessful){
-                _toast.postValue("Add to favorite successfully !")
-                _success.postValue(true)
-            }else{
-                val jObjError = JSONObject(response.errorBody()?.string()!!)
-                _toast.postValue(jObjError.getString("message"))
-                _success.postValue(false)
-            }
+            handlingResponse2(response, "Add to favorite successfully !")
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)
         }
     }
+
+    fun editDirectory(directoryId: String, newName: String) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.editDirectory(directoryId, newName)
+            handlingResponse2(response, "Edit directory successfully !")
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
+    fun createDirectory(directory: Directory) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.createDirectory(directory)
+            handlingResponse2(response, "Create directory successfully !")
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
+
     fun loadMore(parentId: String, page:Int, type: Int) = viewModelScope.launch{
         var list: List<Any> = ArrayList()
         when(type){
@@ -121,40 +157,6 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
         })
     }
 
-    fun editDirectory(directoryId: String, newName: String) = viewModelScope.launch {
-        try {
-            val response = mediaRepository.editDirectory(directoryId, newName)
-            if(response.isSuccessful){
-                _toast.postValue("Edit directory successfully !")
-                _success.postValue(true)
-            }else{
-                val jObjError = JSONObject(response.errorBody()?.string()!!)
-                _toast.postValue(jObjError.getString("message"))
-                _success.postValue(false)
-            }
-        }catch (e: Exception){
-            _toast.postValue(e.message.toString())
-            _success.postValue(false)
-        }
-    }
-    fun createDirectory(directory: Directory) = viewModelScope.launch {
-        try {
-            val response = mediaRepository.createDirectory(directory)
-            if(response.isSuccessful){
-                _toast.postValue("Create directory successfully !")
-                _success.postValue(true)
-            }else{
-                val jObjError = JSONObject(response.errorBody()?.string()!!)
-                _toast.postValue(jObjError.getString("message"))
-                _success.postValue(false)
-            }
-        }catch (e: Exception){
-            _toast.postValue(e.message.toString())
-            _success.postValue(false)
-        }
-    }
-    fun resetList() = _foldersAndFiles.postValue(ArrayList())
-
     fun getFoldersAndFilesByParentFolder(parentId: String, isFirstTimeLoad: Boolean, isDirectoryType: Boolean) = viewModelScope.launch {
         try {
             when(isDirectoryType){
@@ -185,6 +187,16 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
             }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
+        }
+    }
+    private fun handlingResponse2(response: Response<ResponseBody>, successToast: String){
+        if(response.isSuccessful){
+            _toast.postValue(successToast)
+            _success.postValue(true)
+        }else{
+            val jObjError = JSONObject(response.errorBody()?.string()!!)
+            _toast.postValue(jObjError.getString("message"))
+            _success.postValue(false)
         }
     }
     private fun handlingResponse(response: Response<ResponseBody>): ResponseBody?{

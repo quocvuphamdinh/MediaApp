@@ -13,6 +13,8 @@
         android:layout_width="60dp"
         android:layout_height="60dp"/>
     <TextView
+        android:ellipsize="end"
+        android:maxLines="1"
         android:layout_toRightOf="@id/imageViewItemDirectory"
         android:id="@+id/textViewItemDirectoryDetail"
         android:layout_centerInParent="true"
