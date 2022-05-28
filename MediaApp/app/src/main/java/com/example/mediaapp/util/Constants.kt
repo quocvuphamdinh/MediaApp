@@ -27,6 +27,10 @@ object Constants {
     const val MUSIC = "audio/mpeg"
     const val PHOTO = "image/jpeg"
     const val MOVIE = "video/mp4"
+    const val DOCUMENT_EXTENSION = ".pdf"
+    const val MUSIC_EXTENSION = ".mpeg"
+    const val PHOTO_EXTENSION = ".jpeg"
+    const val MOVIE_EXTENSION= ".mp4"
     const val MY_SPACE = 1
     const val SHARE_WITH_ME = 2
     const val FAVORITE = 3

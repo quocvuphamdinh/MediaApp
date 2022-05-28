@@ -69,6 +69,7 @@ class DirectoryDetailFragment : Fragment() {
         mActivityResult = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback<ActivityResult>{ result ->
+                viewModel.isShowLoading = true
                 val intentData = result.data
                 if (intentData!=null){
                     val uri = intentData.data
@@ -76,7 +77,7 @@ class DirectoryDetailFragment : Fragment() {
                         val path = RealPathFileUtil.getRealPathFromURI(requireContext(), it)
                         path?.let { p->
                             loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
-                            viewModel.uploadFile(if(childId==null) parentId!! else childId!! , level, p)
+                            viewModel.uploadFile(if(childId==null) parentId!! else childId!! , p)
                         }
                     }
                 }
@@ -87,6 +88,8 @@ class DirectoryDetailFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.imageViewMoreOptions.setOnClickListener {
+            Log.d("level", parentId!!.toString())
+            Log.d("level", level.toString())
             showBottomSheetOption(null)
         }
     }
@@ -226,7 +229,7 @@ class DirectoryDetailFragment : Fragment() {
     }
 
     private fun showBottomSheetOption(any: Any?){
-        BottomSheetOptionFragment(any is Directory, rootType).apply {
+        BottomSheetOptionFragment(any is Directory || any == null, rootType).apply {
             if((any!=null && any is Directory)){
                 setTitleName(any.name)
             }else if(any!=null && any is File){
@@ -234,13 +237,14 @@ class DirectoryDetailFragment : Fragment() {
             } else{
                 setTitleName(binding.textViewTitleDirectoryDetail.text.toString())
             }
-            if(any is Directory){
+            if(any is Directory || any == null){
                 setClickCreateNewFolder {
                     showDialogCreateDirectory(any, "Create")
                     closeBottomSheet()
                 }
                 setClickCreateNewFile {
-                    childId = any.id?.toString()
+                    childId = if(any is Directory) any.id?.toString() else null
+                    Log.d("level", if(childId==null) "null" else childId!!)
                     Constants.clickRequestPermissionToAccessFile(requireActivity()) { openFile() }
                     closeBottomSheet()
                 }

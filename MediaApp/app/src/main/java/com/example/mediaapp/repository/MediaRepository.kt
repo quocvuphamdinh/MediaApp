@@ -22,11 +22,14 @@ class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferenc
         val file = File(path)
         var type =""
         when(level){
+            0 -> type = "multipart/form-data"
             1 -> type = Constants.DOCUMENT
             2 -> type = Constants.MUSIC
             3 -> type = Constants.PHOTO
             4 -> type = Constants.MOVIE
         }
+        Log.d("levelvu_directoryid", directoryId)
+        Log.d("level_type", type)
         val requestBodyFile = RequestBody.create(MediaType.parse(type), file)
         val multipartFile = MultipartBody.Part.createFormData("multipartFile", file.name, requestBodyFile)
         val requestBodyDisplayName = RequestBody.create(MediaType.parse("multipart/form-data"), file.name)

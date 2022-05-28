@@ -55,8 +55,15 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
         }
     }
 
-    fun uploadFile(directoryId: String, level: Int, path: String) = viewModelScope.launch {
+    fun uploadFile(directoryId: String, path: String) = viewModelScope.launch {
         try {
+            val level = when(path.substring(path.lastIndexOf("."))){
+                Constants.MUSIC_EXTENSION -> 2
+                Constants.PHOTO_EXTENSION -> 3
+                Constants.MOVIE_EXTENSION -> 4
+                Constants.DOCUMENT_EXTENSION -> 1
+                else -> 0
+            }
             val response = mediaRepository.uploadFile(directoryId, path, level)
             handlingResponse2(response, "Upload file successfully !")
         }catch (e: Exception){

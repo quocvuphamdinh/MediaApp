@@ -120,26 +120,29 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
     fun uploadFile(path: String) = viewModelScope.launch {
         try {
             val level = when(path.substring(path.lastIndexOf("."))){
-                ".mp3" -> 2
-                ".jpg", ".png", ".gif", ".jpeg" -> 3
-                ".mp4" -> 4
-                else -> 1
+                Constants.MUSIC_EXTENSION -> 2
+                Constants.PHOTO_EXTENSION -> 3
+                Constants.MOVIE_EXTENSION -> 4
+                Constants.DOCUMENT_EXTENSION -> 1
+                else -> 0
             }
-            val directoryId = _folderRoots.value!![level-1].id
-            val response = mediaRepository.uploadFile(directoryId.toString(), path, level)
-            if(response.isSuccessful){
-                _toast.postValue("Upload file successfully !")
-                _success.postValue(true)
-                when(level){
-                    1 -> updateFilesAfterUpload(_fileDocuments, level, pageDocumentFile)
-                    2 -> updateFilesAfterUpload(_fileMusics, level, pageMusicFile)
-                    3 -> updateFilesAfterUpload(_filePhotos, level, pagePhotoFile)
-                    4 -> updateFilesAfterUpload(_fileMovies, level, pageMovieFile)
+            if(level!=0){
+                val directoryId = _folderRoots.value!![level-1].id
+                val response = mediaRepository.uploadFile(directoryId.toString(), path, level)
+                if(response.isSuccessful){
+                    _toast.postValue("Upload file successfully !")
+                    _success.postValue(true)
+                    when(level){
+                        1 -> updateFilesAfterUpload(_fileDocuments, level, pageDocumentFile)
+                        2 -> updateFilesAfterUpload(_fileMusics, level, pageMusicFile)
+                        3 -> updateFilesAfterUpload(_filePhotos, level, pagePhotoFile)
+                        4 -> updateFilesAfterUpload(_fileMovies, level, pageMovieFile)
+                    }
+                }else{
+                    val jObjError = JSONObject(response.errorBody()?.string()!!)
+                    _toast.postValue(jObjError.getString("message"))
+                    _success.postValue(false)
                 }
-            }else{
-                val jObjError = JSONObject(response.errorBody()?.string()!!)
-                _toast.postValue(jObjError.getString("message"))
-                _success.postValue(false)
             }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
