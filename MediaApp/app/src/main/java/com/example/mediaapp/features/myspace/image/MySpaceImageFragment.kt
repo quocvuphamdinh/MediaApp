@@ -22,7 +22,6 @@ import com.example.mediaapp.features.util.BottomSheetOptionFragment
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.DataStore
 import com.example.mediaapp.util.MediaApplication
 
 class MySpaceImageFragment : Fragment() {
