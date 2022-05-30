@@ -52,6 +52,10 @@ class FavoriteMusicFragment : Fragment() {
             override fun clickItem(directory: Directory) {
 
             }
+
+            override fun longClickItem(directory: Directory) {
+
+            }
         })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvFavoriteFolderMusic.layoutManager = GridLayoutManager(requireContext(), 2)

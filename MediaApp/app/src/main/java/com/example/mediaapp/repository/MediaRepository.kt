@@ -12,29 +12,20 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import java.io.File
+import java.net.URLConnection
 
 class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferences: SharedPreferences) {
 
     //remote
     suspend fun deleteFile(fileId: String) = mediaAPI.deleteFile(fileId, "Bearer ${getUserToken()}")
 
-    suspend fun uploadFile(directoryId: String, path: String, level: Int): Response<ResponseBody>{
+    suspend fun uploadFile(directoryId: String, path: String): Response<ResponseBody>{
         val file = File(path)
-        var type =""
-        when(level){
-            0 -> type = "multipart/form-data"
-            1 -> type = Constants.DOCUMENT
-            2 -> type = Constants.MUSIC
-            3 -> type = Constants.PHOTO
-            4 -> type = Constants.MOVIE
-        }
-        Log.d("levelvu_directoryid", directoryId)
-        Log.d("level_type", type)
-        val requestBodyFile = RequestBody.create(MediaType.parse(type), file)
+        val mimeType: String = URLConnection.guessContentTypeFromName(file.name)
+        Log.d("levelne", mimeType)
+        val requestBodyFile = RequestBody.create(MediaType.parse(mimeType), file)
         val multipartFile = MultipartBody.Part.createFormData("multipartFile", file.name, requestBodyFile)
-        val requestBodyDisplayName = RequestBody.create(MediaType.parse("multipart/form-data"), file.name)
-        val requestBodyLevel = RequestBody.create(MediaType.parse("multipart/form-data"), level.toString())
-        return mediaAPI.uploadFile(directoryId, multipartFile, requestBodyDisplayName, requestBodyLevel, "Bearer ${getUserToken()}")
+        return mediaAPI.uploadFile(directoryId, multipartFile, "Bearer ${getUserToken()}")
     }
 
     suspend fun deleteDirectory(directoryId: String) = mediaAPI.deleteDirectory(directoryId, "Bearer ${getUserToken()}")

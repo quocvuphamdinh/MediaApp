@@ -52,6 +52,10 @@ class FavoriteVideoFragment : Fragment() {
             override fun clickItem(directory: Directory) {
 
             }
+
+            override fun longClickItem(directory: Directory) {
+
+            }
         })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvFavoriteFolderVideo.layoutManager = GridLayoutManager(requireContext(), 2)

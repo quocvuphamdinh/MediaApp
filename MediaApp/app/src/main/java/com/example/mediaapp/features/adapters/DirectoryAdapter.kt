@@ -16,6 +16,7 @@ class DirectoryAdapter(private val cLickItemDirectory: CLickItemDirectory) :
 
     interface CLickItemDirectory {
         fun clickItem(directory: Directory)
+        fun longClickItem(directory: Directory)
     }
 
     inner class DirectoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -48,6 +49,11 @@ class DirectoryAdapter(private val cLickItemDirectory: CLickItemDirectory) :
         holder.txtName.text = directory.name
         holder.imgFolder.setOnClickListener {
             cLickItemDirectory.clickItem(directory)
+        }
+        holder.imgFolder.isLongClickable = true
+        holder.imgFolder.setOnLongClickListener {
+            cLickItemDirectory.longClickItem(directory)
+            true
         }
     }
 

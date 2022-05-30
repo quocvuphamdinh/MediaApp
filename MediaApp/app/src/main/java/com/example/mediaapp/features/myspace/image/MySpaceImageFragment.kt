@@ -18,6 +18,7 @@ import com.example.mediaapp.features.adapters.DirectoryAdapter
 import com.example.mediaapp.features.adapters.FileAdapter
 import com.example.mediaapp.features.myspace.MySpaceViewModel
 import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
+import com.example.mediaapp.features.util.BottomSheetOptionFragment
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
@@ -49,6 +50,35 @@ class MySpaceImageFragment : Fragment() {
         setUpRecyclerViewFile()
         subcribeToObservers()
         setUpLoadMoreInRecyclerView()
+    }
+    private fun showBottomSheetOption(directory: Directory){
+        BottomSheetOptionFragment(true, Constants.MY_SPACE).apply {
+            setTitleName(directory.name)
+            setClickCreateNewFolder {
+                viewModel.setDirectoryLongClick(directory, 1)
+                closeBottomSheet()
+            }
+            setClickCreateNewFile {
+                viewModel.setDirectoryLongClick(directory, 2)
+                closeBottomSheet()
+            }
+            setClickShare {
+                viewModel.setDirectoryLongClick(directory, 3)
+                closeBottomSheet()
+            }
+            setClickAddToFavorite {
+                viewModel.setDirectoryLongClick(directory, 4)
+                closeBottomSheet()
+            }
+            setClickEdit {
+                viewModel.setDirectoryLongClick(directory, 5)
+                closeBottomSheet()
+            }
+            setClickDelete {
+                viewModel.setDirectoryLongClick(directory, 6)
+                closeBottomSheet()
+            }
+        }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -116,6 +146,10 @@ class MySpaceImageFragment : Fragment() {
                     R.id.action_mySpaceFragment_to_directoryDetailFragment,
                     bundle
                 )
+            }
+
+            override fun longClickItem(directory: Directory) {
+                showBottomSheetOption(directory)
             }
         })
         binding.rcvMySpaceFolderImage.layoutManager = GridLayoutManager(requireContext(), 2)

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
+import com.example.mediaapp.models.User
 import com.example.mediaapp.repository.MediaRepository
 import com.example.mediaapp.util.Constants
 import com.google.gson.Gson
@@ -96,6 +97,10 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
     val isHaveMoreMoviesFile: LiveData<Boolean>
         get() = _isHaveMoreMoviesFile
 
+    private var _directoryLongClick: MutableLiveData<Directory> = MutableLiveData()
+    val directoryLongClick: LiveData<Directory>
+    get() = _directoryLongClick
+
     var pageDocument = 0
     var pageMusic = 0
     var pagePhoto = 0
@@ -106,6 +111,12 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
     var pagePhotoFile = 0
     var pageMovieFile = 0
 
+    var option = 1
+
+    fun setDirectoryLongClick(directory: Directory, option: Int) {
+        _directoryLongClick.postValue(directory)
+        this.option = option
+    }
     fun resetToast() = _toast.postValue("")
     fun setVisibleFab(value: Boolean){
         _isShowFab.postValue(value)
@@ -117,7 +128,19 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
         }
         return ""
     }
-    fun uploadFile(path: String) = viewModelScope.launch {
+    fun getAccountsByKeyword(keyword: String, accounts: MutableLiveData<List<User>>) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.getAccountsByKeyword(keyword)
+            if(response.body()==null){
+                accounts.postValue(ArrayList())
+            }else{
+                accounts.postValue(response.body())
+            }
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+        }
+    }
+    fun uploadFile(path: String, isFolderRoot: Boolean, directory: Directory?) = viewModelScope.launch {
         try {
             val level = when(path.substring(path.lastIndexOf("."))){
                 Constants.MUSIC_EXTENSION -> 2
@@ -127,22 +150,23 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
                 else -> 0
             }
             if(level!=0){
-                val directoryId = _folderRoots.value!![level-1].id
-                val response = mediaRepository.uploadFile(directoryId.toString(), path, level)
-                if(response.isSuccessful){
-                    _toast.postValue("Upload file successfully !")
-                    _success.postValue(true)
-                    when(level){
-                        1 -> updateFilesAfterUpload(_fileDocuments, level, pageDocumentFile)
-                        2 -> updateFilesAfterUpload(_fileMusics, level, pageMusicFile)
-                        3 -> updateFilesAfterUpload(_filePhotos, level, pagePhotoFile)
-                        4 -> updateFilesAfterUpload(_fileMovies, level, pageMovieFile)
-                    }
+                var directoryId = ""
+                directoryId = if(isFolderRoot){
+                    _folderRoots.value!![level-1].id.toString()
                 }else{
-                    val jObjError = JSONObject(response.errorBody()?.string()!!)
-                    _toast.postValue(jObjError.getString("message"))
-                    _success.postValue(false)
+                    directory?.id.toString()
                 }
+                val response = mediaRepository.uploadFile(directoryId, path)
+                handlingResponse2(response, "Upload file successfully !")
+                when(level){
+                    1 -> updateFilesAfterUpload(_fileDocuments, level, pageDocumentFile)
+                    2 -> updateFilesAfterUpload(_fileMusics, level, pageMusicFile)
+                    3 -> updateFilesAfterUpload(_filePhotos, level, pagePhotoFile)
+                    4 -> updateFilesAfterUpload(_fileMovies, level, pageMovieFile)
+                }
+            }else{
+                _toast.postValue("File type is not accepted !!")
+                _success.postValue(false)
             }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
@@ -150,12 +174,39 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
         }
     }
     private fun updateFilesAfterUpload(listMutable: MutableLiveData<List<File>>, level: Int, currentPage: Int) = viewModelScope.launch{
-        val list = ArrayList<File>()
+        val list: MutableList<File> = ArrayList()
         for(i in 0..currentPage){
             list.addAll(convertToListFile(handlingResponse(mediaRepository.getListFileByDirectory(_folderRoots.value!![level-1].id.toString(), i, 10))))
         }
-        list.removeAll(listMutable.value!!)
-        listMutable.postValue(listMutable.value?.plus(list))
+        listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
+    }
+    fun deleteDirectory(directory: Directory) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.deleteDirectory(directory.id.toString())
+            handlingResponse2(response, "Delete directory successfully !")
+            updateDirectoriesAfterEdit(directory.id.toString(), "", directory.level, true)
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
+    fun addDirectoryToShare(directoryId: String, userId: String, name: String) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.addDirectoryToShare(directoryId, userId)
+            handlingResponse2(response, "Share to $name successfully !")
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
+    fun addDirectoryToFavorite(directoryId: String) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.addDirectoryToFavorite(directoryId)
+            handlingResponse2(response, "Add to favorite successfully !")
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
     }
     private fun update(list: MutableLiveData<List<Directory>>, id: String, newName: String, level: Int, isDelete: Boolean){
         val oldDirectory = list.value!!.find { it.id == UUID.fromString(id) }
@@ -179,30 +230,32 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
             4 -> update(_folderMovies, id, newName, level, isDelete)
         }
     }
+    fun editDirectory(directory: Directory, newName: String) = viewModelScope.launch {
+        try {
+            val response = mediaRepository.editDirectory(directory.id.toString(), newName)
+            handlingResponse2(response, "Edit directory successfully !")
+            updateDirectoriesAfterEdit(directory.id.toString(), newName, directory.level, false)
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
     private fun updateDirectoriesAfterCreate(listMutable: MutableLiveData<List<Directory>>, level: Int, currentPage: Int) = viewModelScope.launch{
-        val list = ArrayList<Directory>()
+        val list: MutableList<Directory> = ArrayList()
         for(i in 0..currentPage){
             list.addAll(convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(_folderRoots.value!![level-1].id.toString(), i, 10))))
         }
-        list.removeAll(listMutable.value!!)
-        listMutable.postValue(listMutable.value?.plus(list))
+        listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
     }
     fun createDirectory(directory: Directory) = viewModelScope.launch {
         try {
             val response = mediaRepository.createDirectory(directory)
-            if(response.isSuccessful){
-                _toast.postValue("Create directory successfully !")
-                _success.postValue(true)
-                when(directory.level){
-                    1 -> updateDirectoriesAfterCreate(_folderDocuments, directory.level, pageDocument)
-                    2 -> updateDirectoriesAfterCreate(_folderMusics, directory.level, pageMusic)
-                    3 -> updateDirectoriesAfterCreate(_folderPhotos, directory.level, pagePhoto)
-                    4 -> updateDirectoriesAfterCreate(_folderMovies, directory.level, pageMovie)
-                }
-            }else{
-                val jObjError = JSONObject(response.errorBody()?.string()!!)
-                _toast.postValue(jObjError.getString("message"))
-                _success.postValue(false)
+            handlingResponse2(response, "Create directory successfully !")
+            when(directory.level){
+                1 -> updateDirectoriesAfterCreate(_folderDocuments, directory.level, pageDocument)
+                2 -> updateDirectoriesAfterCreate(_folderMusics, directory.level, pageMusic)
+                3 -> updateDirectoriesAfterCreate(_folderPhotos, directory.level, pagePhoto)
+                4 -> updateDirectoriesAfterCreate(_folderMovies, directory.level, pageMovie)
             }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
@@ -309,6 +362,16 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
             val jObjError = JSONObject(response.errorBody()?.string()!!)
             _toast.postValue(jObjError.getString("message"))
             null
+        }
+    }
+    private fun handlingResponse2(response: Response<ResponseBody>, successToast: String){
+        if(response.isSuccessful){
+            _toast.postValue(successToast)
+            _success.postValue(true)
+        }else{
+            val jObjError = JSONObject(response.errorBody()?.string()!!)
+            _toast.postValue(jObjError.getString("message"))
+            _success.postValue(false)
         }
     }
 }

@@ -30,6 +30,9 @@ import com.example.mediaapp.features.myspace.video.MySpaceVideoFragment
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.util.LoadingDialogFragment
+import com.example.mediaapp.features.util.SearchAccountDialogFragment
+import com.example.mediaapp.features.util.WarningDialogFragment
+import com.example.mediaapp.models.File
 import com.example.mediaapp.util.MediaApplication
 import com.example.mediaapp.util.RealPathFileUtil
 import com.google.android.material.tabs.TabLayout
@@ -41,6 +44,7 @@ class MySpaceFragment : Fragment() {
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private lateinit var mActivityResult:ActivityResultLauncher<Intent>
     private var parentId: String? = null
+    private var directory: Directory? = null
     private val loadingDialogFragment: LoadingDialogFragment by lazy { LoadingDialogFragment() }
     private val rotateOpen: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_open_anim) }
     private val rotateClose: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_close_anim) }
@@ -89,6 +93,7 @@ class MySpaceFragment : Fragment() {
             showDialogCreateDirectory()
         }
         binding.fabAddFile.setOnClickListener {
+            directory = null
             Constants.clickRequestPermissionToAccessFile(requireActivity()) { openFile() }
         }
         binding.tabLayoutMyPlace.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -117,12 +122,33 @@ class MySpaceFragment : Fragment() {
                     uri?.let {
                         val path = RealPathFileUtil.getRealPathFromURI(requireContext(), it)
                         path?.let { p->
-                            viewModel.uploadFile(p)
+                            viewModel.uploadFile(p, directory == null, if(directory ==null) null else directory)
                         }
                     }
                 }
             }
         )
+    }
+
+    private fun showDialogWarning(item: Any?){
+        WarningDialogFragment("Are you sure ?", "Do you want to delete ${if (item is File) "file" else "directory"}").apply {
+            setClickYes {
+                loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                when(item){
+                    is Directory -> viewModel.deleteDirectory(item)
+                    is File -> {//viewModel.deleteFile(item.id.toString())
+                    }
+                }
+            }
+        }.show(parentFragmentManager, Constants.WARNING_DIALOG)
+    }
+
+    private fun addDirectoryToFavorite(any: Any){
+        loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+        when(any){
+            is Directory ->  viewModel.addDirectoryToFavorite(any.id.toString())
+            is File -> {}
+        }
     }
 
     private fun openFile() {
@@ -132,7 +158,74 @@ class MySpaceFragment : Fragment() {
         mActivityResult.launch(Intent.createChooser(intent, "Choose your file"))
     }
 
+    private fun showDialogSearchAccount(item: Any){
+        SearchAccountDialogFragment()
+            .apply {
+                setTextChangeListener { keyword ->
+                    viewModel.getAccountsByKeyword(keyword, accounts)
+                }
+                setClickAccountItem { user ->
+                    loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                    when(item){
+                        is Directory -> viewModel.addDirectoryToShare(item.id.toString(), user.id.toString(), "${user.firstName} ${user.lastName}")
+                        is File -> {}
+                    }
+                }
+            }
+            .show(parentFragmentManager, Constants.SEARCH_DIALOG_ACCOUNT_TAG)
+    }
+    private fun showCreateDirectoryDialog(directory: Directory, nameYesButton: String){
+        CreateDirectoryDialogFragment(false, nameYesButton).apply {
+            if(nameYesButton=="Rename"){
+                setOldNameToEditText(directory.name)
+            }
+            setClickCreateWithoutRadioValue { value ->
+                if(value.isNotEmpty()){
+                    if(nameYesButton=="Create"){
+                        viewModel.createDirectory(Directory(value, directory.level, directory.id!!))
+                    }else{
+                        viewModel.editDirectory(directory, value)
+                    }
+                    cancelDialog()
+                    loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                }else{
+                    Toast.makeText(requireContext(), "Please enter your folder name !", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.show(parentFragmentManager, Constants.CREATE_DIRECTORY_DIALOG_TAG)
+    }
+
     private fun subcribeToObservers() {
+        viewModel.directoryLongClick.observe(viewLifecycleOwner, Observer {
+            when(viewModel.option){
+                1 -> {
+                    showCreateDirectoryDialog(it, "Create")
+                    viewModel.option = 0
+                }
+                2 -> {
+                    this@MySpaceFragment.directory = it
+                    Constants.clickRequestPermissionToAccessFile(requireActivity()){openFile()}
+                    viewModel.option = 0
+                }
+                3 -> {
+                    showDialogSearchAccount(it)
+                    viewModel.option = 0
+                }
+                4 -> {
+                    addDirectoryToFavorite(it)
+                    viewModel.option = 0
+                }
+                5 -> {
+                    showCreateDirectoryDialog(it, "Rename")
+                    viewModel.option = 0
+                }
+                6 -> {
+                    showDialogWarning(it)
+                    viewModel.option = 0
+                }
+            }
+            Log.d("data", "name: ${it.name} - option: ${viewModel.option}")
+        })
         viewModel.success.observe(viewLifecycleOwner, Observer {
             loadingDialogFragment.cancelDialog()
         })

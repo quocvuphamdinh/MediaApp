@@ -52,6 +52,10 @@ class ShareWithMeFileFragment : Fragment() {
             override fun clickItem(directory: Directory) {
 
             }
+
+            override fun longClickItem(directory: Directory) {
+
+            }
         })
         folderAdapter.submitList(DataStore.getListDirectory())
         binding.rcvShareWithMeFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)

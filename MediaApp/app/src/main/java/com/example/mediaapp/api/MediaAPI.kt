@@ -60,8 +60,6 @@ interface MediaAPI {
     @POST("files/upload/{directoryId}")
     suspend fun uploadFile(@Path("directoryId") directoryId: String,
                            @Part multipartFile: MultipartBody.Part,
-                           @Part("displayName") displayName: RequestBody,
-                           @Part("level") level: RequestBody,
                            @Header("Authorization") token:String
     ): Response<ResponseBody>
 
