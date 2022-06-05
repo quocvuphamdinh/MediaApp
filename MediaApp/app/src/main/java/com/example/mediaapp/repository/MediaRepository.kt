@@ -17,12 +17,32 @@ import java.net.URLConnection
 class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferences: SharedPreferences) {
 
     //remote
+    suspend fun deleteFileShareByCustomer(fileId: String) = mediaAPI.deleteFileShareByCustomer(fileId, "Bearer ${getUserToken()}")
+
+    suspend fun getListFileInShare(directoryId: String, page: Int, pageSize: Int) = mediaAPI.getListFileInShare(directoryId, page, pageSize, "Bearer ${getUserToken()}")
+
+    suspend fun deleteDirectoryShareByCustomer(directoryId: String) = mediaAPI.deleteDirectoryShareByCustomer(directoryId, "Bearer ${getUserToken()}")
+
+    suspend fun addFileToFavorite(fileId: String): Response<ResponseBody>{
+        val body = HashMap<String, String>()
+        body["fileId"] = fileId
+        return mediaAPI.addFileToFavorite(body, "Bearer ${getUserToken()}")
+    }
+
+    suspend fun addFileToShare(fileId: String, emailReceiver: String): Response<ResponseBody>{
+        val body = HashMap<String, String>()
+        body["fileId"] = fileId
+        body["emailReceiver"] = emailReceiver
+        return mediaAPI.addFileToShare(body, "Bearer ${getUserToken()}")
+    }
+
+    suspend fun getFolderInShare(directoryId: String, page: Int, pageSize: Int) = mediaAPI.getFolderInShare(directoryId, page, pageSize,"Bearer ${getUserToken()}")
+
     suspend fun deleteFile(fileId: String) = mediaAPI.deleteFile(fileId, "Bearer ${getUserToken()}")
 
     suspend fun uploadFile(directoryId: String, path: String): Response<ResponseBody>{
         val file = File(path)
         val mimeType: String = URLConnection.guessContentTypeFromName(file.name)
-        Log.d("levelne", mimeType)
         val requestBodyFile = RequestBody.create(MediaType.parse(mimeType), file)
         val multipartFile = MultipartBody.Part.createFormData("multipartFile", file.name, requestBodyFile)
         return mediaAPI.uploadFile(directoryId, multipartFile, "Bearer ${getUserToken()}")
@@ -30,14 +50,12 @@ class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferenc
 
     suspend fun deleteDirectory(directoryId: String) = mediaAPI.deleteDirectory(directoryId, "Bearer ${getUserToken()}")
 
-    suspend fun addDirectoryToShare(directoryId: String, userId: String): Response<ResponseBody> {
+    suspend fun addDirectoryToShare(directoryId: String, emailReceiver: String): Response<ResponseBody> {
         val body = HashMap<String, String>()
         body["directoryId"] = directoryId
-        body["userId"] = userId
+        body["emailReceiver"] = emailReceiver
         return mediaAPI.addDirectoryToShare(body, "Bearer ${getUserToken()}")
     }
-
-    suspend fun getAccountsByKeyword(keyword: String) = mediaAPI.getAccountsByKeyword(keyword, "Bearer ${getUserToken()}")
 
     suspend fun addDirectoryToFavorite(directoryId: String): Response<ResponseBody> {
         val body = HashMap<String, String>()

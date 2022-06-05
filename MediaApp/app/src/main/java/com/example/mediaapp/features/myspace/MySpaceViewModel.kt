@@ -97,9 +97,9 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
     val isHaveMoreMoviesFile: LiveData<Boolean>
         get() = _isHaveMoreMoviesFile
 
-    private var _directoryLongClick: MutableLiveData<Directory> = MutableLiveData()
-    val directoryLongClick: LiveData<Directory>
-    get() = _directoryLongClick
+    private var _directoryAndFileLongClick: MutableLiveData<Any> = MutableLiveData()
+    val directoryAndFileLongClick: LiveData<Any>
+    get() = _directoryAndFileLongClick
 
     var pageDocument = 0
     var pageMusic = 0
@@ -112,9 +112,8 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
     var pageMovieFile = 0
 
     var option = 1
-
-    fun setDirectoryLongClick(directory: Directory, option: Int) {
-        _directoryLongClick.postValue(directory)
+    fun setDirectoryLongClick(any: Any, option: Int) {
+        _directoryAndFileLongClick.postValue(any)
         this.option = option
     }
     fun resetToast() = _toast.postValue("")
@@ -128,13 +127,35 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
         }
         return ""
     }
-    fun getAccountsByKeyword(keyword: String, accounts: MutableLiveData<List<User>>) = viewModelScope.launch {
+    private fun refresh(listDirectoryMutable: MutableLiveData<List<Directory>>, listFileMutable: MutableLiveData<List<File>>, listDirectoryNew: List<Directory>, listFileNew: List<File>){
+        listDirectoryMutable.postValue(listDirectoryNew)
+        listFileMutable.postValue(listFileNew)
+    }
+    fun refreshFoldersAndFiles(level: Int) = viewModelScope.launch {
         try {
-            val response = mediaRepository.getAccountsByKeyword(keyword)
-            if(response.body()==null){
-                accounts.postValue(ArrayList())
-            }else{
-                accounts.postValue(response.body())
+            val response = mediaRepository.getFolderByParentId(_folderRoots.value!![level-1].id.toString(), 0, 10)
+            val response2 = mediaRepository.getListFileByDirectory(_folderRoots.value!![level-1].id.toString(), 0, 10)
+            when(level){
+                1 -> {
+                    refresh(_folderDocuments, _fileDocuments, convertToListDirectory(handlingResponse(response)), convertToListFile(handlingResponse(response2)))
+                    pageDocument = 0
+                    pageDocumentFile = 0
+                }
+                2-> {
+                    refresh(_folderMusics, _fileMusics, convertToListDirectory(handlingResponse(response)), convertToListFile(handlingResponse(response2)))
+                    pageMusic = 0
+                    pageMusicFile = 0
+                }
+                3-> {
+                    refresh(_folderPhotos, _filePhotos, convertToListDirectory(handlingResponse(response)), convertToListFile(handlingResponse(response2)))
+                    pagePhoto = 0
+                    pagePhotoFile = 0
+                }
+                4 -> {
+                    refresh(_folderMovies, _fileMovies, convertToListDirectory(handlingResponse(response)), convertToListFile(handlingResponse(response2)))
+                    pageMovie = 0
+                    pageMovieFile = 0
+                }
             }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
@@ -174,38 +195,83 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
         }
     }
     private fun updateFilesAfterUpload(listMutable: MutableLiveData<List<File>>, level: Int, currentPage: Int) = viewModelScope.launch{
-        val list: MutableList<File> = ArrayList()
-        for(i in 0..currentPage){
-            list.addAll(convertToListFile(handlingResponse(mediaRepository.getListFileByDirectory(_folderRoots.value!![level-1].id.toString(), i, 10))))
-        }
-        listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
-    }
-    fun deleteDirectory(directory: Directory) = viewModelScope.launch {
         try {
-            val response = mediaRepository.deleteDirectory(directory.id.toString())
-            handlingResponse2(response, "Delete directory successfully !")
-            updateDirectoriesAfterEdit(directory.id.toString(), "", directory.level, true)
+            val list: MutableList<File> = ArrayList()
+            for(i in 0..currentPage){
+                list.addAll(convertToListFile(handlingResponse(mediaRepository.getListFileByDirectory(_folderRoots.value!![level-1].id.toString(), i, 10))))
+            }
+            listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+            listMutable.postValue(listMutable.value)
+        }
+    }
+    fun deleteDirectoryOrFile(any: Any) = viewModelScope.launch {
+        try {
+            when(any){
+                is Directory ->{
+                    val response = mediaRepository.deleteDirectory(any.id.toString())
+                    handlingResponse2(response, "Delete directory successfully !")
+                    updateDirectoriesAfterEdit(any.id.toString(), "", any.level, true)
+                }
+                is File -> {
+                    val response = mediaRepository.deleteFile(any.id.toString())
+                    handlingResponse2(response, "Delete file successfully !")
+                    updateFilesAfterEdit(any.id.toString(), "", any.type, true)
+                }
+            }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)
         }
     }
-    fun addDirectoryToShare(directoryId: String, userId: String, name: String) = viewModelScope.launch {
+    fun addDirectoryOrFileToShare(any: Any, email: String, name: String) = viewModelScope.launch {
         try {
-            val response = mediaRepository.addDirectoryToShare(directoryId, userId)
-            handlingResponse2(response, "Share to $name successfully !")
+            when(any){
+                is Directory -> {
+                    val response = mediaRepository.addDirectoryToShare(any.id.toString(), email)
+                    handlingResponse2(response, "Share directory to $name successfully !")
+                }
+                is File -> {
+                    val response = mediaRepository.addFileToShare(any.id.toString(), email)
+                    handlingResponse2(response, "Share file to $name successfully !")
+                }
+            }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)
         }
     }
-    fun addDirectoryToFavorite(directoryId: String) = viewModelScope.launch {
+    fun addDirectoryOrFileToFavorite(any: Any) = viewModelScope.launch {
         try {
-            val response = mediaRepository.addDirectoryToFavorite(directoryId)
-            handlingResponse2(response, "Add to favorite successfully !")
+            when(any){
+                is Directory -> {
+                    val response = mediaRepository.addDirectoryToFavorite(any.id.toString())
+                    handlingResponse2(response, "Add directory to favorite successfully !")
+                }
+                is File -> {
+                    val response = mediaRepository.addFileToFavorite(any.id.toString())
+                    handlingResponse2(response, "Add file to favorite successfully !")
+                }
+            }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)
+        }
+    }
+    private fun update2(list: MutableLiveData<List<File>>, id: String, newName: String, isDelete: Boolean){
+        val oldFile = list.value!!.find { it.id == UUID.fromString(id) }
+        oldFile?.let {
+            val newFile = it.copy(name = newName, displayName = it.displayName, size = it.size, directoryId = it.directoryId, type = it.type)
+            newFile.id = it.id
+            val mutableList = list.value!!.toMutableList()
+            if(!isDelete){
+                mutableList[list.value!!.indexOf(it)] = newFile
+            }else{
+                mutableList.remove(it)
+            }
+            list.postValue(mutableList.toList())
         }
     }
     private fun update(list: MutableLiveData<List<Directory>>, id: String, newName: String, level: Int, isDelete: Boolean){
@@ -222,6 +288,14 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
             list.postValue(mutableList.toList())
         }
     }
+    private fun updateFilesAfterEdit(id: String, newName: String, type: String, isDelete: Boolean){
+        when(type){
+            Constants.DOCUMENT -> update2(_fileDocuments, id, newName, isDelete)
+            Constants.MUSIC -> update2(_fileMusics, id, newName, isDelete)
+            Constants.PHOTO -> update2(_filePhotos, id, newName, isDelete)
+            Constants.MOVIE -> update2(_fileMovies, id, newName, isDelete)
+        }
+    }
     fun updateDirectoriesAfterEdit(id: String, newName: String, level: Int, isDelete: Boolean){
         when(level){
             1 -> update(_folderDocuments, id, newName, level, isDelete)
@@ -230,22 +304,33 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
             4 -> update(_folderMovies, id, newName, level, isDelete)
         }
     }
-    fun editDirectory(directory: Directory, newName: String) = viewModelScope.launch {
+    fun editDirectoryOrFile(any: Any, newName: String) = viewModelScope.launch {
         try {
-            val response = mediaRepository.editDirectory(directory.id.toString(), newName)
-            handlingResponse2(response, "Edit directory successfully !")
-            updateDirectoriesAfterEdit(directory.id.toString(), newName, directory.level, false)
+            when(any){
+                is Directory -> {
+                    val response = mediaRepository.editDirectory(any.id.toString(), newName)
+                    handlingResponse2(response, "Edit directory successfully !")
+                    updateDirectoriesAfterEdit(any.id.toString(), newName, any.level, false)
+                }
+                is File -> {}
+            }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)
         }
     }
     private fun updateDirectoriesAfterCreate(listMutable: MutableLiveData<List<Directory>>, level: Int, currentPage: Int) = viewModelScope.launch{
-        val list: MutableList<Directory> = ArrayList()
-        for(i in 0..currentPage){
-            list.addAll(convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(_folderRoots.value!![level-1].id.toString(), i, 10))))
+        try {
+            val list: MutableList<Directory> = ArrayList()
+            for(i in 0..currentPage){
+                list.addAll(convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(_folderRoots.value!![level-1].id.toString(), i, 10))))
+            }
+            listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+            listMutable.postValue(listMutable.value)
         }
-        listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
     }
     fun createDirectory(directory: Directory) = viewModelScope.launch {
         try {
@@ -263,60 +348,66 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
         }
     }
     private fun loadMoreFolders(listMutable: MutableLiveData<List<Directory>>, isHaveMore: MutableLiveData<Boolean>,level: Int, currentPage: Int) = viewModelScope.launch{
-        val list = convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(_folderRoots.value!![level-1].id.toString(), currentPage, 10)))
-        if(list.isNotEmpty()&& listMutable.value?.containsAll(list) == false){
-            isHaveMore.postValue(true)
-        }else{
-            isHaveMore.postValue(false)
+        try {
+            val list = convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(_folderRoots.value!![level-1].id.toString(), currentPage, 10)))
+            if(list.isNotEmpty()&& listMutable.value?.containsAll(list) == false){
+                isHaveMore.postValue(true)
+            }else{
+                isHaveMore.postValue(false)
+            }
+            listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            listMutable.postValue(listMutable.value)
         }
-        listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
     }
 
     private fun loadMoreFiles(listMutable: MutableLiveData<List<File>>, isHaveMore: MutableLiveData<Boolean>,level: Int, currentPage: Int) = viewModelScope.launch{
-        val list = convertToListFile(handlingResponse(mediaRepository.getListFileByDirectory(_folderRoots.value!![level-1].id.toString(), currentPage, 10)))
-        if(list.isNotEmpty()&& listMutable.value?.containsAll(list) == false){
-            isHaveMore.postValue(true)
-        }else{
-            isHaveMore.postValue(false)
+        try {
+            val list = convertToListFile(handlingResponse(mediaRepository.getListFileByDirectory(_folderRoots.value!![level-1].id.toString(), currentPage, 10)))
+            if(list.isNotEmpty()&& listMutable.value?.containsAll(list) == false){
+                isHaveMore.postValue(true)
+            }else{
+                isHaveMore.postValue(false)
+            }
+            listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            listMutable.postValue(listMutable.value)
         }
-        listMutable.postValue(listMutable.value?.plus(list)?.distinctBy { it.id })
     }
 
     fun loadMore(page: Int, level: Int, isDirectoryType: Boolean){
-        try {
-            Log.d("page", page.toString())
-            when(level){
-                1 -> {
-                    if(isDirectoryType){
-                        loadMoreFolders(_folderDocuments, _isHaveMoreDocuments, level, page)
-                    }else{
-                        loadMoreFiles(_fileDocuments, _isHaveMoreDocumentsFile, level, page)
-                    }
-                }
-                2 -> {
-                    if(isDirectoryType){
-                        loadMoreFolders(_folderMusics, _isHaveMoreMusics, level, page)
-                    }else{
-                        loadMoreFiles(_fileMusics, _isHaveMoreMusicsFile, level, page)
-                    }
-                }
-                3 -> {
-                    if(isDirectoryType){
-                        loadMoreFolders(_folderPhotos, _isHaveMorePhotos, level, page)
-                    }else{
-                        loadMoreFiles(_filePhotos, _isHaveMorePhotosFile, level, page)
-                    }
-                }
-                4 -> {
-                    if(isDirectoryType){
-                        loadMoreFolders(_folderMovies, _isHaveMoreMovies, level, page)
-                    }else{
-                        loadMoreFiles(_fileMovies, _isHaveMoreMoviesFile, level, page)
-                    }
+        Log.d("page", page.toString())
+        when(level){
+            1 -> {
+                if(isDirectoryType){
+                    loadMoreFolders(_folderDocuments, _isHaveMoreDocuments, level, page)
+                }else{
+                    loadMoreFiles(_fileDocuments, _isHaveMoreDocumentsFile, level, page)
                 }
             }
-        }catch (e: Exception){
-            _toast.postValue(e.message.toString())
+            2 -> {
+                if(isDirectoryType){
+                    loadMoreFolders(_folderMusics, _isHaveMoreMusics, level, page)
+                }else{
+                    loadMoreFiles(_fileMusics, _isHaveMoreMusicsFile, level, page)
+                }
+            }
+            3 -> {
+                if(isDirectoryType){
+                    loadMoreFolders(_folderPhotos, _isHaveMorePhotos, level, page)
+                }else{
+                    loadMoreFiles(_filePhotos, _isHaveMorePhotosFile, level, page)
+                }
+            }
+            4 -> {
+                if(isDirectoryType){
+                    loadMoreFolders(_folderMovies, _isHaveMoreMovies, level, page)
+                }else{
+                    loadMoreFiles(_fileMovies, _isHaveMoreMoviesFile, level, page)
+                }
+            }
         }
     }
 

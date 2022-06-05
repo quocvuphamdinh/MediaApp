@@ -124,9 +124,9 @@ class DirectoryDetailFragment : Fragment() {
                             binding.prbLoad2.visibility = View.VISIBLE
                         }
                         if(viewModel.currentPageFile>0){
-                            viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, false)
+                            viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, false, rootType)
                         }else{
-                            viewModel.getFoldersAndFilesByParentFolder(parentId!!, true, false)
+                            viewModel.getFoldersAndFilesByParentFolder(parentId!!, true, false, rootType)
                         }
                         viewModel.isShowLoading = true
                     }
@@ -147,13 +147,13 @@ class DirectoryDetailFragment : Fragment() {
                             if((viewModel.isHaveMoreFolders.value==true || viewModel.isHaveMoreFolders.value==null) && isScrolling){
                                 binding.prbLoad.visibility = View.VISIBLE
                             }
-                            viewModel.loadMore(parentId!!, viewModel.currentPageFolder+1, Constants.DIRECTORY_TYPE)
+                            viewModel.loadMore(parentId!!, viewModel.currentPageFolder+1, Constants.DIRECTORY_TYPE, rootType)
                         }
                         1->{
                             if((viewModel.isHaveMoreFiles.value==true || viewModel.isHaveMoreFiles.value==null) && isScrolling){
                                 binding.prbLoad.visibility = View.VISIBLE
                             }
-                            viewModel.loadMore(parentId!!, viewModel.currentPageFile+1, Constants.FILE_TYPE)
+                            viewModel.loadMore(parentId!!, viewModel.currentPageFile+1, Constants.FILE_TYPE, rootType)
                         }
                     }
                 }
@@ -195,7 +195,7 @@ class DirectoryDetailFragment : Fragment() {
                 findNavController().popBackStack()
             }else{
                 viewModel.getFoldersAndFilesByParentFolder(parentId!!, false,
-                    binding.spinnerOption.selectedItemPosition==0
+                    binding.spinnerOption.selectedItemPosition==0, rootType
                 )
             }
         })
@@ -214,17 +214,17 @@ class DirectoryDetailFragment : Fragment() {
         val bundle = arguments
         bundle?.let {
             parentId = it.getString(Constants.DIRECTORY_ID)
+            rootType = it.getInt(Constants.ROOT_TYPE)
             if(isFirstTimeLoad){
-                viewModel.getFoldersAndFilesByParentFolder(parentId!!, true, true)
+                viewModel.getFoldersAndFilesByParentFolder(parentId!!, true, true, rootType)
             }else{
-                viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, true)
+                viewModel.getFoldersAndFilesByParentFolder(parentId!!, false, true, rootType)
             }
             if(!viewModel.isPause){
                 name = it.getString(Constants.DIRECTORY_NAME)
             }
             binding.textViewTitleDirectoryDetail.text = name
             level = it.getInt(Constants.DIRECTORY_LEVEL)
-            rootType = it.getInt(Constants.ROOT_TYPE)
         }
     }
 
@@ -268,44 +268,30 @@ class DirectoryDetailFragment : Fragment() {
         }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
     }
     private fun showDialogSearchAccount(item: Any?){
-        SearchAccountDialogFragment()
+        ShareFolderOrFileDialogFragment()
             .apply {
-                setTextChangeListener { keyword ->
-                    viewModel.getAccountsByKeyword(keyword, accounts)
-                }
-                setClickAccountItem { user ->
+                setClickToShare { email ->
                     loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
-                    when(item){
-                        null -> viewModel.addDirectoryToShare(parentId!!, user.id.toString(), "${user.firstName} ${user.lastName}")
-                        is Directory -> viewModel.addDirectoryToShare(item.id.toString(), user.id.toString(), "${user.firstName} ${user.lastName}")
-                        is File -> {}
-                    }
+                    viewModel.addDirectoryOrFileToShare(item, email, email, parentId)
+                    closeDialog()
                 }
             }
-            .show(parentFragmentManager, Constants.SEARCH_DIALOG_ACCOUNT_TAG)
+            .show(parentFragmentManager, Constants.SHARE_DIALOG_TAG)
     }
 
     private fun addDirectoryToFavorite(any: Any?){
         loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
-        when(any){
-            null -> viewModel.addDirectoryToFavorite(parentId!!)
-            is Directory ->  viewModel.addDirectoryToFavorite(any.id.toString())
-            is File -> {}
-        }
+        viewModel.addDirectoryOrFileToFavorite(any, parentId)
     }
 
     private fun showDialogWarning(item: Any?){
         WarningDialogFragment("Are you sure ?", "Do you want to delete ${if (item is File) "file" else "directory"}").apply {
             setClickYes {
                 loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
-                when(item){
-                    null -> {
-                        viewModel.deleteDirectory(parentId.toString())
-                        mySpaceViewModel.updateDirectoriesAfterEdit(parentId!!, "", level, true)
-                        parentId = null
-                    }
-                    is Directory -> viewModel.deleteDirectory(item.id.toString())
-                    is File -> viewModel.deleteFile(item.id.toString())
+                viewModel.deleteDirectoryOrFile(item, parentId.toString())
+                if (item == null){
+                    mySpaceViewModel.updateDirectoriesAfterEdit(parentId!!, "", level, true)
+                    parentId = null
                 }
             }
         }.show(parentFragmentManager, Constants.WARNING_DIALOG)
@@ -321,16 +307,12 @@ class DirectoryDetailFragment : Fragment() {
             }
             setClickCreateWithoutRadioValue { value ->
                 if(value.isNotEmpty()){
-                    if(nameYesButton=="Create" && item is Directory){
+                    if(nameYesButton=="Create"){
                         clickCreateDirectory(value, item)
                     }else{
-                        when(item){
-                            null ->  {
-                                viewModel.editDirectory(parentId!!, value)
-                                mySpaceViewModel.updateDirectoriesAfterEdit(parentId!!, value, level, false)
-                            }
-                            is Directory ->  viewModel.editDirectory(item.id.toString(), value)
-                            is File -> {}
+                        viewModel.editDirectoryOrFile(item, value, parentId)
+                        if(item==null){
+                            mySpaceViewModel.updateDirectoriesAfterEdit(parentId!!, value, level, false)
                         }
                         if(item==null) {
                             name = value
@@ -346,9 +328,9 @@ class DirectoryDetailFragment : Fragment() {
         }.show(parentFragmentManager, Constants.CREATE_DIRECTORY_DIALOG_TAG)
     }
 
-    private fun clickCreateDirectory(value:String, directory: Directory?){
-        if(directory!=null){
-            viewModel.createDirectory(Directory(value, level, directory.id!!))
+    private fun clickCreateDirectory(value:String, any: Any?){
+        if(any!=null && any is Directory){
+            viewModel.createDirectory(Directory(value, level, any.id!!))
         }else{
             viewModel.createDirectory(Directory(value, level, UUID.fromString(parentId)))
         }
@@ -366,7 +348,10 @@ class DirectoryDetailFragment : Fragment() {
                             bundle.putString(Constants.DIRECTORY_NAME, item.name)
                             bundle.putInt(Constants.DIRECTORY_LEVEL, item.level)
                             bundle.putInt(Constants.ROOT_TYPE, rootType)
-                            findNavController().navigate(R.id.action_directoryDetailFragment_self, bundle)
+                            when(rootType){
+                                Constants.MY_SPACE -> findNavController().navigate(R.id.action_directoryDetailFragment_self, bundle)
+                                Constants.SHARE_WITH_ME -> findNavController().navigate(R.id.action_directoryDetailFragment2_self, bundle)
+                            }
                         }
                         is File -> {
                             Toast.makeText(requireContext(), item.accountId.toString(), Toast.LENGTH_SHORT).show()

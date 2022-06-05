@@ -41,6 +41,10 @@ class FavoriteVideoFragment : Fragment() {
             override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_favoriteFragment_to_videoDetailFragment)
             }
+
+            override fun longClickItem(file: File) {
+                TODO("Not yet implemented")
+            }
         })
         fileAdapter.submitList(DataStore.getListFile())
         binding.rcvFavoriteFileVideo.layoutManager = GridLayoutManager(requireContext(), 2)

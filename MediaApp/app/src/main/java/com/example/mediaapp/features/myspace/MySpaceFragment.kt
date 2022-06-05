@@ -1,8 +1,6 @@
 package com.example.mediaapp.features.myspace
 
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,7 +28,7 @@ import com.example.mediaapp.features.myspace.video.MySpaceVideoFragment
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.util.LoadingDialogFragment
-import com.example.mediaapp.features.util.SearchAccountDialogFragment
+import com.example.mediaapp.features.util.ShareFolderOrFileDialogFragment
 import com.example.mediaapp.features.util.WarningDialogFragment
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.MediaApplication
@@ -131,24 +129,17 @@ class MySpaceFragment : Fragment() {
     }
 
     private fun showDialogWarning(item: Any?){
-        WarningDialogFragment("Are you sure ?", "Do you want to delete ${if (item is File) "file" else "directory"}").apply {
+        WarningDialogFragment("Are you sure ?", "Do you want to delete ${if (item is File) "file" else "directory"} ?").apply {
             setClickYes {
                 loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
-                when(item){
-                    is Directory -> viewModel.deleteDirectory(item)
-                    is File -> {//viewModel.deleteFile(item.id.toString())
-                    }
-                }
+                viewModel.deleteDirectoryOrFile(item!!)
             }
         }.show(parentFragmentManager, Constants.WARNING_DIALOG)
     }
 
     private fun addDirectoryToFavorite(any: Any){
         loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
-        when(any){
-            is Directory ->  viewModel.addDirectoryToFavorite(any.id.toString())
-            is File -> {}
-        }
+        viewModel.addDirectoryOrFileToFavorite(any)
     }
 
     private fun openFile() {
@@ -159,32 +150,30 @@ class MySpaceFragment : Fragment() {
     }
 
     private fun showDialogSearchAccount(item: Any){
-        SearchAccountDialogFragment()
+        ShareFolderOrFileDialogFragment()
             .apply {
-                setTextChangeListener { keyword ->
-                    viewModel.getAccountsByKeyword(keyword, accounts)
-                }
-                setClickAccountItem { user ->
+                setClickToShare { email ->
                     loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
-                    when(item){
-                        is Directory -> viewModel.addDirectoryToShare(item.id.toString(), user.id.toString(), "${user.firstName} ${user.lastName}")
-                        is File -> {}
-                    }
+                    viewModel.addDirectoryOrFileToShare(item, email, email)
+                    closeDialog()
                 }
             }
-            .show(parentFragmentManager, Constants.SEARCH_DIALOG_ACCOUNT_TAG)
+            .show(parentFragmentManager, Constants.SHARE_DIALOG_TAG)
     }
-    private fun showCreateDirectoryDialog(directory: Directory, nameYesButton: String){
+    private fun showCreateDirectoryDialog(item: Any, nameYesButton: String){
         CreateDirectoryDialogFragment(false, nameYesButton).apply {
             if(nameYesButton=="Rename"){
-                setOldNameToEditText(directory.name)
+                when(item){
+                    is Directory -> setOldNameToEditText(item.name)
+                    is File -> setOldNameToEditText(item.name)
+                }
             }
             setClickCreateWithoutRadioValue { value ->
                 if(value.isNotEmpty()){
-                    if(nameYesButton=="Create"){
-                        viewModel.createDirectory(Directory(value, directory.level, directory.id!!))
-                    }else{
-                        viewModel.editDirectory(directory, value)
+                    if(nameYesButton=="Create" && item is Directory){
+                        viewModel.createDirectory(Directory(value, item.level, item.id!!))
+                    }else if(nameYesButton=="Rename"){
+                        viewModel.editDirectoryOrFile(item, value)
                     }
                     cancelDialog()
                     loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
@@ -196,16 +185,20 @@ class MySpaceFragment : Fragment() {
     }
 
     private fun subcribeToObservers() {
-        viewModel.directoryLongClick.observe(viewLifecycleOwner, Observer {
+        viewModel.directoryAndFileLongClick.observe(viewLifecycleOwner, Observer {
             when(viewModel.option){
                 1 -> {
-                    showCreateDirectoryDialog(it, "Create")
-                    viewModel.option = 0
+                    if(it is Directory){
+                        showCreateDirectoryDialog(it, "Create")
+                        viewModel.option = 0
+                    }
                 }
                 2 -> {
-                    this@MySpaceFragment.directory = it
-                    Constants.clickRequestPermissionToAccessFile(requireActivity()){openFile()}
-                    viewModel.option = 0
+                    if(it is Directory){
+                        this@MySpaceFragment.directory = it
+                        Constants.clickRequestPermissionToAccessFile(requireActivity()){openFile()}
+                        viewModel.option = 0
+                    }
                 }
                 3 -> {
                     showDialogSearchAccount(it)
@@ -224,7 +217,6 @@ class MySpaceFragment : Fragment() {
                     viewModel.option = 0
                 }
             }
-            Log.d("data", "name: ${it.name} - option: ${viewModel.option}")
         })
         viewModel.success.observe(viewLifecycleOwner, Observer {
             loadingDialogFragment.cancelDialog()

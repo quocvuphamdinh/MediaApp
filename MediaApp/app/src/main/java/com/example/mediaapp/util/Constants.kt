@@ -14,7 +14,7 @@ object Constants {
     const val LOADING_DIALOG_TAG = "LOADING_DIALOG_TAG"
     const val CREATE_DIRECTORY_DIALOG_TAG = "CREATE_DIRECTORY_DIALOG_TAG"
     const val BOTTOM_SHEET_OPTION_TAG = "BOTTOM_SHEET_OPTION_TAG"
-    const val SEARCH_DIALOG_ACCOUNT_TAG = "SEARCH_DIALOG_ACCOUNT_TAG"
+    const val SHARE_DIALOG_TAG = "SHARE_DIALOG_TAG"
     const val WARNING_DIALOG = "WARNING_DIALOG"
     const val DIRECTORY_ID = "DIRECTORY_ID"
     const val DIRECTORY_NAME = "DIRECTORY_NAME"
@@ -22,7 +22,6 @@ object Constants {
     const val ROOT_FOLDER_ID = "572eec8a-bd43-11ec-9d64-0242ac120002"
     const val DIRECTORY_TYPE = 0
     const val FILE_TYPE = 1
-    const val REQUEST_CODE_OPEN_FILE = 1
     const val DOCUMENT = "application/pdf"
     const val MUSIC = "audio/mpeg"
     const val PHOTO = "image/jpeg"
@@ -35,6 +34,7 @@ object Constants {
     const val SHARE_WITH_ME = 2
     const val FAVORITE = 3
     const val ROOT_TYPE = "ROOT_TYPE"
+    private const val REQUEST_CODE_OPEN_FILE = 1
 
     fun clickRequestPermissionToAccessFile(activity: Activity, clickOpenFile: () -> Unit){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){

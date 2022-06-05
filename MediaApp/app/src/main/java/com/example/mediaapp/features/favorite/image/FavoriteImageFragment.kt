@@ -41,6 +41,10 @@ class FavoriteImageFragment : Fragment() {
             override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_favoriteFragment_to_imageDetailFragment)
             }
+
+            override fun longClickItem(file: File) {
+                TODO("Not yet implemented")
+            }
         })
         fileAdapter.submitList(DataStore.getListFile())
         binding.rcvFavoriteFileImage.layoutManager = GridLayoutManager(requireContext(), 2)

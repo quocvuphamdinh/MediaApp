@@ -16,6 +16,7 @@ class FileAdapter(private val cLickItemDirectory: CLickItemDirectory) :
 
     interface CLickItemDirectory {
         fun clickItem(file: File)
+        fun longClickItem(file: File)
     }
 
     inner class DirectoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -48,6 +49,10 @@ class FileAdapter(private val cLickItemDirectory: CLickItemDirectory) :
         holder.txtName.text = file.name
         holder.imgFolder.setOnClickListener {
             cLickItemDirectory.clickItem(file)
+        }
+        holder.imgFolder.setOnLongClickListener {
+            cLickItemDirectory.longClickItem(file)
+            true
         }
     }
 

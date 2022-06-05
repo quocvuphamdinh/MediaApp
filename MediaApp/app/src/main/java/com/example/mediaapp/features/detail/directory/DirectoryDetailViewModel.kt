@@ -45,16 +45,6 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
     var isPause = false
     var isShowLoading = true
 
-    fun deleteFile(fileId: String) = viewModelScope.launch {
-        try {
-            val response = mediaRepository.deleteFile(fileId)
-            handlingResponse2(response, "Delete file successfully !")
-        }catch (e: Exception){
-            _toast.postValue(e.message.toString())
-            _success.postValue(false)
-        }
-    }
-
     fun uploadFile(directoryId: String, path: String) = viewModelScope.launch {
         try {
             val response = mediaRepository.uploadFile(directoryId, path)
@@ -64,53 +54,86 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
             _success.postValue(false)
         }
     }
-
-    fun deleteDirectory(directoryId: String) = viewModelScope.launch {
+    fun deleteDirectoryOrFile(any: Any?, parentId: String?) = viewModelScope.launch {
         try {
-            val response = mediaRepository.deleteDirectory(directoryId)
-            handlingResponse2(response, "Delete directory successfully !")
-        }catch (e: Exception){
-            _toast.postValue(e.message.toString())
-            _success.postValue(false)
-        }
-    }
-
-    fun addDirectoryToShare(directoryId: String, userId: String, name: String) = viewModelScope.launch {
-        try {
-            val response = mediaRepository.addDirectoryToShare(directoryId, userId)
-            handlingResponse2(response, "Share to $name successfully !")
-        }catch (e: Exception){
-            _toast.postValue(e.message.toString())
-            _success.postValue(false)
-        }
-    }
-    fun getAccountsByKeyword(keyword: String, accounts: MutableLiveData<List<User>>) = viewModelScope.launch {
-        try {
-            val response = mediaRepository.getAccountsByKeyword(keyword)
-            if(response.body()==null){
-                accounts.postValue(ArrayList())
-            }else{
-                accounts.postValue(response.body())
+            when(any){
+                null -> {
+                    val response = mediaRepository.deleteDirectory(parentId!!)
+                    handlingResponse2(response, "Delete directory successfully !")
+                }
+                is Directory -> {
+                    val response = mediaRepository.deleteDirectory(any.id.toString())
+                    handlingResponse2(response, "Delete directory successfully !")
+                }
+                is File -> {
+                    val response = mediaRepository.deleteFile(any.id.toString())
+                    handlingResponse2(response, "Delete file successfully !")
+                }
             }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
+            _success.postValue(false)
         }
     }
 
-    fun addDirectoryToFavorite(directoryId: String) = viewModelScope.launch {
+    fun addDirectoryOrFileToShare(any: Any?, emailReceiver: String, name: String, parentId: String?) = viewModelScope.launch {
         try {
-            val response = mediaRepository.addDirectoryToFavorite(directoryId)
-            handlingResponse2(response, "Add to favorite successfully !")
+            when(any){
+                null ->{
+                    val response = mediaRepository.addDirectoryToShare(parentId!!, emailReceiver)
+                    handlingResponse2(response, "Share directory to $name successfully !")
+                }
+                is Directory -> {
+                    val response = mediaRepository.addDirectoryToShare(any.id.toString(), emailReceiver)
+                    handlingResponse2(response, "Share directory to $name successfully !")
+                }
+                is File -> {
+                    val response = mediaRepository.addFileToShare(any.id.toString(), emailReceiver)
+                    handlingResponse2(response, "Share file to $name successfully !")
+                }
+            }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)
         }
     }
 
-    fun editDirectory(directoryId: String, newName: String) = viewModelScope.launch {
+
+    fun addDirectoryOrFileToFavorite(any: Any?, parentId: String?) = viewModelScope.launch {
         try {
-            val response = mediaRepository.editDirectory(directoryId, newName)
-            handlingResponse2(response, "Edit directory successfully !")
+            when(any){
+                null -> {
+                    val response = mediaRepository.addDirectoryToFavorite(parentId!!)
+                    handlingResponse2(response, "Add to favorite successfully !")
+                }
+                is Directory -> {
+                    val response = mediaRepository.addDirectoryToFavorite(any.id.toString())
+                    handlingResponse2(response, "Add to favorite successfully !")
+                }
+                is File -> {
+                    val response = mediaRepository.addFileToFavorite(any.id.toString())
+                    handlingResponse2(response, "Add file to favorite successfully !")
+                }
+            }
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+        }
+    }
+
+    fun editDirectoryOrFile(any: Any?, newName: String, parentId: String?) = viewModelScope.launch {
+        try {
+            when(any){
+                null -> {
+                    val response = mediaRepository.editDirectory(parentId!!, newName)
+                    handlingResponse2(response, "Edit directory successfully !")
+                }
+                is Directory -> {
+                    val response = mediaRepository.editDirectory(any.id.toString(), newName)
+                    handlingResponse2(response, "Edit directory successfully !")
+                }
+                is File -> {}
+            }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)
@@ -126,11 +149,14 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
         }
     }
 
-    fun loadMore(parentId: String, page:Int, type: Int) = viewModelScope.launch{
+    fun loadMore(parentId: String, page:Int, type: Int, rootType: Int) = viewModelScope.launch{
         var list: List<Any> = ArrayList()
         when(type){
             Constants.DIRECTORY_TYPE ->{
-                list = convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(parentId, page, 10)))
+                when(rootType){
+                    Constants.MY_SPACE ->list = convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(parentId, page, 10)))
+                    Constants.SHARE_WITH_ME -> list = convertToListDirectory(handlingResponse(mediaRepository.getFolderInShare(parentId, page, 10)))
+                }
                 if(list.isNotEmpty()&& _foldersAndFiles.value?.containsAll(list) == false){
                     _isHaveMoreFolders.postValue(true)
                 }else{
@@ -157,17 +183,34 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
         })
     }
 
-    fun getFoldersAndFilesByParentFolder(parentId: String, isFirstTimeLoad: Boolean, isDirectoryType: Boolean) = viewModelScope.launch {
+    fun getFoldersAndFilesByParentFolder(parentId: String, isFirstTimeLoad: Boolean, isDirectoryType: Boolean, rootType: Int) = viewModelScope.launch {
         try {
             when(isDirectoryType){
                 true -> {
                     if(isFirstTimeLoad){
-                        val response = mediaRepository.getFolderByParentId(parentId, 0, 10)
-                        _foldersAndFiles.postValue(convertToListDirectory(handlingResponse(response)))
+                        when(rootType){
+                            Constants.MY_SPACE -> {
+                                val response = mediaRepository.getFolderByParentId(parentId, 0, 10)
+                                _foldersAndFiles.postValue(convertToListDirectory(handlingResponse(response)))
+                            }
+                            Constants.SHARE_WITH_ME -> {
+                                val response = mediaRepository.getFolderInShare(parentId, 0, 10)
+                                _foldersAndFiles.postValue(convertToListDirectory(handlingResponse(response)))
+                            }
+                        }
                     }else{
                         val list= ArrayList<Directory>()
-                        for (i in 0..currentPageFolder){
-                            list.addAll(convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(parentId, i, 10))))
+                        when(rootType){
+                            Constants.MY_SPACE -> {
+                                for (i in 0..currentPageFolder){
+                                    list.addAll(convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(parentId, i, 10))))
+                                }
+                            }
+                            Constants.SHARE_WITH_ME -> {
+                                for (i in 0..currentPageFolder){
+                                    list.addAll(convertToListDirectory(handlingResponse(mediaRepository.getFolderInShare(parentId, i, 10))))
+                                }
+                            }
                         }
                         _foldersAndFiles.postValue(list)
                     }

@@ -16,10 +16,6 @@ interface MediaAPI {
     @POST("auth/login")
     suspend fun login(@Body user: User) : Response<ResponseBody>
 
-    @Headers( "Content-Type: application/json;charset=UTF-8")
-    @GET("accounts")
-    suspend fun getAccountsByKeyword(@Query("keyword") keyword: String, @Header("Authorization") token:String) : Response<List<User>>
-
     //directory
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @GET("directories/{parentId}")
@@ -48,6 +44,17 @@ interface MediaAPI {
     @DELETE("directories/deleted/{directoryId}")
     suspend fun deleteDirectory(@Path("directoryId") directoryId: String, @Header("Authorization") token: String): Response<ResponseBody>
 
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @GET("directories/shares-with-me/{directoryId}")
+    suspend fun getFolderInShare(@Path("directoryId") directoryId: String,
+                                 @Query("page") page:Int,
+                                 @Query("pageSize") pageSize:Int,
+                                 @Header("Authorization") token: String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @DELETE("directories/customer-delete-share/{directoryId}")
+    suspend fun deleteDirectoryShareByCustomer(@Path("directoryId") directoryId: String, @Header("Authorization") token: String): Response<ResponseBody>
+
     //file
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @GET("files/{directoryId}")
@@ -66,4 +73,23 @@ interface MediaAPI {
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @DELETE("files/delete/{fileId}")
     suspend fun deleteFile(@Path("fileId") fileId: String, @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @POST("files/add-to-share")
+    suspend fun addFileToShare(@Body body: HashMap<String, String>, @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @POST("files/add-favorite")
+    suspend fun addFileToFavorite(@Body body: HashMap<String, String>, @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @GET("files/shares-with-me/{directoryId}")
+    suspend fun getListFileInShare(@Path("directoryId") directoryId: String,
+                                   @Query("page") page:Int,
+                                   @Query("pageSize") pageSize:Int,
+                                   @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @DELETE("files/customer-delete-share/{fileId}")
+    suspend fun deleteFileShareByCustomer(@Path("fileId") fileId: String, @Header("Authorization") token:String): Response<ResponseBody>
 }

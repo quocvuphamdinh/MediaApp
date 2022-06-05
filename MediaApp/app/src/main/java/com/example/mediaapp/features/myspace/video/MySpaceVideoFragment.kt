@@ -51,37 +51,43 @@ class MySpaceVideoFragment : Fragment() {
         subcribeToObservers()
         setUpLoadMoreInRecyclerView()
     }
-    private fun showBottomSheetOption(directory: Directory){
-        BottomSheetOptionFragment(true, Constants.MY_SPACE).apply {
-            setTitleName(directory.name)
+    private fun showBottomSheetOption(any: Any){
+        BottomSheetOptionFragment(any is Directory, Constants.MY_SPACE).apply {
+            when(any){
+                is Directory -> setTitleName(any.name)
+                is File -> setTitleName(any.name)
+            }
             setClickCreateNewFolder {
-                viewModel.setDirectoryLongClick(directory, 1)
+                viewModel.setDirectoryLongClick(any, 1)
                 closeBottomSheet()
             }
             setClickCreateNewFile {
-                viewModel.setDirectoryLongClick(directory, 2)
+                viewModel.setDirectoryLongClick(any, 2)
                 closeBottomSheet()
             }
             setClickShare {
-                viewModel.setDirectoryLongClick(directory, 3)
+                viewModel.setDirectoryLongClick(any, 3)
                 closeBottomSheet()
             }
             setClickAddToFavorite {
-                viewModel.setDirectoryLongClick(directory, 4)
+                viewModel.setDirectoryLongClick(any, 4)
                 closeBottomSheet()
             }
             setClickEdit {
-                viewModel.setDirectoryLongClick(directory, 5)
+                viewModel.setDirectoryLongClick(any, 5)
                 closeBottomSheet()
             }
             setClickDelete {
-                viewModel.setDirectoryLongClick(directory, 6)
+                viewModel.setDirectoryLongClick(any, 6)
                 closeBottomSheet()
             }
         }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
     }
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpLoadMoreInRecyclerView() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refreshFoldersAndFiles(4)
+        }
         binding.rcvMySpaceFolderVideo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -116,9 +122,11 @@ class MySpaceVideoFragment : Fragment() {
             }
         })
         viewModel.folderMovies.observe(viewLifecycleOwner, Observer {
+            binding.swipeRefreshLayout.isRefreshing = false
             folderAdapter.submitList(it)
         })
         viewModel.fileMovies.observe(viewLifecycleOwner, Observer {
+            binding.swipeRefreshLayout.isRefreshing = false
             fileAdapter.submitList(it)
         })
     }
@@ -127,6 +135,10 @@ class MySpaceVideoFragment : Fragment() {
         fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory{
             override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_mySpaceFragment_to_videoDetailFragment)
+            }
+
+            override fun longClickItem(file: File) {
+                showBottomSheetOption(file)
             }
         })
         binding.rcvMySpaceFileVideo.layoutManager = GridLayoutManager(requireContext(), 2)

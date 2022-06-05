@@ -2,6 +2,7 @@ package com.example.mediaapp.features.myspace.document
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentFileMySpaceBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
@@ -50,31 +52,34 @@ class MySpaceFileFragment : Fragment() {
         subcribeToObservers()
         setUpLoadMoreInRecyclerView()
     }
-    private fun showBottomSheetOption(directory: Directory){
-        BottomSheetOptionFragment(true, Constants.MY_SPACE).apply {
-            setTitleName(directory.name)
+    private fun showBottomSheetOption(any: Any){
+        BottomSheetOptionFragment(any is Directory, Constants.MY_SPACE).apply {
+            when(any){
+                is Directory -> setTitleName(any.name)
+                is File -> setTitleName(any.name)
+            }
             setClickCreateNewFolder {
-                viewModel.setDirectoryLongClick(directory, 1)
+                viewModel.setDirectoryLongClick(any, 1)
                 closeBottomSheet()
             }
             setClickCreateNewFile {
-                viewModel.setDirectoryLongClick(directory, 2)
+                viewModel.setDirectoryLongClick(any, 2)
                 closeBottomSheet()
             }
             setClickShare {
-                viewModel.setDirectoryLongClick(directory, 3)
+                viewModel.setDirectoryLongClick(any, 3)
                 closeBottomSheet()
             }
             setClickAddToFavorite {
-                viewModel.setDirectoryLongClick(directory, 4)
+                viewModel.setDirectoryLongClick(any, 4)
                 closeBottomSheet()
             }
             setClickEdit {
-                viewModel.setDirectoryLongClick(directory, 5)
+                viewModel.setDirectoryLongClick(any, 5)
                 closeBottomSheet()
             }
             setClickDelete {
-                viewModel.setDirectoryLongClick(directory, 6)
+                viewModel.setDirectoryLongClick(any, 6)
                 closeBottomSheet()
             }
         }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
@@ -82,6 +87,9 @@ class MySpaceFileFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpLoadMoreInRecyclerView() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refreshFoldersAndFiles(1)
+        }
         binding.rcvMySpaceFolderFile.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -116,9 +124,11 @@ class MySpaceFileFragment : Fragment() {
             }
         })
         viewModel.folderDocuments.observe(viewLifecycleOwner, Observer {
+            binding.swipeRefreshLayout.isRefreshing = false
             folderAdapter.submitList(it)
         })
         viewModel.fileDocuments.observe(viewLifecycleOwner, Observer {
+            binding.swipeRefreshLayout.isRefreshing = false
             fileAdapter.submitList(it)
         })
     }
@@ -127,6 +137,10 @@ class MySpaceFileFragment : Fragment() {
         fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory {
             override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_mySpaceFragment_to_fileDetailFragment)
+            }
+
+            override fun longClickItem(file: File) {
+                showBottomSheetOption(file)
             }
         })
         binding.rcvMySpaceFileFile.layoutManager = GridLayoutManager(requireContext(), 2)

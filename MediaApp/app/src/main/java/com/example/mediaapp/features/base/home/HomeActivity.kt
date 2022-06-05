@@ -66,7 +66,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                         setUpNavigationDrawer()
                     }
-                    R.id.directoryDetailFragment ->{
+                    R.id.directoryDetailFragment, R.id.directoryDetailFragment2 ->{
                         binding.bottomNav.visibility = View.VISIBLE
                         binding.appbarMain.visibility = View.GONE
                         binding.toolbarMain.visibility = View.GONE

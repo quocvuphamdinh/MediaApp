@@ -41,6 +41,10 @@ class FavoriteMusicFragment : Fragment() {
             override fun clickItem(file: File) {
                 findNavController().navigate(R.id.action_favoriteFragment_to_musicDetailFragment)
             }
+
+            override fun longClickItem(file: File) {
+                TODO("Not yet implemented")
+            }
         })
         fileAdapter.submitList(DataStore.getListFile())
         binding.rcvFavoriteFileMusic.layoutManager = GridLayoutManager(requireContext(), 2)

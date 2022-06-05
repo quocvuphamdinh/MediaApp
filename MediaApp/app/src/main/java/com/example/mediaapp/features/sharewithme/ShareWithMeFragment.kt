@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentShareWithMeBinding
@@ -13,13 +16,27 @@ import com.example.mediaapp.features.sharewithme.document.ShareWithMeFileFragmen
 import com.example.mediaapp.features.sharewithme.image.ShareWithMeImageFragment
 import com.example.mediaapp.features.sharewithme.music.ShareWithMeMusicFragment
 import com.example.mediaapp.features.sharewithme.video.ShareWithMeVideoFragment
+import com.example.mediaapp.features.util.LoadingDialogFragment
+import com.example.mediaapp.features.util.WarningDialogFragment
+import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
+import com.example.mediaapp.util.Constants
+import com.example.mediaapp.util.MediaApplication
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ShareWithMeFragment : Fragment() {
     private lateinit var binding: FragmentShareWithMeBinding
+    private val loadingDialogFragment: LoadingDialogFragment by lazy { LoadingDialogFragment() }
     private lateinit var viewPagerShareWithMeAdapter: ViewPagerAdapter
+    private val viewModel: ShareWithMeViewModel by activityViewModels {
+        ShareWithMeViewModelFactory((activity?.application as MediaApplication).repository)
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.getFolderRoots()
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +52,7 @@ class ShareWithMeFragment : Fragment() {
         (activity as HomeActivity).binding.toolbarMain.title = "Share with me"
 
         setUpViewPagerWithTabLayout()
+        subcribeToObservers()
 
         binding.tabLayoutShareWithMe.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
@@ -68,6 +86,38 @@ class ShareWithMeFragment : Fragment() {
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
+        })
+    }
+    private fun showDialogWarning(item: Any?){
+        WarningDialogFragment("Are you sure ?", "Do you want to delete ${if (item is File) "file" else "directory"} ?").apply {
+            setClickYes {
+                loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                viewModel.deleteDirectoryOrFileShareByCustomer(item!!)
+            }
+        }.show(parentFragmentManager, Constants.WARNING_DIALOG)
+    }
+
+    private fun subcribeToObservers() {
+        viewModel.directoryAndFileLongClick.observe(viewLifecycleOwner, Observer {
+            when(viewModel.option){
+                1 -> {
+                    loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                    viewModel.addFileOrDirectoryToFavorite(it)
+                    viewModel.option = 0
+                }
+                2 -> {
+                    showDialogWarning(it)
+                    viewModel.option = 0
+                }
+            }
+        })
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.success.observe(viewLifecycleOwner, Observer {
+            loadingDialogFragment.cancelDialog()
         })
     }
 
