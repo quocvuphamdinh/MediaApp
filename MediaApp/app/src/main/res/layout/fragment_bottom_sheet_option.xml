@@ -3,7 +3,8 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        style="@style/CustomBottomSheetDialog">
         <TextView
             android:id="@+id/textViewTitleBottomSheet"
             android:textStyle="bold"
@@ -123,7 +124,6 @@
                 android:layout_height="match_parent"/>
         </LinearLayout>
         <LinearLayout
-            android:layout_marginBottom="10dp"
             android:id="@+id/linearDeleteOption"
             android:padding="5dp"
             android:weightSum="10"
@@ -141,6 +141,28 @@
                 android:textSize="16sp"
                 android:layout_weight="8"
                 android:text="Delete"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginBottom="10dp"
+            android:id="@+id/linearDownloadOption"
+            android:padding="5dp"
+            android:weightSum="10"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:layout_weight="2"
+                android:src="@drawable/ic_file_download"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:layout_weight="8"
+                android:text="Download"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"/>
         </LinearLayout>

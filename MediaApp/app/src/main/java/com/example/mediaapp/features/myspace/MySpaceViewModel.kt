@@ -304,16 +304,11 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
             4 -> update(_folderMovies, id, newName, level, isDelete)
         }
     }
-    fun editDirectoryOrFile(any: Any, newName: String) = viewModelScope.launch {
+    fun editDirectory(directory: Directory, newName: String) = viewModelScope.launch {
         try {
-            when(any){
-                is Directory -> {
-                    val response = mediaRepository.editDirectory(any.id.toString(), newName)
-                    handlingResponse2(response, "Edit directory successfully !")
-                    updateDirectoriesAfterEdit(any.id.toString(), newName, any.level, false)
-                }
-                is File -> {}
-            }
+            val response = mediaRepository.editDirectory(directory.id.toString(), newName)
+            handlingResponse2(response, "Edit directory successfully !")
+            updateDirectoriesAfterEdit(directory.id.toString(), newName, directory.level, false)
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
             _success.postValue(false)

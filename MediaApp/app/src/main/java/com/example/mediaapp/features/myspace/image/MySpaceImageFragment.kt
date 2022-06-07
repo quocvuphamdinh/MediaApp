@@ -80,6 +80,10 @@ class MySpaceImageFragment : Fragment() {
                 viewModel.setDirectoryLongClick(any, 6)
                 closeBottomSheet()
             }
+            setClickDownload {
+                viewModel.setDirectoryLongClick(any, 7)
+                closeBottomSheet()
+            }
         }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
     }
 

@@ -258,12 +258,19 @@ class DirectoryDetailFragment : Fragment() {
                 closeBottomSheet()
             }
             setClickEdit {
-                showDialogCreateDirectory(any, "Rename")
-                closeBottomSheet()
+                if(any is Directory || any == null){
+                    showDialogCreateDirectory(any, "Rename")
+                    closeBottomSheet()
+                }
             }
             setClickDelete {
                 showDialogWarning(any)
                 closeBottomSheet()
+            }
+            if(any is File){
+                setClickDownload {
+                    closeBottomSheet()
+                }
             }
         }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
     }
@@ -296,25 +303,21 @@ class DirectoryDetailFragment : Fragment() {
             }
         }.show(parentFragmentManager, Constants.WARNING_DIALOG)
     }
-    private fun showDialogCreateDirectory(item: Any?, nameYesButton: String){
+    private fun showDialogCreateDirectory(any: Any?, nameYesButton: String){
         CreateDirectoryDialogFragment(false, nameYesButton).apply {
-            if(nameYesButton=="Rename"){
-                when(item){
-                    null -> setOldNameToEditText(binding.textViewTitleDirectoryDetail.text.toString())
-                    is Directory -> setOldNameToEditText(item.name)
-                    is File -> setOldNameToEditText(item.name)
-                }
+            if(nameYesButton=="Rename" && any is Directory){
+                setOldNameToEditText(any.name)
+            }else if(nameYesButton=="Rename" && any==null){
+                setOldNameToEditText(binding.textViewTitleDirectoryDetail.text.toString())
             }
             setClickCreateWithoutRadioValue { value ->
                 if(value.isNotEmpty()){
                     if(nameYesButton=="Create"){
-                        clickCreateDirectory(value, item)
-                    }else{
-                        viewModel.editDirectoryOrFile(item, value, parentId)
-                        if(item==null){
+                        clickCreateDirectory(value, any)
+                    }else if (nameYesButton=="Rename"){
+                        viewModel.editDirectory(any, value, parentId)
+                        if(any==null){
                             mySpaceViewModel.updateDirectoriesAfterEdit(parentId!!, value, level, false)
-                        }
-                        if(item==null) {
                             name = value
                             binding.textViewTitleDirectoryDetail.text = name
                         }

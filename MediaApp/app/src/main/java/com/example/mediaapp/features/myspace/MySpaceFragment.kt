@@ -160,20 +160,17 @@ class MySpaceFragment : Fragment() {
             }
             .show(parentFragmentManager, Constants.SHARE_DIALOG_TAG)
     }
-    private fun showCreateDirectoryDialog(item: Any, nameYesButton: String){
+    private fun showCreateDirectoryDialog(directory: Directory, nameYesButton: String){
         CreateDirectoryDialogFragment(false, nameYesButton).apply {
             if(nameYesButton=="Rename"){
-                when(item){
-                    is Directory -> setOldNameToEditText(item.name)
-                    is File -> setOldNameToEditText(item.name)
-                }
+                setOldNameToEditText(directory.name)
             }
             setClickCreateWithoutRadioValue { value ->
                 if(value.isNotEmpty()){
-                    if(nameYesButton=="Create" && item is Directory){
-                        viewModel.createDirectory(Directory(value, item.level, item.id!!))
-                    }else if(nameYesButton=="Rename"){
-                        viewModel.editDirectoryOrFile(item, value)
+                    if(nameYesButton=="Create"){
+                        viewModel.createDirectory(Directory(value, directory.level, directory.id!!))
+                    }else{
+                        viewModel.editDirectory(directory, value)
                     }
                     cancelDialog()
                     loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
@@ -209,12 +206,19 @@ class MySpaceFragment : Fragment() {
                     viewModel.option = 0
                 }
                 5 -> {
-                    showCreateDirectoryDialog(it, "Rename")
-                    viewModel.option = 0
+                    if(it is Directory){
+                        showCreateDirectoryDialog(it, "Rename")
+                        viewModel.option = 0
+                    }
                 }
                 6 -> {
                     showDialogWarning(it)
                     viewModel.option = 0
+                }
+                7 -> {
+                    if(it is File){
+                        viewModel.option = 0
+                    }
                 }
             }
         })

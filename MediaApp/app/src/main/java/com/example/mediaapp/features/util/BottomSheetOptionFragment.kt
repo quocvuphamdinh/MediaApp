@@ -20,6 +20,7 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
     private var clickAddToFavorite: (() -> Unit)? = null
     private var clickEdit: (() -> Unit)? = null
     private var clickDelete: (() -> Unit)? = null
+    private var clickDownload: (() -> Unit)? = null
     private var titleName: String? = null
 
     fun setTitleName(name: String){
@@ -43,13 +44,16 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
     fun setClickDelete(click: () -> Unit){
         clickDelete = click
     }
+    fun setClickDownload(click: () -> Unit){
+        clickDownload = click
+    }
     fun closeBottomSheet(){
         dialog?.cancel()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.fragment_bottom_sheet_option, null, false)
-        return BottomSheetDialog(requireContext()).apply {
+        return BottomSheetDialog(requireContext(), R.style.CustomBottomSheetDialog).apply {
             setCanceledOnTouchOutside(true)
             requestWindowFeature(Window.FEATURE_NO_TITLE)
             setContentView(binding.root)
@@ -91,7 +95,7 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
             }else{
                 binding.linearFavoriteOption.visibility = View.GONE
             }
-            if (rootType==Constants.MY_SPACE){
+            if (rootType==Constants.MY_SPACE && isDirectory){
                 binding.linearEditOption.visibility = View.VISIBLE
                 binding.linearEditOption.setOnClickListener {
                     clickEdit?.let { edit ->
@@ -105,6 +109,16 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
                 clickDelete?.let { delete ->
                     delete()
                 }
+            }
+            if(!isDirectory){
+                binding.linearDownloadOption.visibility = View.VISIBLE
+                binding.linearDownloadOption.setOnClickListener {
+                    clickDownload?.let { download ->
+                        download()
+                    }
+                }
+            }else{
+                binding.linearDownloadOption.visibility = View.GONE
             }
         }
     }

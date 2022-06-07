@@ -121,7 +121,7 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
         }
     }
 
-    fun editDirectoryOrFile(any: Any?, newName: String, parentId: String?) = viewModelScope.launch {
+    fun editDirectory(any: Any?, newName: String, parentId: String?) = viewModelScope.launch {
         try {
             when(any){
                 null -> {
@@ -132,7 +132,6 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                     val response = mediaRepository.editDirectory(any.id.toString(), newName)
                     handlingResponse2(response, "Edit directory successfully !")
                 }
-                is File -> {}
             }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
