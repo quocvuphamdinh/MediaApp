@@ -2,6 +2,7 @@ package com.example.mediaapp.util
 
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
+import com.example.mediaapp.models.User
 import java.util.*
 
 object DataStore {
@@ -30,6 +31,14 @@ object DataStore {
 //            File(UUID.randomUUID(), "Image 2", "3", "https://i.pinimg.com/originals/70/48/c8/7048c84fbf6f44c5e8eec9b8a9146556.jpg"),
 //            File(UUID.randomUUID(), "Image 3", "3", "https://www.itl.cat/pngfile/big/143-1431700_the-garden-of-words-hd-wallpapers-garden-of.jpg"),
 //            File(UUID.randomUUID(), "Image 4", "3", "https://cutewallpaper.org/26/attack-on-titan-city-wallpaper/1828216449.jpg"),
+        )
+    }
+    fun getListUser(): List<User>{
+        return listOf(
+            User("Vũ", "quocvu22", "Phạm", "vuphamdinh02@gmail.com", "123", "123"),
+            User("Long", "long", "Lê", "lebaphuoclong@gmail.com", "123", "123"),
+            User("Toàn", "toan", "Quách", "khieutoan@gmail.com", "123", "123"),
+            User("Thịnh", "quocvu22", "Nguyễn", "thinh@gmail.com", "123", "123")
         )
     }
 }

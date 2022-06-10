@@ -16,6 +16,7 @@ object Constants {
     const val BOTTOM_SHEET_OPTION_TAG = "BOTTOM_SHEET_OPTION_TAG"
     const val SHARE_DIALOG_TAG = "SHARE_DIALOG_TAG"
     const val WARNING_DIALOG = "WARNING_DIALOG"
+    const val VIEW_RECEIVER_DIALOG_TAG = "VIEW_RECEIVER_DIALOG_TAG"
     const val DIRECTORY_ID = "DIRECTORY_ID"
     const val DIRECTORY_NAME = "DIRECTORY_NAME"
     const val DIRECTORY_LEVEL = "DIRECTORY_LEVEL"
@@ -33,6 +34,7 @@ object Constants {
     const val MY_SPACE = 1
     const val SHARE_WITH_ME = 2
     const val FAVORITE = 3
+    const val MY_SHARE = 4
     const val ROOT_TYPE = "ROOT_TYPE"
     private const val REQUEST_CODE_OPEN_FILE = 1
 

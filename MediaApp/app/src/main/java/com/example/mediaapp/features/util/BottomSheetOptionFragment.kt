@@ -21,6 +21,7 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
     private var clickEdit: (() -> Unit)? = null
     private var clickDelete: (() -> Unit)? = null
     private var clickDownload: (() -> Unit)? = null
+    private var clickViewReceiver: (() -> Unit)? = null
     private var titleName: String? = null
 
     fun setTitleName(name: String){
@@ -46,6 +47,9 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
     }
     fun setClickDownload(click: () -> Unit){
         clickDownload = click
+    }
+    fun setClickViewReceiver(click: () -> Unit){
+        clickViewReceiver = click
     }
     fun closeBottomSheet(){
         dialog?.cancel()
@@ -76,21 +80,29 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
                 binding.linearCreateFileOption.visibility = View.GONE
             }
             if(rootType != Constants.SHARE_WITH_ME){
-                binding.linearShareOption.visibility = View.VISIBLE
-                binding.linearShareOption.setOnClickListener {
-                    clickShare?.let { share ->
-                        share()
+                if(rootType!= Constants.MY_SHARE){
+                    binding.linearShareOption.visibility = View.VISIBLE
+                    binding.linearShareOption.setOnClickListener {
+                        clickShare?.let { share ->
+                            share()
+                        }
                     }
+                }else{
+                    binding.linearShareOption.visibility = View.GONE
                 }
             }else{
                 binding.linearShareOption.visibility = View.GONE
             }
             if(rootType!= Constants.FAVORITE){
-                binding.linearFavoriteOption.visibility = View.VISIBLE
-                binding.linearFavoriteOption.setOnClickListener {
-                    clickAddToFavorite?.let { addToFavorite ->
-                        addToFavorite()
+                if(rootType!= Constants.MY_SHARE){
+                    binding.linearFavoriteOption.visibility = View.VISIBLE
+                    binding.linearFavoriteOption.setOnClickListener {
+                        clickAddToFavorite?.let { addToFavorite ->
+                            addToFavorite()
+                        }
                     }
+                }else{
+                    binding.linearFavoriteOption.visibility = View.GONE
                 }
             }else{
                 binding.linearFavoriteOption.visibility = View.GONE
@@ -110,7 +122,7 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
                     delete()
                 }
             }
-            if(!isDirectory){
+            if(!isDirectory && rootType != Constants.MY_SHARE){
                 binding.linearDownloadOption.visibility = View.VISIBLE
                 binding.linearDownloadOption.setOnClickListener {
                     clickDownload?.let { download ->
@@ -119,6 +131,16 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
                 }
             }else{
                 binding.linearDownloadOption.visibility = View.GONE
+            }
+            if(rootType == Constants.MY_SHARE){
+                binding.linearViewReceiverOption.visibility = View.VISIBLE
+                binding.linearViewReceiverOption.setOnClickListener {
+                    clickViewReceiver?.let { viewReceiver ->
+                        viewReceiver()
+                    }
+                }
+            }else{
+                binding.linearViewReceiverOption.visibility = View.GONE
             }
         }
     }

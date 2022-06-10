@@ -69,6 +69,4 @@ class FavoriteFragment : Fragment() {
             }
         }.attach()
     }
-
-
 }

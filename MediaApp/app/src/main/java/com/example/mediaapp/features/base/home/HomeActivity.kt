@@ -44,6 +44,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.navigation.nav_my_space,
             R.navigation.nav_share_with_me,
             R.navigation.nav_favorite,
+            R.navigation.nav_my_share
         )
 
         binding.navigationView.inflateHeaderView(R.layout.header_nav_view)
@@ -57,7 +58,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         controller.observe(this, Observer { navController ->
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 when(destination.id){
-                    R.id.mySpaceFragment, R.id.shareWithMeFragment, R.id.favoriteFragment
+                    R.id.mySpaceFragment, R.id.shareWithMeFragment, R.id.favoriteFragment, R.id.myShareFragment
                     -> {
                         binding.bottomNav.visibility = View.VISIBLE
                         binding.appbarMain.visibility = View.VISIBLE
