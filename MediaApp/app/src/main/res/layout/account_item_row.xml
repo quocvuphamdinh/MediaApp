@@ -6,11 +6,11 @@
     android:id="@+id/layoutAccountItemRow">
 
     <ImageView
-        android:padding="10dp"
         android:id="@+id/imageViewPersonAccountItemRow"
-        android:src="@drawable/ic_person"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:src="@drawable/ic_person" />
     <TextView
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -26,6 +26,13 @@
         android:text="@string/app_name"
         android:layout_below="@id/textViewFullnameAccountItemRow"
         android:layout_toEndOf="@id/imageViewPersonAccountItemRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/imageViewDeleteReceiver"
+        android:padding="10dp"
+        android:src="@drawable/ic_delete_receiver"
+        android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </RelativeLayout>

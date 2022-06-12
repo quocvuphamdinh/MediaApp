@@ -102,11 +102,15 @@ class ShareWithMeImageFragment : Fragment() {
             }
         })
         viewModel.folderPhotos.observe(viewLifecycleOwner, Observer {
-            binding.swipeRefreshLayout.isRefreshing = false
+            if(it.isNotEmpty()){
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
             folderAdapter.submitList(it)
         })
         viewModel.filePhotos.observe(viewLifecycleOwner, Observer {
-            binding.swipeRefreshLayout.isRefreshing = false
+            if(it.isNotEmpty()){
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
             fileAdapter.submitList(it)
         })
     }
@@ -128,16 +132,7 @@ class ShareWithMeImageFragment : Fragment() {
     private fun setUpRecyclerViewFolder() {
         folderAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory {
             override fun clickItem(directory: Directory) {
-                Log.d("id", directory.id.toString())
-                val bundle = Bundle()
-                bundle.putString(Constants.DIRECTORY_ID, directory.id.toString())
-                bundle.putString(Constants.DIRECTORY_NAME, directory.name)
-                bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
-                bundle.putInt(Constants.ROOT_TYPE, Constants.SHARE_WITH_ME)
-                findNavController().navigate(
-                    R.id.action_shareWithMeFragment_to_directoryDetailFragment2,
-                    bundle
-                )
+                goToDirectoryDetail(directory)
             }
 
             override fun longClickItem(directory: Directory) {
@@ -146,5 +141,16 @@ class ShareWithMeImageFragment : Fragment() {
         })
         binding.rcvShareWithMeFolderImage.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvShareWithMeFolderImage.adapter = folderAdapter
+    }
+    private fun goToDirectoryDetail(directory: Directory){
+        val bundle = Bundle()
+        bundle.putString(Constants.DIRECTORY_ID, directory.id.toString())
+        bundle.putString(Constants.DIRECTORY_NAME, directory.name)
+        bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
+        bundle.putInt(Constants.ROOT_TYPE, Constants.SHARE_WITH_ME)
+        findNavController().navigate(
+            R.id.action_shareWithMeFragment_to_directoryDetailFragment2,
+            bundle
+        )
     }
 }

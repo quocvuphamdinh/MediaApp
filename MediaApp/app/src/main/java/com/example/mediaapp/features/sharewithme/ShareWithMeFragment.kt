@@ -143,4 +143,9 @@ class ShareWithMeFragment : Fragment() {
             }
         }.attach()
     }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.resetToast()
+    }
 }

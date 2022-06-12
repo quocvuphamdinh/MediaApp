@@ -12,7 +12,10 @@ import com.example.mediaapp.util.Constants
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class BottomSheetOptionFragment(private val isDirectory: Boolean, private val rootType: Int): BottomSheetDialogFragment() {
+class BottomSheetOptionFragment(
+    private val isDirectory: Boolean,
+    private val rootType: Int,
+    private val isDetail: Boolean=false): BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetOptionBinding
     private var clickCreateNewFolder: (() -> Unit)? = null
     private var clickCreateNewFile: (() -> Unit)? = null
@@ -117,9 +120,14 @@ class BottomSheetOptionFragment(private val isDirectory: Boolean, private val ro
             }else{
                 binding.linearEditOption.visibility = View.GONE
             }
-            binding.linearDeleteOption.setOnClickListener {
-                clickDelete?.let { delete ->
-                    delete()
+            if((isDetail && rootType==Constants.SHARE_WITH_ME) || (isDetail && rootType==Constants.MY_SHARE)){
+                binding.linearDeleteOption.visibility = View.GONE
+            }else{
+                binding.linearDeleteOption.visibility = View.VISIBLE
+                binding.linearDeleteOption.setOnClickListener {
+                    clickDelete?.let { delete ->
+                        delete()
+                    }
                 }
             }
             if(!isDirectory && rootType != Constants.MY_SHARE){

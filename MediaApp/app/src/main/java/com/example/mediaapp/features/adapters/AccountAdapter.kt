@@ -3,6 +3,7 @@ package com.example.mediaapp.features.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mediaapp.R
 import com.example.mediaapp.models.User
 
-class AccountAdapter(private val clickAccountItem: ClickAccountItem): RecyclerView.Adapter<AccountAdapter.AccountHolder>() {
+class AccountAdapter(private val clickAccountItem: ClickAccountItem, private val isDelete: Boolean): RecyclerView.Adapter<AccountAdapter.AccountHolder>() {
 
     interface ClickAccountItem{
         fun clickItem(user: User)
@@ -33,6 +34,7 @@ class AccountAdapter(private val clickAccountItem: ClickAccountItem): RecyclerVi
         val txtName: TextView = itemView.findViewById(R.id.textViewFullnameAccountItemRow)
         val txtEmail: TextView = itemView.findViewById(R.id.textViewEmailAccountItemRow)
         val layout: RelativeLayout = itemView.findViewById(R.id.layoutAccountItemRow)
+        val imgDelete: ImageView = itemView.findViewById(R.id.imageViewDeleteReceiver)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountHolder {
@@ -43,8 +45,13 @@ class AccountAdapter(private val clickAccountItem: ClickAccountItem): RecyclerVi
         val user = differ.currentList[position]
         holder.txtName.text = "${user.firstName} ${user.lastName}"
         holder.txtEmail.text = user.email
-        holder.layout.setOnClickListener {
-            clickAccountItem.clickItem(user)
+        if(!isDelete){
+            holder.imgDelete.visibility = View.GONE
+        }else{
+            holder.imgDelete.visibility = View.VISIBLE
+            holder.imgDelete.setOnClickListener {
+                clickAccountItem.clickItem(user)
+            }
         }
     }
 

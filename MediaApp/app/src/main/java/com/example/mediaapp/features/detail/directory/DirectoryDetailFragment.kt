@@ -25,6 +25,8 @@ import com.example.mediaapp.databinding.FragmentDirectoryDetailBinding
 import com.example.mediaapp.features.adapters.DirectoryAndFileAdapter
 import com.example.mediaapp.features.myspace.MySpaceViewModel
 import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
+import com.example.mediaapp.features.sharewithme.ShareWithMeViewModel
+import com.example.mediaapp.features.sharewithme.ShareWithMeViewModelFactory
 import com.example.mediaapp.features.util.*
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
@@ -88,8 +90,6 @@ class DirectoryDetailFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.imageViewMoreOptions.setOnClickListener {
-            Log.d("level", parentId!!.toString())
-            Log.d("level", level.toString())
             showBottomSheetOption(null)
         }
     }
@@ -215,6 +215,11 @@ class DirectoryDetailFragment : Fragment() {
         bundle?.let {
             parentId = it.getString(Constants.DIRECTORY_ID)
             rootType = it.getInt(Constants.ROOT_TYPE)
+            if(rootType == Constants.MY_SHARE){
+                binding.imageViewMoreOptions.visibility = View.GONE
+            }else{
+                binding.imageViewMoreOptions.visibility = View.VISIBLE
+            }
             if(isFirstTimeLoad){
                 viewModel.getFoldersAndFilesByParentFolder(parentId!!, true, true, rootType)
             }else{
@@ -229,7 +234,7 @@ class DirectoryDetailFragment : Fragment() {
     }
 
     private fun showBottomSheetOption(any: Any?){
-        BottomSheetOptionFragment(any is Directory || any == null, rootType).apply {
+        BottomSheetOptionFragment(any is Directory || any == null, rootType, true).apply {
             if((any!=null && any is Directory)){
                 setTitleName(any.name)
             }else if(any!=null && any is File){
@@ -295,10 +300,14 @@ class DirectoryDetailFragment : Fragment() {
         WarningDialogFragment("Are you sure ?", "Do you want to delete ${if (item is File) "file" else "directory"}").apply {
             setClickYes {
                 loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
-                viewModel.deleteDirectoryOrFile(item, parentId.toString())
-                if (item == null){
-                    mySpaceViewModel.updateDirectoriesAfterEdit(parentId!!, "", level, true)
-                    parentId = null
+                when(rootType){
+                    Constants.MY_SPACE ->{
+                        viewModel.deleteDirectoryOrFile(item, parentId)
+                        if (item == null){
+                            mySpaceViewModel.updateDirectoriesAfterEdit(parentId!!, "", level, true)
+                            parentId = null
+                        }
+                    }
                 }
             }
         }.show(parentFragmentManager, Constants.WARNING_DIALOG)
@@ -345,7 +354,6 @@ class DirectoryDetailFragment : Fragment() {
                 if(!isHaveOptions){
                     when(item){
                         is Directory -> {
-                            Log.d("id", item.id.toString())
                             val bundle = Bundle()
                             bundle.putString(Constants.DIRECTORY_ID, item.id.toString())
                             bundle.putString(Constants.DIRECTORY_NAME, item.name)
@@ -354,6 +362,7 @@ class DirectoryDetailFragment : Fragment() {
                             when(rootType){
                                 Constants.MY_SPACE -> findNavController().navigate(R.id.action_directoryDetailFragment_self, bundle)
                                 Constants.SHARE_WITH_ME -> findNavController().navigate(R.id.action_directoryDetailFragment2_self, bundle)
+                                Constants.MY_SHARE -> findNavController().navigate(R.id.action_directoryDetailFragment3_self, bundle)
                             }
                         }
                         is File -> {
@@ -364,7 +373,7 @@ class DirectoryDetailFragment : Fragment() {
                     showBottomSheetOption(item)
                 }
             }
-        })
+        }, Constants.MY_SHARE)
         binding.rcvDirectoryDetail.layoutManager = LinearLayoutManager(requireContext())
         binding.rcvDirectoryDetail.adapter = directoryDetailAdapter
     }

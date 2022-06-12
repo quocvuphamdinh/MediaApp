@@ -41,7 +41,7 @@ class SearchDialogFragment : DialogFragment() {
             override fun clickItem(item: Any?, isHaveOptions: Boolean) {
 
             }
-        })
+        }, 1)
         fileAdapter.submitList(DataStore.getListFile())
         binding.rcvSearch.layoutManager= LinearLayoutManager(requireContext())
         binding.rcvSearch.adapter = fileAdapter

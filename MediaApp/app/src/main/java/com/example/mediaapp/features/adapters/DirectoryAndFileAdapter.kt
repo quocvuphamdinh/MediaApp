@@ -15,7 +15,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 
-class DirectoryAndFileAdapter(private val clickItemDirectoryAndFile: ClickItemDirectoryAndFile): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DirectoryAndFileAdapter(private val clickItemDirectoryAndFile: ClickItemDirectoryAndFile, private val rootType:Int): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ClickItemDirectoryAndFile{
         fun clickItem(item: Any?, isHaveOptions: Boolean)
@@ -71,8 +71,12 @@ class DirectoryAndFileAdapter(private val clickItemDirectoryAndFile: ClickItemDi
                 holder.layoutDirectory.setOnClickListener {
                     clickItemDirectoryAndFile.clickItem(item, false)
                 }
-                holder.imgOptions.setOnClickListener {
-                    clickItemDirectoryAndFile.clickItem(item, true)
+                if(rootType == Constants.MY_SHARE){
+                    holder.imgOptions.visibility = View.GONE
+                }else{
+                    holder.imgOptions.setOnClickListener {
+                        clickItemDirectoryAndFile.clickItem(item, true)
+                    }
                 }
             }
             is File ->{
@@ -80,8 +84,12 @@ class DirectoryAndFileAdapter(private val clickItemDirectoryAndFile: ClickItemDi
                 holder.layoutFile.setOnClickListener {
                     clickItemDirectoryAndFile.clickItem(item, false)
                 }
-                holder.imgOptions.setOnClickListener {
-                    clickItemDirectoryAndFile.clickItem(item, true)
+                if(rootType == Constants.MY_SHARE){
+                    holder.imgOptions.visibility = View.GONE
+                }else{
+                    holder.imgOptions.setOnClickListener {
+                        clickItemDirectoryAndFile.clickItem(item, true)
+                    }
                 }
             }
             else -> throw IllegalArgumentException("Invalid binding")

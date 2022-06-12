@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Window
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -16,9 +15,13 @@ import com.example.mediaapp.features.adapters.AccountAdapter
 import com.example.mediaapp.models.User
 import com.example.mediaapp.util.DataStore
 
-class ViewReceiverDialogFragment : DialogFragment() {
+class ViewReceiverDialogFragment(private val list:List<User>, private val isDelete: Boolean) : DialogFragment() {
     private lateinit var binding : FragmentDialogViewReceiverBinding
     private lateinit var accountAdapter: AccountAdapter
+    private var clickItem: ((user: User) -> Unit)? =null
+    fun setCLickItem(click: (user: User) -> Unit){
+        clickItem = click
+    }
 
     @SuppressLint("UseGetLayoutInflater")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -27,7 +30,6 @@ class ViewReceiverDialogFragment : DialogFragment() {
             setCanceledOnTouchOutside(true)
             requestWindowFeature(Window.FEATURE_NO_TITLE)
             setContentView(binding.root)
-
             setUpRecyclerView()
         }
     }
@@ -35,10 +37,12 @@ class ViewReceiverDialogFragment : DialogFragment() {
     private fun setUpRecyclerView(){
         accountAdapter = AccountAdapter(object : AccountAdapter.ClickAccountItem{
             override fun clickItem(user: User) {
-                Toast.makeText(requireContext(), "Email: ${user.email}", Toast.LENGTH_SHORT).show()
+                clickItem?.let { click ->
+                    click(user)
+                }
             }
-        })
-        accountAdapter.submitList(DataStore.getListUser())
+        }, isDelete)
+        accountAdapter.submitList(list)
         binding.rcvViewReceiver.layoutManager = LinearLayoutManager(requireContext())
         binding.rcvViewReceiver.adapter = accountAdapter
     }

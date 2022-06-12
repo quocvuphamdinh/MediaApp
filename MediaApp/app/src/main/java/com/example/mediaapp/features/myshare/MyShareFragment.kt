@@ -1,9 +1,11 @@
 package com.example.mediaapp.features.myshare
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -15,11 +17,12 @@ import com.example.mediaapp.features.myshare.document.MyShareFileFragment
 import com.example.mediaapp.features.myshare.image.MyShareImageFragment
 import com.example.mediaapp.features.myshare.music.MyShareMusicFragment
 import com.example.mediaapp.features.myshare.video.MyShareVideoFragment
-import com.example.mediaapp.features.myspace.MySpaceViewModel
-import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
+import com.example.mediaapp.features.util.LoadingDialogFragment
 import com.example.mediaapp.features.util.ViewReceiverDialogFragment
 import com.example.mediaapp.features.util.WarningDialogFragment
+import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
+import com.example.mediaapp.models.User
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.util.MediaApplication
 import com.google.android.material.tabs.TabLayout
@@ -28,8 +31,14 @@ import com.google.android.material.tabs.TabLayoutMediator
 class MyShareFragment: Fragment() {
     private lateinit var binding: FragmentMyShareBinding
     private lateinit var viewPagerMyShareAdapter: ViewPagerAdapter
-    private val viewModel: MySpaceViewModel by activityViewModels {
-        MySpaceViewModelFactory((activity?.application as MediaApplication).repository)
+    private val loadingDialogFragment: LoadingDialogFragment by lazy { LoadingDialogFragment() }
+    private val viewModel: MyShareViewModel by activityViewModels {
+        MyShareViewModelFactory((activity?.application as MediaApplication).repository)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.getFolderRoots()
     }
 
     override fun onCreateView(
@@ -66,31 +75,50 @@ class MyShareFragment: Fragment() {
 
         subcribeToObserver()
     }
-    private fun showDialogViewReceiver(item: Any){
-        ViewReceiverDialogFragment().apply {
-
+    private fun showDialogViewReceiver(item: Any, isDelete:Boolean){
+        ViewReceiverDialogFragment(
+            when (item) {
+                is Directory -> item.receivers
+                is File -> item.receivers
+                else -> listOf()
+            }, isDelete
+        ).apply {
+            if(isDelete){
+                setCLickItem { user ->
+                    showWarningDialog(user, item)
+                    closeDialog()
+                }
+            }
         }.show(parentFragmentManager, Constants.VIEW_RECEIVER_DIALOG_TAG)
     }
-    private fun showDialogWarning(item: Any){
-        WarningDialogFragment("Are you sure ?", "Do you want to remove the share of this ${if (item is File) "file" else "directory"} ?").apply {
+    private fun showWarningDialog(user: User, item: Any){
+        WarningDialogFragment("Are you sure ?", "Do you want to delete the directory shared with ${user.firstName+user.lastName} ?").apply {
             setClickYes {
-
+                loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                viewModel.deleteDirectoryOrFileByOwner(item, user)
             }
         }.show(parentFragmentManager, Constants.WARNING_DIALOG)
     }
-
     private fun subcribeToObserver() {
         viewModel.directoryAndFileLongClick.observe(viewLifecycleOwner, Observer {
             when(viewModel.option){
                 1 -> {
-                    showDialogWarning(it)
+                    showDialogViewReceiver(it, true)
                     viewModel.option = 0
                 }
                 2 -> {
-                    showDialogViewReceiver(it)
+                    showDialogViewReceiver(it, false)
                     viewModel.option = 0
                 }
             }
+        })
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.success.observe(viewLifecycleOwner, Observer {
+            loadingDialogFragment.cancelDialog()
         })
     }
 
@@ -110,5 +138,10 @@ class MyShareFragment: Fragment() {
                 3-> tab.setIcon(R.drawable.tab4)
             }
         }.attach()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.resetToast()
     }
 }

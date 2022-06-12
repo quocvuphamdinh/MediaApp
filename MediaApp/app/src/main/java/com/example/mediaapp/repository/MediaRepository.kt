@@ -17,6 +17,14 @@ import java.net.URLConnection
 class MediaRepository(private val mediaAPI:MediaAPI, private val sharedPreferences: SharedPreferences) {
 
     //remote
+    suspend fun deleteFileShareByOwner(fileId: String, receiverEmail: String) = mediaAPI.deleteFileShareByOwner(fileId, receiverEmail, "Bearer ${getUserToken()}")
+
+    suspend fun deleteDirectoryShareByOwner(directoryId: String, receiverEmail: String) = mediaAPI.deleteDirectoryShareByOwner(directoryId, receiverEmail, "Bearer ${getUserToken()}")
+
+    suspend fun getListFolderInMyShare(parentId: String) = mediaAPI.getListFolderInMyShare(parentId, "Bearer ${getUserToken()}")
+
+    suspend fun getListFileInMyShare(parentId: String) = mediaAPI.getListFileInMyShare(parentId, "Bearer ${getUserToken()}")
+
     suspend fun deleteFileShareByCustomer(fileId: String) = mediaAPI.deleteFileShareByCustomer(fileId, "Bearer ${getUserToken()}")
 
     suspend fun getListFileInShare(directoryId: String, page: Int, pageSize: Int) = mediaAPI.getListFileInShare(directoryId, page, pageSize, "Bearer ${getUserToken()}")

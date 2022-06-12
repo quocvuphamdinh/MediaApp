@@ -1,6 +1,7 @@
 package com.example.mediaapp.api
 
 import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
 import com.example.mediaapp.models.User
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -55,6 +56,16 @@ interface MediaAPI {
     @DELETE("directories/customer-delete-share/{directoryId}")
     suspend fun deleteDirectoryShareByCustomer(@Path("directoryId") directoryId: String, @Header("Authorization") token: String): Response<ResponseBody>
 
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @GET("directories/my-share/{parentId}")
+    suspend fun getListFolderInMyShare(@Path("parentId") parentId: String, @Header("Authorization") token: String): Response<List<Directory>>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @DELETE("directories/owner-delete-share/{directoryId}")
+    suspend fun deleteDirectoryShareByOwner(@Path("directoryId") directoryId: String,
+                                            @Query("receiverEmail") receiverEmail: String,
+                                            @Header("Authorization") token: String): Response<ResponseBody>
+
     //file
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @GET("files/{directoryId}")
@@ -92,4 +103,14 @@ interface MediaAPI {
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @DELETE("files/customer-delete-share/{fileId}")
     suspend fun deleteFileShareByCustomer(@Path("fileId") fileId: String, @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @GET("files/my-share/{parentId}")
+    suspend fun getListFileInMyShare(@Path("parentId") parentId: String,  @Header("Authorization") token:String): Response<List<File>>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @DELETE("files/owner-remove-share/{fileId}")
+    suspend fun deleteFileShareByOwner(@Path("fileId") fileId: String,
+                                       @Query("receiverEmail") receiverEmail: String,
+                                       @Header("Authorization") token:String): Response<ResponseBody>
 }

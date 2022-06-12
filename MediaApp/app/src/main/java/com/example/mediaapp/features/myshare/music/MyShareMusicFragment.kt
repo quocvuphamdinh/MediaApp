@@ -6,25 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentMusicMyShareBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
 import com.example.mediaapp.features.adapters.FileAdapter
-import com.example.mediaapp.features.myspace.MySpaceViewModel
-import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
+import com.example.mediaapp.features.myshare.MyShareViewModel
+import com.example.mediaapp.features.myshare.MyShareViewModelFactory
 import com.example.mediaapp.features.util.BottomSheetOptionFragment
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.DataStore
 import com.example.mediaapp.util.MediaApplication
 
 class MyShareMusicFragment: Fragment() {
     private lateinit var binding: FragmentMusicMyShareBinding
     private lateinit var directoryAdapter: DirectoryAdapter
     private lateinit var fileAdapter: FileAdapter
-    private val viewModel: MySpaceViewModel by activityViewModels {
-        MySpaceViewModelFactory((activity?.application as MediaApplication).repository)
+    private val viewModel: MyShareViewModel by activityViewModels {
+        MyShareViewModelFactory((activity?.application as MediaApplication).repository)
     }
 
     override fun onCreateView(
@@ -41,7 +43,30 @@ class MyShareMusicFragment: Fragment() {
 
         setUpDirectoryAdapter()
         setUpFileAdapter()
+        subcribeToObservers()
+        setUpLoadMoreInRecyclerView()
     }
+    private fun setUpLoadMoreInRecyclerView() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refreshFoldersAndFiles(2)
+        }
+    }
+
+    private fun subcribeToObservers() {
+        viewModel.folderMusics.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+            directoryAdapter.submitList(it)
+        })
+        viewModel.fileMusics.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+            fileAdapter.submitList(it)
+        })
+    }
+
     private fun showBottomSheetOption(any: Any) {
         BottomSheetOptionFragment(any is Directory, Constants.MY_SHARE).apply {
             when(any){
@@ -50,6 +75,7 @@ class MyShareMusicFragment: Fragment() {
             }
             setClickDelete {
                 viewModel.setDirectoryLongClick(any, 1)
+                closeBottomSheet()
             }
             setClickViewReceiver {
                 viewModel.setDirectoryLongClick(any, 2)
@@ -68,7 +94,6 @@ class MyShareMusicFragment: Fragment() {
                 showBottomSheetOption(file)
             }
         })
-        fileAdapter.submitList(DataStore.getListFile())
         binding.rcvMyShareFileFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMyShareFileFile.adapter = fileAdapter
     }
@@ -76,15 +101,25 @@ class MyShareMusicFragment: Fragment() {
     private fun setUpDirectoryAdapter() {
         directoryAdapter = DirectoryAdapter(object : DirectoryAdapter.CLickItemDirectory{
             override fun clickItem(directory: Directory) {
-
+                goToDirectoryDetail(directory)
             }
 
             override fun longClickItem(directory: Directory) {
                 showBottomSheetOption(directory)
             }
         })
-        directoryAdapter.submitList(DataStore.getListDirectory())
         binding.rcvMyShareFolderFile.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rcvMyShareFolderFile.adapter = directoryAdapter
+    }
+    private fun goToDirectoryDetail(directory: Directory){
+        val bundle = Bundle()
+        bundle.putString(Constants.DIRECTORY_ID, directory.id.toString())
+        bundle.putString(Constants.DIRECTORY_NAME, directory.name)
+        bundle.putInt(Constants.DIRECTORY_LEVEL, directory.level)
+        bundle.putInt(Constants.ROOT_TYPE, Constants.MY_SHARE)
+        findNavController().navigate(
+            R.id.action_myShareFragment_to_directoryDetailFragment3,
+            bundle
+        )
     }
 }
