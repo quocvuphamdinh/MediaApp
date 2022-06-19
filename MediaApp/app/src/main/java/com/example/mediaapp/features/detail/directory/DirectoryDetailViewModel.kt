@@ -153,6 +153,7 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                 when(rootType){
                     Constants.MY_SPACE, Constants.MY_SHARE -> list = convertToListDirectory(handlingResponse(mediaRepository.getFolderByParentId(parentId, page, 10), _toast))
                     Constants.SHARE_WITH_ME -> list = convertToListDirectory(handlingResponse(mediaRepository.getFolderInShare(parentId, page, 10), _toast))
+                    Constants.FAVORITE -> list = convertToListDirectory(handlingResponse(mediaRepository.getListFolderInFavorite(parentId, page, 10), _toast))
                 }
                 if(list.isNotEmpty()&& _foldersAndFiles.value?.containsAll(list) == false){
                     _isHaveMoreFolders.postValue(true)
@@ -165,6 +166,7 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                 when(rootType){
                     Constants.MY_SPACE, Constants.MY_SHARE -> list = convertToListDirectory(handlingResponse(mediaRepository.getListFileByDirectory(parentId, page, 10), _toast))
                     Constants.SHARE_WITH_ME -> list = convertToListDirectory(handlingResponse(mediaRepository.getListFileInShare(parentId, page, 10), _toast))
+                    Constants.FAVORITE -> list = convertToListDirectory(handlingResponse(mediaRepository.getListFileInFavorite(parentId, page, 10), _toast))
                 }
                 if(list.isNotEmpty()&& _foldersAndFiles.value?.containsAll(list) == false){
                     _isHaveMoreFiles.postValue(true)
@@ -197,6 +199,10 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                                 val response = mediaRepository.getFolderInShare(parentId, 0, 10)
                                 _foldersAndFiles.postValue(convertToListDirectory(handlingResponse(response, _toast)))
                             }
+                            Constants.FAVORITE -> {
+                                val response = mediaRepository.getListFolderInFavorite(parentId, 0, 10)
+                                _foldersAndFiles.postValue(convertToListDirectory(handlingResponse(response, _toast)))
+                            }
                         }
                     }else{
                         val list= ArrayList<Directory>()
@@ -209,6 +215,11 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                             Constants.SHARE_WITH_ME -> {
                                 for (i in 0..currentPageFolder){
                                     list.addAll(convertToListDirectory(handlingResponse(mediaRepository.getFolderInShare(parentId, i, 10), _toast)))
+                                }
+                            }
+                            Constants.FAVORITE -> {
+                                for (i in 0..currentPageFolder){
+                                    list.addAll(convertToListDirectory(handlingResponse(mediaRepository.getListFolderInFavorite(parentId, i, 10), _toast)))
                                 }
                             }
                         }
@@ -226,6 +237,10 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                                 val response = mediaRepository.getListFileInShare(parentId, 0, 10)
                                 _foldersAndFiles.postValue(convertToListFile(handlingResponse(response, _toast)))
                             }
+                            Constants.FAVORITE ->{
+                                val response = mediaRepository.getListFileInFavorite(parentId, 0, 10)
+                                _foldersAndFiles.postValue(convertToListFile(handlingResponse(response, _toast)))
+                            }
                         }
                     }else{
                         val list = ArrayList<File>()
@@ -238,6 +253,11 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
                             Constants.SHARE_WITH_ME -> {
                                 for (i in 0..currentPageFile){
                                     list.addAll(convertToListFile(handlingResponse(mediaRepository.getListFileInShare(parentId, i, 10), _toast)))
+                                }
+                            }
+                            Constants.FAVORITE -> {
+                                for(i in 0..currentPageFile){
+                                    list.addAll(convertToListFile(handlingResponse(mediaRepository.getListFileInFavorite(parentId, i, 10), _toast)))
                                 }
                             }
                         }

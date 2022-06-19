@@ -35,7 +35,14 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.mediaapp.features.profile.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment4" />
+        <action
+            android:id="@+id/action_profileFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment4" />
+    </fragment>
     <fragment
         android:id="@+id/directoryDetailFragment3"
         android:name="com.example.mediaapp.features.detail.directory.DirectoryDetailFragment"
@@ -64,4 +71,12 @@
         android:id="@+id/musicDetailFragment2"
         android:name="com.example.mediaapp.features.detail.file.music.MusicDetailFragment"
         android:label="MusicDetailFragment" />
+    <fragment
+        android:id="@+id/editProfileFragment4"
+        android:name="com.example.mediaapp.features.profile.editprofile.EditProfileFragment"
+        android:label="EditProfileFragment" />
+    <fragment
+        android:id="@+id/changePasswordFragment4"
+        android:name="com.example.mediaapp.features.profile.changepassword.ChangePasswordFragment"
+        android:label="ChangePasswordFragment" />
 </navigation>

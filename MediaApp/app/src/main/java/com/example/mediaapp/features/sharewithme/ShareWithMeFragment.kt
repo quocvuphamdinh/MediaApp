@@ -18,10 +18,9 @@ import com.example.mediaapp.features.sharewithme.music.ShareWithMeMusicFragment
 import com.example.mediaapp.features.sharewithme.video.ShareWithMeVideoFragment
 import com.example.mediaapp.features.util.LoadingDialogFragment
 import com.example.mediaapp.features.util.WarningDialogFragment
-import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

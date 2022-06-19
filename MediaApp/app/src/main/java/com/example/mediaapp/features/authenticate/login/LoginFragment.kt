@@ -16,7 +16,7 @@ import com.example.mediaapp.databinding.FragmentLoginBinding
 import com.example.mediaapp.models.User
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.util.LoadingDialogFragment
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 
 class LoginFragment : Fragment() {
     private lateinit var binding:FragmentLoginBinding
@@ -70,6 +70,7 @@ class LoginFragment : Fragment() {
         val username = binding.editTextUsername.text.toString()
         val password = binding.editTextPassword.text.toString()
         val user = User("", username, "", "", password, "")
+        user.color = Constants.randomColor(requireContext())
         viewModel.login(user)
     }
 }

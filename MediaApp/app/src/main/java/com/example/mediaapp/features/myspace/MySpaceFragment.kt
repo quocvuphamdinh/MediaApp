@@ -31,7 +31,7 @@ import com.example.mediaapp.features.util.LoadingDialogFragment
 import com.example.mediaapp.features.util.ShareFolderOrFileDialogFragment
 import com.example.mediaapp.features.util.WarningDialogFragment
 import com.example.mediaapp.models.File
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 import com.example.mediaapp.util.RealPathFileUtil
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mediaapp.models.User
 import com.example.mediaapp.repository.MediaRepository
+import com.example.mediaapp.util.Constants
+import com.example.mediaapp.util.ResponseUtil
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -23,14 +25,11 @@ class LoginViewModel(val repository: MediaRepository) : ViewModel() {
     fun login(user: User) = viewModelScope.launch {
         try{
             val response = repository.login(user)
-            if(response.isSuccessful){
-                val result = response.body()
-                val jsonObj = JSONObject(result!!.charStream().readText())
-                repository.writeAccountDataToSharedPref(jsonObj.getString("token"))
-                _loginNotify.postValue("Login successfully !")
+            val token = ResponseUtil.handlingResponseReturnWithValue(response, "Login successfully !", _loginNotify, "token", true, "Login failed !")
+            if(token != "ERROR"){
+                repository.writeAccountDataToSharedPref(token, user.color!!)
                 _isSuccess.postValue(true)
             }else{
-                _loginNotify.postValue("Login failed !")
                 _isSuccess.postValue(false)
             }
         }catch (e : Exception){

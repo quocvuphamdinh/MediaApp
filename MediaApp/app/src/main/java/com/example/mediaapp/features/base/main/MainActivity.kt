@@ -9,7 +9,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.ActivityMainBinding
 import com.example.mediaapp.features.base.home.HomeActivity
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 
 class MainActivity : AppCompatActivity(){
     private lateinit var binding : ActivityMainBinding

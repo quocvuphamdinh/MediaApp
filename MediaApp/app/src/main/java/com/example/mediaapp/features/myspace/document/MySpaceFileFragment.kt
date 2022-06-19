@@ -2,7 +2,6 @@ package com.example.mediaapp.features.myspace.document
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentFileMySpaceBinding
 import com.example.mediaapp.features.adapters.DirectoryAdapter
@@ -24,7 +22,7 @@ import com.example.mediaapp.features.util.BottomSheetOptionFragment
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 
 class MySpaceFileFragment : Fragment() {
     private lateinit var binding: FragmentFileMySpaceBinding

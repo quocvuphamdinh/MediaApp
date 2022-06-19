@@ -17,6 +17,22 @@ interface MediaAPI {
     @POST("auth/login")
     suspend fun login(@Body user: User) : Response<ResponseBody>
 
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @GET("accounts/info")
+    suspend fun getAccountInfo(@Header("Authorization") token:String): Response<User>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @POST("accounts/change-info")
+    suspend fun changeAccountInfo(@Body user: User, @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @POST("auth/check-password")
+    suspend fun checkPassword(@Body user: User, @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @POST("auth/change-password")
+    suspend fun changePassword(@Body body: HashMap<String, String>, @Header("Authorization") token:String): Response<ResponseBody>
+
     //directory
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @GET("directories/{parentId}")
@@ -66,6 +82,17 @@ interface MediaAPI {
                                             @Query("receiverEmail") receiverEmail: String,
                                             @Header("Authorization") token: String): Response<ResponseBody>
 
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @GET("directories/favorites/{directoryId}")
+    suspend fun getListFolderInFavorite(@Path("directoryId") directoryId: String,
+                                        @Query("page") page:Int,
+                                        @Query("pageSize") pageSize:Int,
+                                        @Header("Authorization") token: String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @DELETE("directories/delete-favorite/{directoryId}")
+    suspend fun deleteDirectoryFromFavorite(@Path("directoryId") directoryId: String, @Header("Authorization") token: String): Response<ResponseBody>
+
     //file
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @GET("files/{directoryId}")
@@ -113,4 +140,15 @@ interface MediaAPI {
     suspend fun deleteFileShareByOwner(@Path("fileId") fileId: String,
                                        @Query("receiverEmail") receiverEmail: String,
                                        @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @GET("files/favorites/{directoryId}")
+    suspend fun getListFileInFavorite(@Path("directoryId") directoryId: String,
+                                      @Query("page") page:Int,
+                                      @Query("pageSize") pageSize:Int,
+                                      @Header("Authorization") token:String): Response<ResponseBody>
+
+    @Headers( "Content-Type: application/json;charset=UTF-8")
+    @DELETE("files/delete-favorites/{fileId}")
+    suspend fun deleteFileFromFavorite(@Path("fileId") fileId: String, @Header("Authorization") token:String): Response<ResponseBody>
 }

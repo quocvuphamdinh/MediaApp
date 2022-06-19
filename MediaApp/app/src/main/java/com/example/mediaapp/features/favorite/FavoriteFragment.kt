@@ -4,22 +4,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentFavoriteBinding
+import com.example.mediaapp.features.MediaApplication
 import com.example.mediaapp.features.adapters.ViewPagerAdapter
 import com.example.mediaapp.features.favorite.document.FavoriteFileFragment
 import com.example.mediaapp.features.favorite.image.FavoriteImageFragment
 import com.example.mediaapp.features.favorite.music.FavoriteMusicFragment
 import com.example.mediaapp.features.favorite.video.FavoriteVideoFragment
+import com.example.mediaapp.features.util.LoadingDialogFragment
+import com.example.mediaapp.features.util.ShareFolderOrFileDialogFragment
+import com.example.mediaapp.features.util.WarningDialogFragment
+import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
+import com.example.mediaapp.util.Constants
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class FavoriteFragment : Fragment() {
-
     private lateinit var binding : FragmentFavoriteBinding
+    private val loadingDialogFragment by lazy { LoadingDialogFragment() }
     private lateinit var viewPagerMyPlaceAdapter: ViewPagerAdapter
+    private val viewModel: FavoriteViewModel by activityViewModels {
+        FavoriteViewModelFactory((activity?.application as MediaApplication).repository)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,7 +64,54 @@ class FavoriteFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+
+        subcribeToObservers()
     }
+    private fun showDialogWarning(item: Any?){
+        WarningDialogFragment("Are you sure ?", "Do you want to remove favorite of this ${if (item is File) "file" else "directory"} ?").apply {
+            setClickYes {
+                loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                viewModel.deleteDirectoryOrFileFromFavorite(item!!)
+            }
+        }.show(parentFragmentManager, Constants.WARNING_DIALOG)
+    }
+    private fun showDialogSearchAccount(item: Any){
+        ShareFolderOrFileDialogFragment()
+            .apply {
+                setClickToShare { email ->
+                    loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+                    viewModel.addDirectoryOrFileToShare(item, email, email)
+                    closeDialog()
+                }
+            }
+            .show(parentFragmentManager, Constants.SHARE_DIALOG_TAG)
+    }
+    private fun subcribeToObservers() {
+        viewModel.directoryAndFileLongClick.observe(viewLifecycleOwner, Observer {
+            when(viewModel.option){
+                1 -> {
+                    showDialogSearchAccount(it)
+                    viewModel.option = 0
+                }
+                2-> {
+                    showDialogWarning(it)
+                    viewModel.option = 0
+                }
+                3-> {
+                    viewModel.option = 0
+                }
+            }
+        })
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.success.observe(viewLifecycleOwner, Observer {
+            loadingDialogFragment.cancelDialog()
+        })
+    }
+
     private fun setUpViewPagerWithTabLayout() {
         viewPagerMyPlaceAdapter = ViewPagerAdapter(requireActivity(), listOf(
             FavoriteMusicFragment(),
@@ -68,5 +128,10 @@ class FavoriteFragment : Fragment() {
                 3-> tab.setIcon(R.drawable.tab4)
             }
         }.attach()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.resetToast()
     }
 }

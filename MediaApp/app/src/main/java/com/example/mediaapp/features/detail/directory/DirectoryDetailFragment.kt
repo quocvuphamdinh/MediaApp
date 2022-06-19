@@ -25,13 +25,11 @@ import com.example.mediaapp.databinding.FragmentDirectoryDetailBinding
 import com.example.mediaapp.features.adapters.DirectoryAndFileAdapter
 import com.example.mediaapp.features.myspace.MySpaceViewModel
 import com.example.mediaapp.features.myspace.MySpaceViewModelFactory
-import com.example.mediaapp.features.sharewithme.ShareWithMeViewModel
-import com.example.mediaapp.features.sharewithme.ShareWithMeViewModelFactory
 import com.example.mediaapp.features.util.*
 import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 import com.example.mediaapp.util.RealPathFileUtil
 import java.util.*
 
@@ -64,8 +62,8 @@ class DirectoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpRecyclerView()
         setUpSpinner()
+        setUpRecyclerView()
         sucribeToObservers()
         setUpLoadMoreInRecyclerView()
         mActivityResult = registerForActivityResult(
@@ -349,6 +347,7 @@ class DirectoryDetailFragment : Fragment() {
     }
 
     private fun setUpRecyclerView() {
+        val rootType2 = arguments?.getInt(Constants.ROOT_TYPE)
         directoryDetailAdapter = DirectoryAndFileAdapter(object : DirectoryAndFileAdapter.ClickItemDirectoryAndFile{
             override fun clickItem(item: Any?, isHaveOptions: Boolean) {
                 if(!isHaveOptions){
@@ -363,6 +362,7 @@ class DirectoryDetailFragment : Fragment() {
                                 Constants.MY_SPACE -> findNavController().navigate(R.id.action_directoryDetailFragment_self, bundle)
                                 Constants.SHARE_WITH_ME -> findNavController().navigate(R.id.action_directoryDetailFragment2_self, bundle)
                                 Constants.MY_SHARE -> findNavController().navigate(R.id.action_directoryDetailFragment3_self, bundle)
+                                Constants.FAVORITE -> findNavController().navigate(R.id.action_directoryDetailFragment4_self, bundle)
                             }
                         }
                         is File -> {
@@ -373,7 +373,7 @@ class DirectoryDetailFragment : Fragment() {
                     showBottomSheetOption(item)
                 }
             }
-        }, Constants.MY_SHARE)
+        }, rootType2!!)
         binding.rcvDirectoryDetail.layoutManager = LinearLayoutManager(requireContext())
         binding.rcvDirectoryDetail.adapter = directoryDetailAdapter
     }

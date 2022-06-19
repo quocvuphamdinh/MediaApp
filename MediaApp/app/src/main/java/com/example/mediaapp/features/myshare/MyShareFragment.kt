@@ -1,7 +1,6 @@
 package com.example.mediaapp.features.myshare
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.models.User
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

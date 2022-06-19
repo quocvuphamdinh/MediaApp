@@ -1,8 +1,13 @@
 package com.example.mediaapp.util
 
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
+import android.view.View
+import com.example.mediaapp.R
+import kotlin.random.Random
 
 object Constants {
     const val BASE_URL = "https://media-api-balong.herokuapp.com/api/"
@@ -36,6 +41,8 @@ object Constants {
     const val FAVORITE = 3
     const val MY_SHARE = 4
     const val ROOT_TYPE = "ROOT_TYPE"
+    const val COLOR_AVATAR = "COLOR_AVATAR"
+    const val CHANGE_ACCOUNT_INFO = "changeAccountInfo"
     private const val REQUEST_CODE_OPEN_FILE = 1
 
     fun clickRequestPermissionToAccessFile(activity: Activity, clickOpenFile: () -> Unit){
@@ -50,5 +57,17 @@ object Constants {
         }else{
             clickOpenFile()
         }
+    }
+    fun randomColor(context: Context): Int{
+        var color: Int
+        while (true){
+            color = Color.argb(255, Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+            if(color == context.resources.getColor(R.color.white) || color == context.resources.getColor(R.color.black)){
+                //
+            }else{
+                break
+            }
+        }
+        return color
     }
 }

@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentOnboardingBinding
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 
 class OnboardingFragment : Fragment() {
     private lateinit var binding:FragmentOnboardingBinding

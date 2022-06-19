@@ -12,11 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentDialogSearchBinding
 import com.example.mediaapp.features.adapters.DirectoryAndFileAdapter
-import com.example.mediaapp.features.adapters.FileAdapter
-import com.example.mediaapp.models.Directory
-import com.example.mediaapp.models.File
 import com.example.mediaapp.util.DataStore
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 
 class SearchDialogFragment : DialogFragment() {
     private lateinit var binding : FragmentDialogSearchBinding

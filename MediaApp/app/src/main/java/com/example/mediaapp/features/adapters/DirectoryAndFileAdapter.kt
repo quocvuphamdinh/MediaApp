@@ -74,6 +74,7 @@ class DirectoryAndFileAdapter(private val clickItemDirectoryAndFile: ClickItemDi
                 if(rootType == Constants.MY_SHARE){
                     holder.imgOptions.visibility = View.GONE
                 }else{
+                    holder.imgOptions.visibility = View.VISIBLE
                     holder.imgOptions.setOnClickListener {
                         clickItemDirectoryAndFile.clickItem(item, true)
                     }
@@ -87,6 +88,7 @@ class DirectoryAndFileAdapter(private val clickItemDirectoryAndFile: ClickItemDi
                 if(rootType == Constants.MY_SHARE){
                     holder.imgOptions.visibility = View.GONE
                 }else{
+                    holder.imgOptions.visibility = View.VISIBLE
                     holder.imgOptions.setOnClickListener {
                         clickItemDirectoryAndFile.clickItem(item, true)
                     }

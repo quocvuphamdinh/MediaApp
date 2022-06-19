@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentMusicDetailBinding
-import com.example.mediaapp.util.MediaApplication
+import com.example.mediaapp.features.MediaApplication
 
 
 class MusicDetailFragment : Fragment() {

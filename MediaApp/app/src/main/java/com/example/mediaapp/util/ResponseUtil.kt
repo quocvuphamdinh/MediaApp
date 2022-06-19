@@ -9,6 +9,23 @@ import org.json.JSONObject
 import retrofit2.Response
 
 object ResponseUtil {
+    fun handlingResponseReturnWithValue(response: Response<ResponseBody>, successToast: String, toast: MutableLiveData<String>, nameValue: String,
+    isHaveNoMessageError: Boolean = false, messageError:String = ""): String{
+        return if(response.isSuccessful){
+            toast.postValue(successToast)
+            val result = response.body()
+            val jsonObj = JSONObject(result!!.charStream().readText())
+            jsonObj.getString(nameValue)
+        }else{
+            if(isHaveNoMessageError){
+                toast.postValue(messageError)
+            }else{
+                val jObjError = JSONObject(response.errorBody()?.string()!!)
+                toast.postValue(jObjError.getString("message"))
+            }
+            "ERROR"
+        }
+    }
     fun handlingResponseListDirectory(response: Response<List<Directory>>, toast: MutableLiveData<String>): List<Directory> {
         return if(response.isSuccessful) {
             toast.postValue("")

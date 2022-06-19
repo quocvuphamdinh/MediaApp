@@ -120,7 +120,7 @@ class BottomSheetOptionFragment(
             }else{
                 binding.linearEditOption.visibility = View.GONE
             }
-            if((isDetail && rootType==Constants.SHARE_WITH_ME) || (isDetail && rootType==Constants.MY_SHARE)){
+            if((isDetail && rootType==Constants.SHARE_WITH_ME) || (isDetail && rootType==Constants.MY_SHARE) || (isDetail && rootType==Constants.FAVORITE)){
                 binding.linearDeleteOption.visibility = View.GONE
             }else{
                 binding.linearDeleteOption.visibility = View.VISIBLE

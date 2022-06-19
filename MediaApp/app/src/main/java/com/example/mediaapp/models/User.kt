@@ -11,4 +11,5 @@ data class User(
     val confirmPassword : String
 ){
     val id : UUID? = null
+    var color: Int? = null
 }
