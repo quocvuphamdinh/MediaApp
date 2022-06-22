@@ -105,6 +105,14 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
     val directoryAndFileLongClick: LiveData<Any>
     get() = _directoryAndFileLongClick
 
+    private var _fileImage: MutableLiveData<File> = MutableLiveData()
+    val fileImage: LiveData<File>
+        get() = _fileImage
+
+    private var _isLoadFile: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoadFile: LiveData<Boolean>
+        get() = _isLoadFile
+
     var pageDocument = 0
     var pageMusic = 0
     var pagePhoto = 0
@@ -116,6 +124,7 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
     var pageMovieFile = 0
 
     var option = 1
+    var isOpenFile = false
     fun setDirectoryLongClick(any: Any, option: Int) {
         _directoryAndFileLongClick.postValue(any)
         this.option = option
@@ -130,6 +139,25 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
             return it[position-1].id.toString()
         }
         return ""
+    }
+    fun getFile(fileId: String) = viewModelScope.launch {
+        try {
+            isOpenFile = true
+            _isLoadFile.postValue(true)
+            val response = mediaRepository.getFile(fileId)
+            if(response.isSuccessful){
+                _fileImage.postValue(response.body())
+                _success.postValue(true)
+            }else{
+                _toast.postValue("Get file failed !")
+                _success.postValue(false)
+            }
+            _isLoadFile.postValue(false)
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+            _isLoadFile.postValue(false)
+        }
     }
     private fun refresh(listDirectoryMutable: MutableLiveData<List<Directory>>, listFileMutable: MutableLiveData<List<File>>, listDirectoryNew: List<Directory>, listFileNew: List<File>){
         listDirectoryMutable.postValue(listDirectoryNew)

@@ -19,4 +19,5 @@ data class File(
     val email: String? = null
     val receiver: String? = null
     var receivers: List<User> = listOf()
+    val content: String? = null
 }

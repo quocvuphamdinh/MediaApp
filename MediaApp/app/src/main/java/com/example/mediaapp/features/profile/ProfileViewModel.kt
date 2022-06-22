@@ -18,6 +18,10 @@ class ProfileViewModel(private val repository: MediaRepository) : ViewModel() {
     val toast: LiveData<String>
     get() = _toast
 
+    private var _success: MutableLiveData<Boolean> = MutableLiveData()
+    val success: LiveData<Boolean>
+        get() = _success
+
     private var _userInfo: MutableLiveData<User> = MutableLiveData()
     val user: LiveData<User>
     get() = _userInfo
@@ -30,12 +34,15 @@ class ProfileViewModel(private val repository: MediaRepository) : ViewModel() {
                 user?.color = repository.getColorAvatar()
                 _userInfo.postValue(user!!)
                 _toast.postValue("")
+                _success.postValue(true)
             }else{
                 val jObjError = JSONObject(response.errorBody()?.string()!!)
                 _toast.postValue(jObjError.getString("message"))
+                _success.postValue(false)
             }
         }catch (e: Exception){
             _toast.postValue(e.message.toString())
+            _success.postValue(false)
         }
     }
     fun removeUserDataFromSharedPref() = repository.removePersonalDataFromSharedPref()

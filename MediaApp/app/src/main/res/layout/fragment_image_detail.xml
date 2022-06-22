@@ -4,31 +4,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:background="@android:color/transparent"
-            android:id="@+id/appBarImageDetail"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="match_parent">
             <RelativeLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <ImageView
-                    android:layout_alignParentStart="true"
-                    android:id="@+id/imageViewBackImageDetail"
-                    android:layout_marginStart="20dp"
-                    android:src="@drawable/ic_arrow_back"
-                    android:layout_width="35dp"
+                <com.ortiz.touchview.TouchImageView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/imageViewDetail"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
+                <ProgressBar
+                    android:id="@+id/prbLoad"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </RelativeLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_centerInParent="true"
-            android:id="@+id/rcvImageDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <ImageView
+                android:layout_marginTop="20dp"
+                android:id="@+id/imageViewBackImageDetail"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="start"
+                android:src="@drawable/ic_arrow_back"
+                android:layout_width="35dp"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
 
     </RelativeLayout>
 </layout>

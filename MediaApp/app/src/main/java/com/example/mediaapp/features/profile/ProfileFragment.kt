@@ -75,10 +75,12 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })
+        viewModel.success.observe(viewLifecycleOwner, Observer {
+            loadingDialogFragment.cancelDialog()
+        })
         viewModel.user.observe(viewLifecycleOwner, Observer {
             user = it
             bindUserDataToView(it)
-            loadingDialogFragment.cancelDialog()
         })
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(Constants.CHANGE_ACCOUNT_INFO)?.observe(viewLifecycleOwner) { data ->
             if(data == "OK"){

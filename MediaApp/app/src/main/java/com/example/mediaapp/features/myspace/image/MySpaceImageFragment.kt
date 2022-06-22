@@ -142,7 +142,9 @@ class MySpaceImageFragment : Fragment() {
     private fun setUpRecyclerViewFile() {
         fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory {
             override fun clickItem(file: File) {
-                findNavController().navigate(R.id.action_mySpaceFragment_to_imageDetailFragment)
+                val bundle = Bundle()
+                bundle.putString(Constants.FILE_DETAIL, file.id.toString())
+                findNavController().navigate(R.id.action_mySpaceFragment_to_imageDetailFragment, bundle)
             }
 
             override fun longClickItem(file: File) {

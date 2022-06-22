@@ -33,7 +33,7 @@ object Constants {
     const val PHOTO = "image/jpeg"
     const val MOVIE = "video/mp4"
     const val DOCUMENT_EXTENSION = ".pdf"
-    const val MUSIC_EXTENSION = ".mpeg"
+    const val MUSIC_EXTENSION = ".mp3"
     const val PHOTO_EXTENSION = ".jpeg"
     const val MOVIE_EXTENSION= ".mp4"
     const val MY_SPACE = 1
@@ -43,6 +43,7 @@ object Constants {
     const val ROOT_TYPE = "ROOT_TYPE"
     const val COLOR_AVATAR = "COLOR_AVATAR"
     const val CHANGE_ACCOUNT_INFO = "changeAccountInfo"
+    const val FILE_DETAIL = "FILE_DETAIL"
     private const val REQUEST_CODE_OPEN_FILE = 1
 
     fun clickRequestPermissionToAccessFile(activity: Activity, clickOpenFile: () -> Unit){

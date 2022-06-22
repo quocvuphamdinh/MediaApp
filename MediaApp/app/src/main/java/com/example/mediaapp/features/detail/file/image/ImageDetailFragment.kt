@@ -1,19 +1,26 @@
 package com.example.mediaapp.features.detail.file.image
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mediaapp.databinding.FragmentImageDetailBinding
-import com.example.mediaapp.features.detail.file.document.ImageDetailAdapter
-import com.example.mediaapp.util.DataStore
+import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.util.Constants
+import com.example.mediaapp.util.Converters
 
 class ImageDetailFragment : Fragment() {
     private lateinit var binding : FragmentImageDetailBinding
-    private lateinit var imageAdapter : ImageDetailAdapter
+    private val viewModel: ImageDetailViewModel by viewModels {
+        ImageDetailViewModelFactory((activity?.application as MediaApplication).repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,21 +31,37 @@ class ImageDetailFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setUpRecyclerViewImageDetail()
-
+        binding.prbLoad.visibility = View.VISIBLE
         binding.imageViewBackImageDetail.setOnClickListener {
             findNavController().popBackStack()
         }
+        getFileData()
+        subcribeToObservers()
     }
 
-    private fun setUpRecyclerViewImageDetail() {
-        imageAdapter = ImageDetailAdapter()
-        imageAdapter.submitList(DataStore.getListImage())
-        binding.rcvImageDetail.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvImageDetail.adapter = imageAdapter
-        binding.rcvImageDetail.setHasFixedSize(true)
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun subcribeToObservers() {
+        viewModel.toast.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.success.observe(viewLifecycleOwner, Observer {
+            binding.prbLoad.visibility = View.GONE
+        })
+        viewModel.fileImage.observe(viewLifecycleOwner, Observer {
+            binding.imageViewDetail.setImageBitmap(Converters.toBitmap(it.content!!))
+        })
+    }
+
+    private fun getFileData() {
+        val bundle = arguments
+        bundle?.let {
+            val fileId = it.getString(Constants.FILE_DETAIL)
+            viewModel.getFile(fileId!!)
+        }
     }
 }
