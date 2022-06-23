@@ -35,6 +35,7 @@ object Constants {
     const val DOCUMENT_EXTENSION = ".pdf"
     const val MUSIC_EXTENSION = ".mp3"
     const val PHOTO_EXTENSION = ".jpeg"
+    const val PHOTO_1_EXTENSION = ".jpeg"
     const val MOVIE_EXTENSION= ".mp4"
     const val MY_SPACE = 1
     const val SHARE_WITH_ME = 2

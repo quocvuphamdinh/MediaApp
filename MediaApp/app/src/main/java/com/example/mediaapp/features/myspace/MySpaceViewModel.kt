@@ -207,7 +207,7 @@ class MySpaceViewModel(private val mediaRepository: MediaRepository): ViewModel(
         try {
             val level = when(path.substring(path.lastIndexOf("."))){
                 Constants.MUSIC_EXTENSION -> 2
-                Constants.PHOTO_EXTENSION -> 3
+                Constants.PHOTO_EXTENSION, Constants.PHOTO_1_EXTENSION -> 3
                 Constants.MOVIE_EXTENSION -> 4
                 Constants.DOCUMENT_EXTENSION -> 1
                 else -> 0
