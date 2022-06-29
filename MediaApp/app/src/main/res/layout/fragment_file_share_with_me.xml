@@ -1,48 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
-                android:textStyle="bold"
-                android:textColor="@color/primary_color"
-                android:padding="10dp"
-                android:gravity="center"
-                android:textSize="25sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="My Folder"/>
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="My Folder"
+                android:textColor="@color/primary_color"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginBottom="5dp"
-                android:id="@+id/rcvShareWithMeFolderFile"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp" />
+                android:layout_height="250dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvShareWithMeFolderFile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp" />
+
+                <ProgressBar
+                    android:id="@+id/prbLoad"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+            </RelativeLayout>
 
             <LinearLayout
-                android:background="@android:color/darker_gray"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"/>
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray" />
+
             <TextView
-                android:textStyle="bold"
-                android:textColor="@color/primary_color"
-                android:padding="10dp"
-                android:gravity="center"
-                android:textSize="25sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="My File"/>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcvShareWithMeFileFile"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="My File"
+                android:textColor="@color/primary_color"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"/>
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvShareWithMeFileFile"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+
+                <ProgressBar
+                    android:id="@+id/prbLoad2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+            </RelativeLayout>
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

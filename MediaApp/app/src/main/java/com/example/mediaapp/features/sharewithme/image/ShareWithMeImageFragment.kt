@@ -21,6 +21,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.features.base.home.HomeActivity
 
 class ShareWithMeImageFragment : Fragment() {
     private lateinit var binding: FragmentImageShareWithMeBinding
@@ -61,11 +62,16 @@ class ShareWithMeImageFragment : Fragment() {
                 viewModel.setDirectoryLongClick(any, 2)
                 closeBottomSheet()
             }
+            setClickDownload {
+                viewModel.setDirectoryLongClick(any, 3)
+                closeBottomSheet()
+            }
         }.show(parentFragmentManager, Constants.BOTTOM_SHEET_OPTION_TAG)
     }
     private fun setUpLoadMoreInRecyclerView() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshFoldersAndFiles(3)
+            (activity as HomeActivity).getAccountInfo()
         }
         binding.rcvShareWithMeFolderImage.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -116,7 +122,9 @@ class ShareWithMeImageFragment : Fragment() {
     private fun setUpRecyclerViewFile() {
         fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory {
             override fun clickItem(file: File) {
-                findNavController().navigate(R.id.action_shareWithMeFragment_to_imageDetailFragment)
+                val bundle = Bundle()
+                bundle.putString(Constants.FILE_DETAIL, file.id.toString())
+                findNavController().navigate(R.id.action_shareWithMeFragment_to_imageDetailFragment, bundle)
             }
 
             override fun longClickItem(file: File) {

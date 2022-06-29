@@ -23,6 +23,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.features.base.home.HomeActivity
 
 class MySpaceMusicFragment : Fragment() {
     private lateinit var binding: FragmentMusicMySpaceBinding
@@ -91,6 +92,7 @@ class MySpaceMusicFragment : Fragment() {
     private fun setUpLoadMoreInRecyclerView() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshFoldersAndFiles(2)
+            (activity as HomeActivity).getAccountInfo()
         }
         binding.rcvMySpaceFolderMusic.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

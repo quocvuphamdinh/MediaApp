@@ -23,6 +23,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.features.util.LoadingDialogFragment
 import java.util.*
 
@@ -48,6 +49,8 @@ class MySpaceFileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.prbLoad.visibility = View.VISIBLE
+        binding.prbLoad2.visibility = View.VISIBLE
         setUpRecyclerViewFolder()
         setUpRecyclerViewFile()
         subcribeToObservers()
@@ -95,6 +98,7 @@ class MySpaceFileFragment : Fragment() {
     private fun setUpLoadMoreInRecyclerView() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshFoldersAndFiles(1)
+            (activity as HomeActivity).getAccountInfo()
         }
         binding.rcvMySpaceFolderFile.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -133,12 +137,14 @@ class MySpaceFileFragment : Fragment() {
             if (it.isNotEmpty()) {
                 binding.swipeRefreshLayout.isRefreshing = false
             }
+            binding.prbLoad.visibility = View.GONE
             folderAdapter.submitList(it)
         })
         viewModel.fileDocuments.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()) {
                 binding.swipeRefreshLayout.isRefreshing = false
             }
+            binding.prbLoad2.visibility = View.GONE
             fileAdapter.submitList(it)
         })
     }
@@ -147,10 +153,7 @@ class MySpaceFileFragment : Fragment() {
         fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun clickItem(file: File) {
-//                val bundle = Bundle()
-//                bundle.putString(Constants.FILE_DETAIL, file.id.toString())
-//                findNavController().navigate(R.id.action_mySpaceFragment_to_fileDetailFragment, bundle)
-                viewModel.getFile(file.id.toString())
+                viewModel.getFile(file.id.toString(), true)
             }
 
             override fun longClickItem(file: File) {

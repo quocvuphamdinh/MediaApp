@@ -54,6 +54,15 @@
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
+        <action
+            android:id="@+id/action_directoryDetailFragment3_to_videoDetailFragment2"
+            app:destination="@id/videoDetailFragment2" />
+        <action
+            android:id="@+id/action_directoryDetailFragment3_to_imageDetailFragment2"
+            app:destination="@id/imageDetailFragment2" />
+        <action
+            android:id="@+id/action_directoryDetailFragment3_to_musicDetailFragment2"
+            app:destination="@id/musicDetailFragment2" />
     </fragment>
     <fragment
         android:id="@+id/fileDetailFragment2"

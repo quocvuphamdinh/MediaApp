@@ -1,10 +1,14 @@
 package com.example.mediaapp.features.sharewithme
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -21,6 +25,7 @@ import com.example.mediaapp.features.util.WarningDialogFragment
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.util.FileUtil
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -36,6 +41,7 @@ class ShareWithMeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel.getFolderRoots()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +51,7 @@ class ShareWithMeFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -87,8 +94,34 @@ class ShareWithMeFragment : Fragment() {
             }
         })
     }
-    private fun showDialogWarning(item: Any?){
-        WarningDialogFragment("Are you sure ?", "Do you want to delete ${if (item is File) "file" else "directory"} ?").apply {
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun openPDF(byteString: String, nameFile: String) {
+        val file = FileUtil.toFilePDFOrMP3OrMP4(
+            requireContext(),
+            byteString,
+            nameFile,
+            Constants.DOCUMENT,
+            "Documents"
+        )
+
+        val uri = FileProvider.getUriForFile(
+            requireContext(),
+            requireContext().packageName + ".provider",
+            file
+        )
+
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(uri, "application/pdf")
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        startActivity(intent)
+    }
+
+    private fun showDialogWarning(item: Any?) {
+        WarningDialogFragment(
+            "Are you sure ?",
+            "Do you want to delete ${if (item is File) "file" else "directory"} ?"
+        ).apply {
             setClickYes {
                 loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
                 viewModel.deleteDirectoryOrFileShareByCustomer(item!!)
@@ -96,9 +129,23 @@ class ShareWithMeFragment : Fragment() {
         }.show(parentFragmentManager, Constants.WARNING_DIALOG)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun subcribeToObservers() {
+        viewModel.isLoadFile.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
+            } else {
+                loadingDialogFragment.cancelDialog()
+            }
+        })
+        viewModel.fileImage.observe(viewLifecycleOwner, Observer {
+            if (viewModel.isOpenFile) {
+                openPDF(it.content!!, it.name)
+                viewModel.isOpenFile = false
+            }
+        })
         viewModel.directoryAndFileLongClick.observe(viewLifecycleOwner, Observer {
-            when(viewModel.option){
+            when (viewModel.option) {
                 1 -> {
                     loadingDialogFragment.show(parentFragmentManager, Constants.LOADING_DIALOG_TAG)
                     viewModel.addFileOrDirectoryToFavorite(it)
@@ -108,10 +155,16 @@ class ShareWithMeFragment : Fragment() {
                     showDialogWarning(it)
                     viewModel.option = 0
                 }
+                3 -> {
+                    if (it is File) {
+                        (activity as HomeActivity).getFile(it)
+                        viewModel.option = 0
+                    }
+                }
             }
         })
         viewModel.toast.observe(viewLifecycleOwner, Observer {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         })

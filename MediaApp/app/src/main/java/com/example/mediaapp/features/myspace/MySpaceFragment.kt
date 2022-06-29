@@ -15,7 +15,6 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -35,7 +34,7 @@ import com.example.mediaapp.features.util.ShareFolderOrFileDialogFragment
 import com.example.mediaapp.features.util.WarningDialogFragment
 import com.example.mediaapp.models.File
 import com.example.mediaapp.features.MediaApplication
-import com.example.mediaapp.util.Converters
+import com.example.mediaapp.util.FileUtil
 import com.example.mediaapp.util.RealPathFileUtil
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -225,13 +224,15 @@ class MySpaceFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun openPDF(byteString: String, nameFile: String) {
-        val file = Converters.toFilePDFOrMP3OrMP4(requireContext(), byteString, nameFile, Constants.DOCUMENT, "Documents")
-
-        val uri = FileProvider.getUriForFile(
+        val file = FileUtil.toFilePDFOrMP3OrMP4(
             requireContext(),
-            requireContext().packageName + ".provider",
-            file
+            byteString,
+            nameFile,
+            Constants.DOCUMENT,
+            "Documents"
         )
+
+        val uri = FileUtil.toUri(requireContext(), file)
 
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(uri, "application/pdf")
@@ -289,6 +290,7 @@ class MySpaceFragment : Fragment() {
                 }
                 7 -> {
                     if (it is File) {
+                        (activity as HomeActivity).getFile(it)
                         viewModel.option = 0
                     }
                 }

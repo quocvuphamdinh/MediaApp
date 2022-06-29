@@ -17,6 +17,7 @@ import com.example.mediaapp.databinding.FragmentFileFavoriteBinding
 import com.example.mediaapp.features.MediaApplication
 import com.example.mediaapp.features.adapters.DirectoryAdapter
 import com.example.mediaapp.features.adapters.FileAdapter
+import com.example.mediaapp.features.base.home.HomeActivity
 import com.example.mediaapp.features.favorite.FavoriteViewModel
 import com.example.mediaapp.features.favorite.FavoriteViewModelFactory
 import com.example.mediaapp.features.util.BottomSheetOptionFragment
@@ -77,6 +78,7 @@ class FavoriteFileFragment : Fragment() {
     private fun setUpLoadMoreInRecyclerView() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshFoldersAndFiles(1)
+            (activity as HomeActivity).getAccountInfo()
         }
         binding.rcvFavoriteFolderFile.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -128,7 +130,7 @@ class FavoriteFileFragment : Fragment() {
     private fun setUpRecyclerViewFile() {
         fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory{
             override fun clickItem(file: File) {
-                findNavController().navigate(R.id.action_favoriteFragment_to_fileDetailFragment)
+                viewModel.getFile(file.id.toString())
             }
 
             override fun longClickItem(file: File) {

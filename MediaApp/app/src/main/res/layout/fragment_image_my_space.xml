@@ -21,10 +21,20 @@
                 android:layout_height="wrap_content"
                 android:text="My Folder"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcvMySpaceFolderImage"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp" />
+                android:layout_height="wrap_content">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvMySpaceFolderImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+                <ProgressBar
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/prbLoad"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+            </RelativeLayout>
 
             <LinearLayout
                 android:background="@android:color/darker_gray"
@@ -39,10 +49,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="My File"/>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcvMySpaceFileImage"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvMySpaceFileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <ProgressBar
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/prbLoad2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+            </RelativeLayout>
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

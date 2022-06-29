@@ -2,7 +2,6 @@ package com.example.mediaapp.features.detail.file.music
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
@@ -25,7 +24,7 @@ import com.example.mediaapp.databinding.FragmentMusicDetailBinding
 import com.example.mediaapp.features.MediaApplication
 import com.example.mediaapp.features.util.LoadingDialogFragment
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.Converters
+import com.example.mediaapp.util.FileUtil
 import java.text.SimpleDateFormat
 
 
@@ -65,12 +64,6 @@ class MusicDetailFragment : Fragment() {
         }
 
         binding.imagePlayButton.setOnClickListener {
-//            viewModel.playMusic(!viewModel.isPlay.value!!)
-//            if (viewModel.isFirstTimePlay.value!!) {
-//                animationRotate.start()
-//                viewModel.setFirstTimePlay()
-//                mediaPlayer.start()
-//            }
             if (!mediaPlayer.isPlaying) {
                 animationRotate.start()
                 mediaPlayer.start()
@@ -131,7 +124,9 @@ class MusicDetailFragment : Fragment() {
                 getFormattedDurationMusic(mediaPlayer.currentPosition)
             handler.postDelayed(runnable, 1000)
             mediaPlayer.setOnCompletionListener {
-                binding.seekBarMusicDetail.progress = 0
+                mediaPlayer.pause()
+                animationRotate.pause()
+                binding.imagePlayButton.setImageResource(R.drawable.ic_button_play)
             }
         }
         handler.postDelayed(runnable, 1000)
@@ -163,7 +158,7 @@ class MusicDetailFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun initMusicMP3(byteString: String, nameFile: String) {
         val file =
-            Converters.toFilePDFOrMP3OrMP4(
+            FileUtil.toFilePDFOrMP3OrMP4(
                 requireContext(),
                 byteString,
                 nameFile,
@@ -171,11 +166,7 @@ class MusicDetailFragment : Fragment() {
                 "Audio"
             )
 
-        val uri = FileProvider.getUriForFile(
-            requireContext(),
-            requireContext().packageName + ".provider",
-            file
-        )
+        val uri = FileUtil.toUri(requireContext(), file)
 
         mediaPlayer = MediaPlayer.create(requireContext(), uri)
 
@@ -198,17 +189,6 @@ class MusicDetailFragment : Fragment() {
         })
         viewModel.success.observe(viewLifecycleOwner, Observer {
             loadingDialogFragment.cancelDialog()
-        })
-        viewModel.isPlay.observe(viewLifecycleOwner, Observer {
-//            if (it) {
-//                mediaPlayer.start()
-//                animationRotate.resume()
-//                binding.imagePlayButton.setImageResource(R.drawable.ic_button_pause)
-//            } else {
-//                mediaPlayer.pause()
-//                animationRotate.pause()
-//                binding.imagePlayButton.setImageResource(R.drawable.ic_button_play)
-//            }
         })
     }
 }

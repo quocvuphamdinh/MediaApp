@@ -20,6 +20,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.features.base.home.HomeActivity
 
 class MyShareVideoFragment: Fragment() {
     private lateinit var binding: FragmentVideoMyShareBinding
@@ -49,6 +50,7 @@ class MyShareVideoFragment: Fragment() {
     private fun setUpLoadMoreInRecyclerView() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshFoldersAndFiles(4)
+            (activity as HomeActivity).getAccountInfo()
         }
     }
 
@@ -87,7 +89,9 @@ class MyShareVideoFragment: Fragment() {
     private fun setUpFileAdapter() {
         fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory{
             override fun clickItem(file: File) {
-
+                val bundle = Bundle()
+                bundle.putString(Constants.FILE_DETAIL, file.id.toString())
+                findNavController().navigate(R.id.action_myShareFragment_to_videoDetailFragment2, bundle)
             }
 
             override fun longClickItem(file: File) {

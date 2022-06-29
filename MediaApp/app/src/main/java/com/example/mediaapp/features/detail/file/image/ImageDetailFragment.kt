@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.mediaapp.databinding.FragmentImageDetailBinding
 import com.example.mediaapp.features.MediaApplication
 import com.example.mediaapp.util.Constants
-import com.example.mediaapp.util.Converters
+import com.example.mediaapp.util.FileUtil
 
 class ImageDetailFragment : Fragment() {
     private lateinit var binding : FragmentImageDetailBinding
@@ -53,7 +53,7 @@ class ImageDetailFragment : Fragment() {
             binding.prbLoad.visibility = View.GONE
         })
         viewModel.fileImage.observe(viewLifecycleOwner, Observer {
-            binding.imageViewDetail.setImageBitmap(Converters.toBitmap(it.content!!))
+            binding.imageViewDetail.setImageBitmap(FileUtil.toBitmap(it.content!!))
         })
     }
 

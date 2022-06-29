@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
@@ -18,8 +19,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.ActivityHomeBinding
 import com.example.mediaapp.features.search.SearchDialogFragment
@@ -27,16 +26,23 @@ import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.util.setupWithNavController
 import com.example.mediaapp.models.User
 import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.models.Directory
+import com.example.mediaapp.models.File
+import com.example.mediaapp.util.FileUtil
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var binding: ActivityHomeBinding
     private lateinit var headerLayout: View
     private var currentNavController: LiveData<NavController>? = null
+    private lateinit var snackbar: Snackbar
+    private lateinit var snackBarView: View
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory((application as MediaApplication).repository)
     }
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,17 +51,103 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
         setupBottomNavigationBar()
+        setUpSnackBar()
         binding.navigationView.setNavigationItemSelectedListener(this)
-        if(savedInstanceState!=null){
-            val dialogFragmentRun = supportFragmentManager.findFragmentByTag(Constants.SEARCH_DIALOG_TAG) as SearchDialogFragment?
+        if (savedInstanceState != null) {
+            val dialogFragmentRun =
+                supportFragmentManager.findFragmentByTag(Constants.SEARCH_DIALOG_TAG) as SearchDialogFragment?
         }
+        subcribeToObservers()
+    }
+
+    fun getAccountInfo() = viewModel.getAccountInfo()
+
+    private fun setUpSnackBar() {
+        snackbar = Snackbar.make(binding.navHostFragmentHome, "", Snackbar.LENGTH_LONG)
+        snackBarView = snackbar.view
+        val params: FrameLayout.LayoutParams = snackBarView.layoutParams as FrameLayout.LayoutParams
+        params.gravity = Gravity.BOTTOM
+        snackBarView.layoutParams = params
+    }
+
+    private fun showSnackBar(text: String) {
+        snackbar.setText(text)
+        snackbar.show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun subcribeToObservers() {
+        viewModel.isLoadFile.observe(this, Observer {
+            if (it) {
+                showSnackBar("Your file is downloading...")
+            }
+        })
+        viewModel.fileImage.observe(this, Observer {
+            if (viewModel.isDownloadFile) {
+                when (it.type) {
+                    Constants.DOCUMENT -> downloadFile(
+                        it.content!!,
+                        it.name,
+                        it.type,
+                        "Documents",
+                        it.size
+                    )
+                    Constants.MUSIC -> downloadFile(
+                        it.content!!,
+                        it.name,
+                        it.type,
+                        "Audio",
+                        it.size
+                    )
+                    Constants.PHOTO -> downloadFile(
+                        it.content!!,
+                        it.name,
+                        it.type,
+                        "Images",
+                        it.size
+                    )
+                    Constants.MOVIE -> downloadFile(
+                        it.content!!,
+                        it.name,
+                        it.type,
+                        "Videos",
+                        it.size
+                    )
+                }
+                viewModel.isDownloadFile = false
+            }
+        })
         viewModel.user.observe(this, Observer {
             bindUserDataToView(it)
         })
-        currentNavController?.value?.currentBackStackEntry?.savedStateHandle?.getLiveData<String>(Constants.CHANGE_ACCOUNT_INFO)?.observe(this) { data ->
-            if(data == "OK"){
+        currentNavController?.value?.currentBackStackEntry?.savedStateHandle?.getLiveData<String>(
+            Constants.CHANGE_ACCOUNT_INFO
+        )?.observe(this) { data ->
+            if (data == "OK") {
                 viewModel.getAccountInfo()
             }
+        }
+    }
+
+    fun getFile(file: File) {
+        viewModel.getFile(file.id.toString())
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun downloadFile(
+        byteString: String,
+        nameFile: String,
+        mimeType: String,
+        type: String,
+        size: Long
+    ) {
+        val file =
+            FileUtil.toFilePDFOrMP3OrMP4(this, byteString, nameFile, mimeType, type)
+        val result = FileUtil.downloadFile(this, nameFile, mimeType, size, file)
+        if (result != null) {
+            showSnackBar("File $nameFile is downloaded successfully !")
+        } else {
+            showSnackBar("File $nameFile is downloaded failed !")
         }
     }
 
@@ -66,10 +158,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val txtEmail: TextView = headerLayout.findViewById(R.id.textViewEmailHeader)
             val cardView: CardView = headerLayout.findViewById(R.id.cardViewAvatarHeader)
             val txtInside: TextView = headerLayout.findViewById(R.id.textViewInsideAvatarHeader)
-            txtFullName.text = it.firstName +" "+it.lastName
+            txtFullName.text = it.firstName + " " + it.lastName
             txtEmail.text = it.email
             cardView.setCardBackgroundColor(it.color!!)
-            txtInside.text = it.firstName.substring(0, 1).uppercase(Locale.getDefault())+it.lastName.substring(0, 1).uppercase(Locale.getDefault())
+            txtInside.text =
+                it.firstName.substring(0, 1).uppercase(Locale.getDefault()) + it.lastName.substring(
+                    0,
+                    1
+                ).uppercase(Locale.getDefault())
         }
     }
 
@@ -92,7 +188,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         controller.observe(this, Observer { navController ->
             navController.addOnDestinationChangedListener { _, destination, _ ->
-                when(destination.id){
+                when (destination.id) {
                     R.id.mySpaceFragment, R.id.shareWithMeFragment, R.id.favoriteFragment, R.id.myShareFragment
                     -> {
                         binding.bottomNav.visibility = View.VISIBLE
@@ -102,7 +198,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                         setUpNavigationDrawer()
                     }
-                    R.id.directoryDetailFragment, R.id.directoryDetailFragment2 ->{
+                    R.id.directoryDetailFragment, R.id.directoryDetailFragment2 -> {
                         binding.bottomNav.visibility = View.VISIBLE
                         binding.appbarMain.visibility = View.GONE
                         binding.toolbarMain.visibility = View.GONE
@@ -127,7 +223,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.profileFrament){
+        if (item.itemId == R.id.profileFrament) {
             currentNavController?.value?.navigate(R.id.action_global_profileFragment)
             return true
         }
@@ -156,7 +252,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showDialogSearch(){
+    private fun showDialogSearch() {
         SearchDialogFragment().show(supportFragmentManager, Constants.SEARCH_DIALOG_TAG)
     }
 

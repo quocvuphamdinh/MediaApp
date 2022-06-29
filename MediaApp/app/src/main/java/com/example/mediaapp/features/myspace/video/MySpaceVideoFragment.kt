@@ -23,6 +23,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.features.base.home.HomeActivity
 
 class MySpaceVideoFragment : Fragment() {
     private lateinit var binding : FragmentVideoMySpaceBinding
@@ -90,6 +91,7 @@ class MySpaceVideoFragment : Fragment() {
     private fun setUpLoadMoreInRecyclerView() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshFoldersAndFiles(4)
+            (activity as HomeActivity).getAccountInfo()
         }
         binding.rcvMySpaceFolderVideo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -141,7 +143,9 @@ class MySpaceVideoFragment : Fragment() {
     private fun setUpRecyclerViewFile() {
         fileAdapter = FileAdapter(object : FileAdapter.CLickItemDirectory{
             override fun clickItem(file: File) {
-                findNavController().navigate(R.id.action_mySpaceFragment_to_videoDetailFragment)
+                val bundle = Bundle()
+                bundle.putString(Constants.FILE_DETAIL, file.id.toString())
+                findNavController().navigate(R.id.action_mySpaceFragment_to_videoDetailFragment, bundle)
             }
 
             override fun longClickItem(file: File) {

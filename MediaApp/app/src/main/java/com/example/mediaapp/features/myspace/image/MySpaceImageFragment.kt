@@ -23,6 +23,7 @@ import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.MediaApplication
+import com.example.mediaapp.features.base.home.HomeActivity
 
 class MySpaceImageFragment : Fragment() {
     private lateinit var binding: FragmentImageMySpaceBinding
@@ -91,6 +92,7 @@ class MySpaceImageFragment : Fragment() {
     private fun setUpLoadMoreInRecyclerView() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshFoldersAndFiles(3)
+            (activity as HomeActivity).getAccountInfo()
         }
         binding.rcvMySpaceFolderImage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

@@ -36,7 +36,7 @@ object Constants {
     const val MUSIC_EXTENSION = ".mp3"
     const val PHOTO_EXTENSION = ".jpeg"
     const val PHOTO_1_EXTENSION = ".jpeg"
-    const val MOVIE_EXTENSION= ".mp4"
+    const val MOVIE_EXTENSION = ".mp4"
     const val MY_SPACE = 1
     const val SHARE_WITH_ME = 2
     const val FAVORITE = 3
@@ -47,26 +47,34 @@ object Constants {
     const val FILE_DETAIL = "FILE_DETAIL"
     private const val REQUEST_CODE_OPEN_FILE = 1
 
-    fun clickRequestPermissionToAccessFile(activity: Activity, clickOpenFile: () -> Unit){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if((activity.checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                &&(activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)){
+    fun clickRequestPermissionToAccessFile(activity: Activity, clickOpenFile: () -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if ((activity.checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                && (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            ) {
                 clickOpenFile()
-            }else{
-                val permission = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            } else {
+                val permission = arrayOf(
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
                 activity.requestPermissions(permission, REQUEST_CODE_OPEN_FILE)
             }
-        }else{
+        } else {
             clickOpenFile()
         }
     }
-    fun randomColor(context: Context): Int{
+
+    fun randomColor(context: Context): Int {
         var color: Int
-        while (true){
+        while (true) {
             color = Color.argb(255, Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
-            if(color == context.resources.getColor(R.color.white) || color == context.resources.getColor(R.color.black)){
+            if (color == context.resources.getColor(R.color.white) || color == context.resources.getColor(
+                    R.color.black
+                )
+            ) {
                 //
-            }else{
+            } else {
                 break
             }
         }

@@ -17,7 +17,7 @@ import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Response
 
-class MyShareViewModel(private val mediaRepository: MediaRepository): ViewModel() {
+class MyShareViewModel(private val mediaRepository: MediaRepository) : ViewModel() {
     private var _folderRoots: MutableLiveData<List<Directory>> = MutableLiveData(ArrayList())
 
     private var _folderDocuments: MutableLiveData<List<Directory>> = MutableLiveData(ArrayList())
@@ -64,122 +64,260 @@ class MyShareViewModel(private val mediaRepository: MediaRepository): ViewModel(
     val success: LiveData<Boolean>
         get() = _success
 
+    private var _fileImage: MutableLiveData<File> = MutableLiveData()
+    val fileImage: LiveData<File>
+        get() = _fileImage
+
+    private var _isLoadFile: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoadFile: LiveData<Boolean>
+        get() = _isLoadFile
+
+    var isOpenFile = false
+
     var option = 1
     fun setDirectoryLongClick(any: Any, option: Int) {
         _directoryAndFileLongClick.postValue(any)
         this.option = option
     }
+
     fun resetToast() = _toast.postValue("")
 
+    fun getFile(fileId: String) = viewModelScope.launch {
+        try {
+            isOpenFile = true
+            _isLoadFile.postValue(true)
+            val response = mediaRepository.getFile(fileId)
+            if (response.isSuccessful) {
+                _fileImage.postValue(response.body())
+                _success.postValue(true)
+            } else {
+                _toast.postValue("Get file failed !")
+                _success.postValue(false)
+            }
+            _isLoadFile.postValue(false)
+        } catch (e: Exception) {
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+            _isLoadFile.postValue(false)
+        }
+    }
+
     fun deleteDirectoryOrFileByOwner(any: Any, user: User) = viewModelScope.launch {
-        try{
-            when(any){
-                is Directory ->{
-                    val response = mediaRepository.deleteDirectoryShareByOwner(any.id.toString(), user.email)
-                    ResponseUtil.handlingResponse2(response, "Delete the directory shared with ${user.firstName+user.lastName} successfully", _toast, _success)
-                    if(any.receivers.isNotEmpty()){
+        try {
+            when (any) {
+                is Directory -> {
+                    val response =
+                        mediaRepository.deleteDirectoryShareByOwner(any.id.toString(), user.email)
+                    ResponseUtil.handlingResponse2(
+                        response,
+                        "Delete the directory shared with ${user.firstName + user.lastName} successfully",
+                        _toast,
+                        _success
+                    )
+                    if (any.receivers.isNotEmpty()) {
                         val list = any.receivers.toMutableList()
                         list.remove(user)
                         any.receivers = list
                     }
-                    when(any.level){
-                        1 -> _folderDocuments.postValue(getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(mediaRepository.getListFolderInMyShare(_folderRoots.value!![0].id.toString()), _toast)))
-                        2 -> _folderMusics.postValue(getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(mediaRepository.getListFolderInMyShare(_folderRoots.value!![1].id.toString()), _toast)))
-                        3 -> _folderPhotos.postValue(getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(mediaRepository.getListFolderInMyShare(_folderRoots.value!![2].id.toString()), _toast)))
-                        4 -> _folderMovies.postValue(getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(mediaRepository.getListFolderInMyShare(_folderRoots.value!![3].id.toString()), _toast)))
+                    when (any.level) {
+                        1 -> _folderDocuments.postValue(
+                            getListDirectoryNew(
+                                ResponseUtil.handlingResponseListDirectory(
+                                    mediaRepository.getListFolderInMyShare(_folderRoots.value!![0].id.toString()),
+                                    _toast
+                                )
+                            )
+                        )
+                        2 -> _folderMusics.postValue(
+                            getListDirectoryNew(
+                                ResponseUtil.handlingResponseListDirectory(
+                                    mediaRepository.getListFolderInMyShare(_folderRoots.value!![1].id.toString()),
+                                    _toast
+                                )
+                            )
+                        )
+                        3 -> _folderPhotos.postValue(
+                            getListDirectoryNew(
+                                ResponseUtil.handlingResponseListDirectory(
+                                    mediaRepository.getListFolderInMyShare(_folderRoots.value!![2].id.toString()),
+                                    _toast
+                                )
+                            )
+                        )
+                        4 -> _folderMovies.postValue(
+                            getListDirectoryNew(
+                                ResponseUtil.handlingResponseListDirectory(
+                                    mediaRepository.getListFolderInMyShare(_folderRoots.value!![3].id.toString()),
+                                    _toast
+                                )
+                            )
+                        )
                     }
                 }
-                is File ->{
-                    val response = mediaRepository.deleteFileShareByOwner(any.id.toString(), user.email)
-                    ResponseUtil.handlingResponse2(response, "Delete the file shared with ${user.firstName+user.lastName} successfully", _toast, _success)
-                    if(any.receivers.isNotEmpty()){
+                is File -> {
+                    val response =
+                        mediaRepository.deleteFileShareByOwner(any.id.toString(), user.email)
+                    ResponseUtil.handlingResponse2(
+                        response,
+                        "Delete the file shared with ${user.firstName + user.lastName} successfully",
+                        _toast,
+                        _success
+                    )
+                    if (any.receivers.isNotEmpty()) {
                         val list = any.receivers.toMutableList()
                         list.remove(user)
                         any.receivers = list
                     }
-                    when(any.type){
-                        Constants.DOCUMENT -> _fileDocuments.postValue(getListFileNew(ResponseUtil.handlingResponseListFile(mediaRepository.getListFileInMyShare(_folderRoots.value!![0].id.toString()), _toast)))
-                        Constants.MUSIC -> _fileMusics.postValue(getListFileNew(ResponseUtil.handlingResponseListFile(mediaRepository.getListFileInMyShare(_folderRoots.value!![1].id.toString()), _toast)))
-                        Constants.PHOTO -> _filePhotos.postValue(getListFileNew(ResponseUtil.handlingResponseListFile(mediaRepository.getListFileInMyShare(_folderRoots.value!![2].id.toString()), _toast)))
-                        Constants.MOVIE -> _fileMovies.postValue(getListFileNew(ResponseUtil.handlingResponseListFile(mediaRepository.getListFileInMyShare(_folderRoots.value!![3].id.toString()), _toast)))
+                    when (any.type) {
+                        Constants.DOCUMENT -> _fileDocuments.postValue(
+                            getListFileNew(
+                                ResponseUtil.handlingResponseListFile(
+                                    mediaRepository.getListFileInMyShare(_folderRoots.value!![0].id.toString()),
+                                    _toast
+                                )
+                            )
+                        )
+                        Constants.MUSIC -> _fileMusics.postValue(
+                            getListFileNew(
+                                ResponseUtil.handlingResponseListFile(
+                                    mediaRepository.getListFileInMyShare(_folderRoots.value!![1].id.toString()),
+                                    _toast
+                                )
+                            )
+                        )
+                        Constants.PHOTO -> _filePhotos.postValue(
+                            getListFileNew(
+                                ResponseUtil.handlingResponseListFile(
+                                    mediaRepository.getListFileInMyShare(_folderRoots.value!![2].id.toString()),
+                                    _toast
+                                )
+                            )
+                        )
+                        Constants.MOVIE -> _fileMovies.postValue(
+                            getListFileNew(
+                                ResponseUtil.handlingResponseListFile(
+                                    mediaRepository.getListFileInMyShare(_folderRoots.value!![3].id.toString()),
+                                    _toast
+                                )
+                            )
+                        )
                     }
                 }
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             _toast.postValue(e.message.toString())
             _success.postValue(false)
         }
     }
 
-    private fun refresh(listDirectoryMutable: MutableLiveData<List<Directory>>, listFileMutable: MutableLiveData<List<File>>, listDirectoryNew: List<Directory>, listFileNew: List<File>){
+    private fun refresh(
+        listDirectoryMutable: MutableLiveData<List<Directory>>,
+        listFileMutable: MutableLiveData<List<File>>,
+        listDirectoryNew: List<Directory>,
+        listFileNew: List<File>
+    ) {
         listDirectoryMutable.postValue(listDirectoryNew)
         listFileMutable.postValue(listFileNew)
     }
-    private fun refresh2(listDirectoryMutable: MutableLiveData<List<Directory>>, listFileMutable: MutableLiveData<List<File>>){
+
+    private fun refresh2(
+        listDirectoryMutable: MutableLiveData<List<Directory>>,
+        listFileMutable: MutableLiveData<List<File>>
+    ) {
         listDirectoryMutable.postValue(ArrayList())
         listFileMutable.postValue(ArrayList())
     }
+
     fun refreshFoldersAndFiles(level: Int) = viewModelScope.launch {
         try {
-            when(level){
-                1 ->refresh2(_folderDocuments, _fileDocuments)
+            when (level) {
+                1 -> refresh2(_folderDocuments, _fileDocuments)
                 2 -> refresh2(_folderMusics, _fileMusics)
                 3 -> refresh2(_folderPhotos, _filePhotos)
                 4 -> refresh2(_folderMovies, _fileMovies)
             }
-            val response = mediaRepository.getListFolderInMyShare(_folderRoots.value!![level-1].id.toString())
-            val response2 = mediaRepository.getListFileInMyShare(_folderRoots.value!![level-1].id.toString())
-            when(level){
+            val responseRoot = mediaRepository.getFolderByParentId(Constants.ROOT_FOLDER_ID, 0, 10)
+            val list = ResponseUtil.convertToListDirectory(
+                ResponseUtil.handlingResponse(
+                    responseRoot,
+                    _toast
+                )
+            )
+            val response =
+                mediaRepository.getListFolderInMyShare(list[level - 1].id.toString())
+            val response2 =
+                mediaRepository.getListFileInMyShare(list[level - 1].id.toString())
+            when (level) {
                 1 -> {
-                    refresh(_folderDocuments, _fileDocuments,
-                        getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(
-                            response,
-                            _toast
-                        )),
-                        getListFileNew(ResponseUtil.handlingResponseListFile(
-                            response2,
-                            _toast
-                        ))
+                    refresh(
+                        _folderDocuments, _fileDocuments,
+                        getListDirectoryNew(
+                            ResponseUtil.handlingResponseListDirectory(
+                                response,
+                                _toast
+                            )
+                        ),
+                        getListFileNew(
+                            ResponseUtil.handlingResponseListFile(
+                                response2,
+                                _toast
+                            )
+                        )
                     )
                 }
-                2-> {
-                    refresh(_folderMusics, _fileMusics,
-                        getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(
-                            response,
-                            _toast
-                        )),
-                        getListFileNew(ResponseUtil.handlingResponseListFile(
-                            response2,
-                            _toast
-                        ))
+                2 -> {
+                    refresh(
+                        _folderMusics, _fileMusics,
+                        getListDirectoryNew(
+                            ResponseUtil.handlingResponseListDirectory(
+                                response,
+                                _toast
+                            )
+                        ),
+                        getListFileNew(
+                            ResponseUtil.handlingResponseListFile(
+                                response2,
+                                _toast
+                            )
+                        )
                     )
                 }
-                3-> {
-                    refresh(_folderPhotos, _filePhotos,
-                        getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(
-                            response,
-                            _toast
-                        )),
-                        getListFileNew(ResponseUtil.handlingResponseListFile(
-                            response2,
-                            _toast
-                        ))
+                3 -> {
+                    refresh(
+                        _folderPhotos, _filePhotos,
+                        getListDirectoryNew(
+                            ResponseUtil.handlingResponseListDirectory(
+                                response,
+                                _toast
+                            )
+                        ),
+                        getListFileNew(
+                            ResponseUtil.handlingResponseListFile(
+                                response2,
+                                _toast
+                            )
+                        )
                     )
                 }
                 4 -> {
-                    refresh(_folderMovies, _fileMovies,
-                        getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(
-                            response,
-                            _toast
-                        )),
-                        getListFileNew(ResponseUtil.handlingResponseListFile(
-                            response2,
-                            _toast
-                        ))
+                    refresh(
+                        _folderMovies, _fileMovies,
+                        getListDirectoryNew(
+                            ResponseUtil.handlingResponseListDirectory(
+                                response,
+                                _toast
+                            )
+                        ),
+                        getListFileNew(
+                            ResponseUtil.handlingResponseListFile(
+                                response2,
+                                _toast
+                            )
+                        )
                     )
                 }
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             _toast.postValue(e.message.toString())
         }
     }
@@ -187,46 +325,129 @@ class MyShareViewModel(private val mediaRepository: MediaRepository): ViewModel(
     fun getFolderRoots() = viewModelScope.launch {
         try {
             val response = mediaRepository.getFolderByParentId(Constants.ROOT_FOLDER_ID, 0, 10)
-            val list = ResponseUtil.convertToListDirectory(ResponseUtil.handlingResponse(response, _toast))
+            val list =
+                ResponseUtil.convertToListDirectory(ResponseUtil.handlingResponse(response, _toast))
             _folderRoots.postValue(list)
-            if(list.isNotEmpty()){
-                launch { _folderMusics.postValue(getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(mediaRepository.getListFolderInMyShare(list[1].id.toString()), _toast))) }
-                launch { _folderMovies.postValue(getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(mediaRepository.getListFolderInMyShare(list[3].id.toString()), _toast)))}
-                launch { _folderPhotos.postValue(getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(mediaRepository.getListFolderInMyShare(list[2].id.toString()), _toast)))}
-                launch { _folderDocuments.postValue(getListDirectoryNew(ResponseUtil.handlingResponseListDirectory(mediaRepository.getListFolderInMyShare(list[0].id.toString()), _toast))) }
-                launch { _fileMusics.postValue(getListFileNew(ResponseUtil.handlingResponseListFile(mediaRepository.getListFileInMyShare(list[1].id.toString()), _toast)))}
-                launch { _fileMovies.postValue(getListFileNew(ResponseUtil.handlingResponseListFile(mediaRepository.getListFileInMyShare(list[3].id.toString()), _toast)))}
-                launch { _filePhotos.postValue(getListFileNew(ResponseUtil.handlingResponseListFile(mediaRepository.getListFileInMyShare(list[2].id.toString()), _toast)))}
-                launch { _fileDocuments.postValue(getListFileNew(ResponseUtil.handlingResponseListFile(mediaRepository.getListFileInMyShare(list[0].id.toString()), _toast)))}
+            if (list.isNotEmpty()) {
+                launch {
+                    _folderMusics.postValue(
+                        getListDirectoryNew(
+                            ResponseUtil.handlingResponseListDirectory(
+                                mediaRepository.getListFolderInMyShare(list[1].id.toString()),
+                                _toast
+                            )
+                        )
+                    )
+                }
+                launch {
+                    _folderMovies.postValue(
+                        getListDirectoryNew(
+                            ResponseUtil.handlingResponseListDirectory(
+                                mediaRepository.getListFolderInMyShare(list[3].id.toString()),
+                                _toast
+                            )
+                        )
+                    )
+                }
+                launch {
+                    _folderPhotos.postValue(
+                        getListDirectoryNew(
+                            ResponseUtil.handlingResponseListDirectory(
+                                mediaRepository.getListFolderInMyShare(list[2].id.toString()),
+                                _toast
+                            )
+                        )
+                    )
+                }
+                launch {
+                    _folderDocuments.postValue(
+                        getListDirectoryNew(
+                            ResponseUtil.handlingResponseListDirectory(
+                                mediaRepository.getListFolderInMyShare(list[0].id.toString()),
+                                _toast
+                            )
+                        )
+                    )
+                }
+                launch {
+                    _fileMusics.postValue(
+                        getListFileNew(
+                            ResponseUtil.handlingResponseListFile(
+                                mediaRepository.getListFileInMyShare(list[1].id.toString()),
+                                _toast
+                            )
+                        )
+                    )
+                }
+                launch {
+                    _fileMovies.postValue(
+                        getListFileNew(
+                            ResponseUtil.handlingResponseListFile(
+                                mediaRepository.getListFileInMyShare(list[3].id.toString()),
+                                _toast
+                            )
+                        )
+                    )
+                }
+                launch {
+                    _filePhotos.postValue(
+                        getListFileNew(
+                            ResponseUtil.handlingResponseListFile(
+                                mediaRepository.getListFileInMyShare(list[2].id.toString()),
+                                _toast
+                            )
+                        )
+                    )
+                }
+                launch {
+                    _fileDocuments.postValue(
+                        getListFileNew(
+                            ResponseUtil.handlingResponseListFile(
+                                mediaRepository.getListFileInMyShare(list[0].id.toString()),
+                                _toast
+                            )
+                        )
+                    )
+                }
                 _toast.postValue("")
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             _toast.postValue(e.message.toString())
         }
     }
-    private fun getListDirectoryNew(list:List<Directory>): List<Directory>{
+
+    private fun getListDirectoryNew(list: List<Directory>): List<Directory> {
         val directoryNew = ArrayList<Directory>()
-        list.groupBy { it.id }.entries.map { (_, group)-> directoryNew.add(getDirectoryHasReceivers(group))}
+        list.groupBy { it.id }.entries.map { (_, group) ->
+            directoryNew.add(
+                getDirectoryHasReceivers(
+                    group
+                )
+            )
+        }
         return directoryNew
     }
-    private fun getDirectoryHasReceivers (group: List<Directory>): Directory{
+
+    private fun getDirectoryHasReceivers(group: List<Directory>): Directory {
         val directoryNew = group[0]
         val listReceiver = ArrayList<User>()
-        for (directory in group){
+        for (directory in group) {
             listReceiver.add(User(directory.receiver!!, "", "", directory.email!!, "", ""))
         }
         directoryNew.receivers = listReceiver
         return directoryNew
     }
-    private fun getListFileNew(list:List<File>): List<File>{
+
+    private fun getListFileNew(list: List<File>): List<File> {
         val fileNew = ArrayList<File>()
-        list.groupBy { it.id }.entries.map { (_, group)-> fileNew.add(getFileHasReceivers(group))}
+        list.groupBy { it.id }.entries.map { (_, group) -> fileNew.add(getFileHasReceivers(group)) }
         return fileNew
     }
-    private fun getFileHasReceivers(group: List<File>): File{
+
+    private fun getFileHasReceivers(group: List<File>): File {
         val fileNew = group[0]
         val listReceiver = ArrayList<User>()
-        for (file in group){
+        for (file in group) {
             listReceiver.add(User(file.receiver!!, "", "", file.email!!, "", ""))
         }
         fileNew.receivers = listReceiver

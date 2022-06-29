@@ -38,10 +38,39 @@ class DirectoryDetailViewModel(private val mediaRepository: MediaRepository): Vi
     val isHaveMoreFiles: LiveData<Boolean>
     get() = _isHaveMoreFiles
 
+    private var _fileImage: MutableLiveData<File> = MutableLiveData()
+    val fileImage: LiveData<File>
+        get() = _fileImage
+
+    private var _isLoadFile: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoadFile: LiveData<Boolean>
+        get() = _isLoadFile
+
     var currentPageFolder = 0
     var currentPageFile = 0
     var isPause = false
     var isShowLoading = true
+    var isOpenFile = false
+
+    fun getFile(fileId: String) = viewModelScope.launch {
+        try {
+            isOpenFile = true
+            _isLoadFile.postValue(true)
+            val response = mediaRepository.getFile(fileId)
+            if(response.isSuccessful){
+                _fileImage.postValue(response.body())
+                _success.postValue(true)
+            }else{
+                _toast.postValue("Get file failed !")
+                _success.postValue(false)
+            }
+            _isLoadFile.postValue(false)
+        }catch (e: Exception){
+            _toast.postValue(e.message.toString())
+            _success.postValue(false)
+            _isLoadFile.postValue(false)
+        }
+    }
 
     fun uploadFile(directoryId: String, path: String) = viewModelScope.launch {
         try {

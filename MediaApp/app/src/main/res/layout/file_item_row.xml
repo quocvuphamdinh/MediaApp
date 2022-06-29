@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"/>
     <TextView
+        android:textColor="@color/black"
         android:ellipsize="end"
         android:maxLines="1"
         android:gravity="center"

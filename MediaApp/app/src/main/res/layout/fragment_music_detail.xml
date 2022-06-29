@@ -5,116 +5,122 @@
         android:layout_height="match_parent"
         android:background="@drawable/gradient_background">
 
-        <com.google.android.material.appbar.AppBarLayout
-            app:elevation="0dp"
-            android:background="@android:color/transparent"
-            android:id="@+id/appBarMusicDetail"
+        <RelativeLayout
+            android:id="@+id/rlLayout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
-            <RelativeLayout
-                android:orientation="horizontal"
+            android:layout_height="match_parent">
+            <com.google.android.material.appbar.AppBarLayout
+                app:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:id="@+id/appBarMusicDetail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="?attr/actionBarSize">
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imageViewBackMusicDetail"
+                        android:layout_width="35dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="20dp"
+                        android:src="@drawable/ic_arrow_back" />
+                </RelativeLayout>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <ImageView
+                android:id="@+id/imageViewDiskMusicDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/appBarMusicDetail"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/disk" />
+
+            <TextView
+                android:id="@+id/textViewNameMusicDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageViewDiskMusicDetail"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+
+            <SeekBar
+                android:id="@+id/seekBarMusicDetail"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewNameMusicDetail"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="10dp"
+                android:max="100"
+                android:progressBackgroundTint="@color/black"
+                android:progressTint="@color/grey_90"
+                android:scaleY="2"
+                android:thumbTint="@android:color/transparent" />
+
+            <TextView
+                android:id="@+id/textViewStartTimeMusicDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekBarMusicDetail"
+                android:layout_marginHorizontal="40dp"
+                android:text="0:00"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/textViewEndTimeMusicDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekBarMusicDetail"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="40dp"
+                android:text="0:00"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="italic" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@id/textViewStartTimeMusicDetail"
+                android:layout_marginHorizontal="50dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="15">
 
                 <ImageView
-                    android:id="@+id/imageViewBackMusicDetail"
-                    android:layout_width="35dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="20dp"
-                    android:src="@drawable/ic_arrow_back" />
-            </RelativeLayout>
-        </com.google.android.material.appbar.AppBarLayout>
+                    android:id="@+id/imageSkipBack"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="4"
+                    android:src="@drawable/ic_button_skip_back" />
 
-        <ImageView
-            android:id="@+id/imageViewDiskMusicDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/appBarMusicDetail"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/disk" />
+                <ImageView
+                    android:id="@+id/imagePlayButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:src="@drawable/ic_button_play" />
 
-        <TextView
-            android:id="@+id/textViewNameMusicDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/imageViewDiskMusicDetail"
-            android:gravity="center"
-            android:text="Hãy trao cho anh - Sơn Tùng MTP"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold|italic" />
+                <ImageView
+                    android:id="@+id/imageSkipNext"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="4"
+                    android:src="@drawable/ic_button_skip_next" />
+            </LinearLayout>
+        </RelativeLayout>
 
-        <SeekBar
-            android:id="@+id/seekBarMusicDetail"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textViewNameMusicDetail"
-            android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="10dp"
-            android:max="100"
-            android:progress="50"
-            android:thumbTint="@android:color/transparent"
-            android:progressBackgroundTint="@color/black"
-            android:progressTint="@color/grey_90"
-            android:scaleY="2" />
-        <TextView
-            android:id="@+id/textViewStartTimeMusicDetail"
-            android:textSize="16sp"
-            android:textStyle="italic"
-            android:textColor="@color/white"
-            android:text="1:20"
-            android:layout_marginHorizontal="40dp"
-            android:layout_below="@id/seekBarMusicDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/textViewEndTimeMusicDetail"
-            android:textSize="16sp"
-            android:textStyle="italic"
-            android:textColor="@color/white"
-            android:layout_alignParentEnd="true"
-            android:text="3:54"
-            android:layout_marginHorizontal="40dp"
-            android:layout_below="@id/seekBarMusicDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_below="@id/textViewStartTimeMusicDetail"
-            android:layout_marginHorizontal="50dp"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="15">
-
-            <ImageView
-                android:id="@+id/imageSkipBack"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="4"
-                android:src="@drawable/ic_button_skip_back" />
-
-            <ImageView
-                android:id="@+id/imagePlayButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="3"
-                android:src="@drawable/ic_button_play" />
-
-            <ImageView
-                android:id="@+id/imageSkipNext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="4"
-                android:src="@drawable/ic_button_skip_next" />
-        </LinearLayout>
     </RelativeLayout>
 </layout>
