@@ -99,7 +99,6 @@ class VideoDetailFragment : Fragment() {
     private fun setUpVideoView(uri: Uri) {
         mediaController = MediaController(requireContext())
         mediaController.visibility = View.INVISIBLE
-        //val uri = Uri.parse("https://khoapham.vn/download/vuoncaovietnam.mp4")
         binding.videoViewVideoDetail.setVideoURI(uri)
         binding.videoViewVideoDetail.setMediaController(mediaController)
     }

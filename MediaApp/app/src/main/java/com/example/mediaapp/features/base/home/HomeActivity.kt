@@ -21,12 +21,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import com.example.mediaapp.R
 import com.example.mediaapp.databinding.ActivityHomeBinding
-import com.example.mediaapp.features.search.SearchDialogFragment
 import com.example.mediaapp.util.Constants
 import com.example.mediaapp.features.util.setupWithNavController
 import com.example.mediaapp.models.User
 import com.example.mediaapp.features.MediaApplication
-import com.example.mediaapp.models.Directory
 import com.example.mediaapp.models.File
 import com.example.mediaapp.util.FileUtil
 import com.google.android.material.navigation.NavigationView
@@ -53,10 +51,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupBottomNavigationBar()
         setUpSnackBar()
         binding.navigationView.setNavigationItemSelectedListener(this)
-        if (savedInstanceState != null) {
-            val dialogFragmentRun =
-                supportFragmentManager.findFragmentByTag(Constants.SEARCH_DIALOG_TAG) as SearchDialogFragment?
-        }
         subcribeToObservers()
     }
 
@@ -224,7 +218,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.profileFrament) {
-            currentNavController?.value?.navigate(R.id.action_global_profileFragment)
+            goToProfile()
             return true
         }
         return false
@@ -238,22 +232,21 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_action_Drawer -> {
-
                 if (binding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
                     binding.drawerLayout.closeDrawer(GravityCompat.END)
                 } else {
                     binding.drawerLayout.openDrawer(GravityCompat.END)
                 }
             }
-            R.id.menu_action_search -> {
-                showDialogSearch()
+            R.id.menu_action_profile -> {
+                goToProfile()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showDialogSearch() {
-        SearchDialogFragment().show(supportFragmentManager, Constants.SEARCH_DIALOG_TAG)
+    private fun goToProfile() {
+        currentNavController?.value?.navigate(R.id.action_global_profileFragment)
     }
 
     private fun setUpNavigationDrawer() {
