@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Window
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +12,6 @@ import com.example.mediaapp.R
 import com.example.mediaapp.databinding.FragmentDialogViewReceiverBinding
 import com.example.mediaapp.features.adapters.AccountAdapter
 import com.example.mediaapp.models.User
-import com.example.mediaapp.util.DataStore
 
 class ViewReceiverDialogFragment(private val list:List<User>, private val isDelete: Boolean) : DialogFragment() {
     private lateinit var binding : FragmentDialogViewReceiverBinding
