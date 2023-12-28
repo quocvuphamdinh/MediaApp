@@ -4,7 +4,7 @@ Some images of the app:
 
 
 ![Splash](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/61d9f8a4-a20f-4834-97cf-8b9f2b185b1d)
-![Onboard](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/cecc59fb-c6d4-415a-b510-1a646fc63802)
+![Onboard](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/f049fbb4-fb51-45e0-86b1-bec4203ea2a4)
 ![Login](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/883cb2af-3006-4ed2-892d-a139276b24dd)
 ![Register](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/23fcf7d7-1998-4c26-a4a5-f0e90042e710)
 ![Main Page](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/5a386e45-96d1-4355-bf49-b7dd10d887ea)
