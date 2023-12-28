@@ -1,27 +1,17 @@
-Media App By VuPham
+![Property 1=Variant2](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/53625575-ada3-4cc8-85fd-005bf0c0da9f)Media App By VuPham
 
 Some images of the app
 
 
-![Splash](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/0350e805-9ff7-4720-a987-e25c9ffbf80e)
-
-![Onboard](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/5aba9279-5c10-4cd1-bbfd-efa01fa6a95e)
-
-![Login](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/5feb15ac-659b-4ff6-b586-f1d86181bce1)
-
-![Register](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/2c2bf010-ea5c-41e5-85aa-1606c22f1839)
-
-![Main Page](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/d795559c-18eb-4f19-a012-6ece46309914)
-
-![Property 1=Variant2](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/1539813f-9365-4d86-8d90-e86460155f95)
-
-![Music View](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/2abb47bd-bfe2-4a4f-8f2c-33319205c61c)
-
-![Video View 6](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/771ff299-c168-44ff-85c6-16db98158e26)
-
-![Photo View](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/bc370920-e6ba-450b-b1be-9135bc140995)
-
-![Document View](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/a3a22685-90e9-4af7-9ab6-31185d3b4ce2)
-
-![Profile](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/287ff73a-e563-46ee-8878-8eced207313c)
+![Splash](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/61d9f8a4-a20f-4834-97cf-8b9f2b185b1d)
+![Onboard](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/cecc59fb-c6d4-415a-b510-1a646fc63802)
+![Login](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/883cb2af-3006-4ed2-892d-a139276b24dd)
+![Register](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/23fcf7d7-1998-4c26-a4a5-f0e90042e710)
+![Main Page](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/5a386e45-96d1-4355-bf49-b7dd10d887ea)
+![Property 1=Variant2](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/40b062b5-7305-4ca3-8d64-e5c92db59a5f)
+![Music View](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/544beca1-21ba-47b4-9c6f-d5c830f59384)
+![Video View 6](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/63124198-1b88-4179-be45-c36624fee103)
+![Photo View](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/e20d46cb-ec0f-4de1-b1dc-1623162e5b79)
+![Document View](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/36c600cc-ccc7-4bee-8d1d-06a106575dc7)
+![Profile](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/4f3d4cb1-c652-4261-93be-593eef783f52)
 
