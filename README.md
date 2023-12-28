@@ -1,6 +1,6 @@
 Media App By VuPham
 
-Some images of the app
+Some images of the app:
 
 
 ![Splash](https://github.com/quocvuphamdinh/MediaApp/assets/89455060/61d9f8a4-a20f-4834-97cf-8b9f2b185b1d)
